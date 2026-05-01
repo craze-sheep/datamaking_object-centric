@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: slotformer
+Version: 0.1.0
+Summary: Learning Object-Centric Dynamics Model with SlotFormer
+Home-page: https://arxiv.org/abs/2210.05861
+Author: Ziyi Wu
+Author-email: ziyiwu@cs.toronto.edu
+License: MIT
+Keywords: object-centric dynamics model
+License-File: LICENSE
+
+Learning Object-Centric Dynamics Model with SlotFormer

@@ -1,0 +1,34 @@
+{
+  "input_video": "/root/project/kubric-main/output/mini_physics_clean/collision/rgb.mp4",
+  "sampled_frame_indices": [
+    0,
+    7,
+    14,
+    21,
+    28,
+    35
+  ],
+  "video_tensor_shape": [
+    1,
+    6,
+    3,
+    128,
+    128
+  ],
+  "slots_shape": [
+    1,
+    6,
+    6,
+    192
+  ],
+  "masks_shape": [
+    1,
+    6,
+    6,
+    128,
+    128
+  ],
+  "token_recon_loss": 2.517282724380493,
+  "weight_path": "/root/project/SlotFormer-master/pretrained/steve_physion_params/model_10.pth",
+  "visualization": "/root/project/SlotFormer-master/artifacts/slotformer_evidence/slots_visualization.png"
+}

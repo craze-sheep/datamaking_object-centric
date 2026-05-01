@@ -1,0 +1,11 @@
+Physion evaluator smoke test
+data_root: /root/project/kubric-main/output/mini_physics_clean
+frame_gap: 150
+num_frames: 4
+features_shape: (3, 4, 1152)
+pooled_features_shape: (3, 1152)
+event_names: ['collision', 'bounce', 'slide']
+scenario_names: ['collision_transfer', 'free_fall_bounce', 'inclined_slide']
+predictions: [2, 0, 1]
+accuracy_on_smoketest_set: 1.0000
+saved_features: /root/project/SlotFormer-master/artifacts/physion_evaluator_smoketest/features.hdf5

@@ -1,0 +1,85 @@
+{
+  "video_path": "/root/project/task/output/kubric_case/rgb.mp4",
+  "frame_indices": [
+    14,
+    21,
+    28,
+    35
+  ],
+  "params_module": "configs.stosavi_clevrer_params",
+  "params_file": "",
+  "num_slots_override": 0,
+  "sample_count_used": 6,
+  "drop_first_n_frames": 2,
+  "weight_path": "/root/project/SlotFormer-master/pretrained/stosavi_clevrer_params/model_12.pth",
+  "num_skipped_ckp_keys": 0,
+  "num_missing_model_keys": 0,
+  "slots_shape": [
+    4,
+    7,
+    128
+  ],
+  "slot_masks_shape": [
+    4,
+    7,
+    64,
+    64
+  ],
+  "object_ids": [
+    1,
+    2
+  ],
+  "object_names": {
+    "1": "object_a",
+    "2": "object_b"
+  },
+  "score_matrix": [
+    [
+      0.0006989452934909407,
+      0.0019523488013334627
+    ],
+    [
+      0.0006958122771689953,
+      0.0018191156312920126
+    ],
+    [
+      0.0010583511267880862,
+      0.0028189596518758526
+    ],
+    [
+      0.0011189227532841454,
+      0.0024507333046270225
+    ],
+    [
+      0.0010360967757423682,
+      0.0027117188104890397
+    ],
+    [
+      0.0009627060304070467,
+      0.002104392088789358
+    ],
+    [
+      0.0019667623528368218,
+      0.0034000044302189497
+    ]
+  ],
+  "slot_to_object": {
+    "2": 2,
+    "6": 1
+  },
+  "object_to_slot": {
+    "2": 2,
+    "1": 6
+  },
+  "per_object_iou": {
+    "1": 0.009896536212325686,
+    "2": 0.0
+  },
+  "mean_iou": 0.004948268106162843,
+  "artifacts": {
+    "slot_mask_overview": "/root/project/task/_tmp/f4_slot6_clevrer/slot_mask_overview.png",
+    "alignment_preview": "/root/project/task/_tmp/f4_slot6_clevrer/alignment_preview.png",
+    "slot_masks_npy": "/root/project/task/_tmp/f4_slot6_clevrer/slot_masks.npy",
+    "aligned_slot_mask_npy": "/root/project/task/_tmp/f4_slot6_clevrer/aligned_slot_mask.npy"
+  }
+}

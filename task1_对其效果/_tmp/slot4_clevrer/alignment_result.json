@@ -1,0 +1,73 @@
+{
+  "video_path": "/root/project/task/_tmp/kubric_case/rgb.mp4",
+  "frame_indices": [
+    0,
+    7,
+    14,
+    21,
+    28,
+    35
+  ],
+  "params_module": "configs.stosavi_clevrer_params",
+  "params_file": "",
+  "num_slots_override": 4,
+  "weight_path": "/root/project/SlotFormer-master/pretrained/stosavi_clevrer_params/model_12.pth",
+  "num_skipped_ckp_keys": 1,
+  "num_missing_model_keys": 1,
+  "slots_shape": [
+    6,
+    4,
+    128
+  ],
+  "slot_masks_shape": [
+    6,
+    4,
+    64,
+    64
+  ],
+  "object_ids": [
+    1,
+    2
+  ],
+  "object_names": {
+    "1": "object_a",
+    "2": "object_b"
+  },
+  "score_matrix": [
+    [
+      0.0007634546453456828,
+      0.0025109785750625107
+    ],
+    [
+      0.0009741983985462806,
+      0.0021327124703920987
+    ],
+    [
+      0.0018413564644570622,
+      0.002447407761270162
+    ],
+    [
+      0.0006607684786129669,
+      0.0021042055532726526
+    ]
+  ],
+  "slot_to_object": {
+    "0": 2,
+    "2": 1
+  },
+  "object_to_slot": {
+    "2": 0,
+    "1": 2
+  },
+  "per_object_iou": {
+    "1": 0.0076508926041371494,
+    "2": 0.005537974683544304
+  },
+  "mean_iou": 0.006594433643840727,
+  "artifacts": {
+    "slot_mask_overview": "/root/project/task/_tmp/slot4_clevrer/slot_mask_overview.png",
+    "alignment_preview": "/root/project/task/_tmp/slot4_clevrer/alignment_preview.png",
+    "slot_masks_npy": "/root/project/task/_tmp/slot4_clevrer/slot_masks.npy",
+    "aligned_slot_mask_npy": "/root/project/task/_tmp/slot4_clevrer/aligned_slot_mask.npy"
+  }
+}

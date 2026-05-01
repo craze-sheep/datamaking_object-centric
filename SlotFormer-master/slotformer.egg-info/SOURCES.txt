@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+slotformer.egg-info/PKG-INFO
+slotformer.egg-info/SOURCES.txt
+slotformer.egg-info/dependency_links.txt
+slotformer.egg-info/requires.txt
+slotformer.egg-info/top_level.txt

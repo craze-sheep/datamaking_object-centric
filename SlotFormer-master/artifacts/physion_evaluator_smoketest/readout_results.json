@@ -1,0 +1,40 @@
+{
+  "note": "Mini smoke test over local Kubric videos using the SlotFormer Physion adapter.",
+  "data_root": "/root/project/kubric-main/output/mini_physics_clean",
+  "frame_gap": 150,
+  "num_frames": 4,
+  "features_shape": [
+    3,
+    4,
+    1152
+  ],
+  "pooled_features_shape": [
+    3,
+    1152
+  ],
+  "labels": [
+    2,
+    0,
+    1
+  ],
+  "predictions": [
+    2,
+    0,
+    1
+  ],
+  "event_names": [
+    "collision",
+    "bounce",
+    "slide"
+  ],
+  "scenario_names": [
+    "collision_transfer",
+    "free_fall_bounce",
+    "inclined_slide"
+  ],
+  "readout": {
+    "type": "nearest_centroid",
+    "accuracy_on_smoketest_set": 1.0
+  },
+  "feature_file": "/root/project/SlotFormer-master/artifacts/physion_evaluator_smoketest/features.hdf5"
+}
