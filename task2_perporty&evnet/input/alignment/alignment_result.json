@@ -1,0 +1,67 @@
+{
+  "label_json": "/root/project/task1_副本/output/video/label/labels.json",
+  "slot_metadata_json": "/root/project/task1_副本/output/slot/slot_metadata.json",
+  "frame_indices": [
+    0,
+    7,
+    14,
+    21,
+    28,
+    35
+  ],
+  "num_objects": 3,
+  "num_slots": 6,
+  "matching_mode": "3:6",
+  "object_names": [
+    "object_a",
+    "object_b",
+    "floor"
+  ],
+  "score_matrix": [
+    [
+      0.02285018150342697,
+      0.6245045653148844,
+      4.241596646921858e-05,
+      0.0002008578091185523,
+      0.02651312286457748,
+      0.03567686307161348
+    ],
+    [
+      0.032292819085484634,
+      0.005472006070542861,
+      0.00010054603980965553,
+      8.270286904213105e-05,
+      0.12264882875636732,
+      0.6383469893037945
+    ],
+    [
+      0.32369879909414745,
+      0.002847639597695099,
+      0.6164422676486659,
+      0.0025068230701087136,
+      0.0023392317020708956,
+      0.001707660299903129
+    ]
+  ],
+  "object_to_slot": {
+    "object_a": 1,
+    "object_b": 5,
+    "floor": 2
+  },
+  "slot_to_object": {
+    "slot_01": "object_a",
+    "slot_05": "object_b",
+    "slot_02": "floor"
+  },
+  "per_object_iou": {
+    "object_a": 0.6049723756906077,
+    "object_b": 0.7352941176470589,
+    "floor": 0.6119706601466993
+  },
+  "mean_iou": 0.650745717828122,
+  "artifacts": {
+    "alignment_preview": "/root/project/task1_副本/output/alignment/alignment_preview.png",
+    "score_matrix_npy": "/root/project/task1_副本/output/alignment/score_matrix.npy",
+    "aligned_object_index_npy": "/root/project/task1_副本/output/alignment/aligned_object_index.npy"
+  }
+}
