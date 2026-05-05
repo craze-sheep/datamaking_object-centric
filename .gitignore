@@ -4,8 +4,6 @@ SlotFormer-master/pretrained/
 blender-3.0.1-linux-x64/
 
 # generated outputs
-**/output/
-**/scratch/
 
 # large file types
 *.zip

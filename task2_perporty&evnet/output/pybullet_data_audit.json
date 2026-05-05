@@ -1,0 +1,309 @@
+{
+  "pybullet_native": {
+    "animation": {
+      "fields": [
+        "position",
+        "quaternion",
+        "velocity",
+        "angular_velocity"
+      ],
+      "source": "kubric-main/kubric/simulator/pybullet.py:273-309",
+      "note": "PyBullet.run() samples these once per rendered frame and returns them per PhysicalObject."
+    },
+    "collisions": {
+      "fields": [
+        "instances",
+        "position",
+        "contact_normal",
+        "frame",
+        "force"
+      ],
+      "source": "kubric-main/kubric/simulator/pybullet.py:279-299",
+      "note": "These are contact samples from every physics step where normal_force > 1e-6."
+    },
+    "physical_object_attributes": {
+      "fields": [
+        "mass",
+        "friction",
+        "restitution",
+        "static",
+        "velocity",
+        "angular_velocity",
+        "segmentation_id"
+      ],
+      "source": "kubric-main/kubric/core/objects.py:160-199",
+      "note": "These are Kubric PhysicalObject attributes used by the PyBullet backend."
+    }
+  },
+  "kubric_or_renderer_helpers": {
+    "instance_info": {
+      "fields": [
+        "positions",
+        "quaternions",
+        "velocities",
+        "angular_velocities",
+        "mass",
+        "friction",
+        "restitution",
+        "image_positions",
+        "bboxes_3d"
+      ],
+      "source": "kubric-main/kubric/utils.py:159-184",
+      "note": "Convenience collector after simulation keyframes exist; bboxes_3d are computed from object geometry and pose."
+    },
+    "scene_metadata": {
+      "fields": [
+        "resolution",
+        "frame_rate",
+        "step_rate",
+        "gravity",
+        "num_frames"
+      ],
+      "source": "kubric-main/kubric/utils.py:132-142",
+      "note": "Scene-level metadata, not per-object physics state."
+    },
+    "visibility_and_2d_bbox": {
+      "fields": [
+        "visibility_pixel_count",
+        "bboxes",
+        "bbox_frames"
+      ],
+      "source": "kubric-main/kubric/post_processing.py:21-68",
+      "note": "Computed from rendered segmentation; not PyBullet-native."
+    },
+    "renderer_layers": {
+      "fields": [
+        "rgba",
+        "segmentation",
+        "backward_flow",
+        "forward_flow",
+        "depth",
+        "normal",
+        "object_coordinates"
+      ],
+      "source": "kubric-main/kubric/renderer/blender.py:140-150,275-298",
+      "note": "Blender render outputs; optical flow and depth live here, not in PyBullet."
+    }
+  },
+  "audit_rows": [
+    {
+      "name": "Mass / Friction / Restitution",
+      "user_claim": "原生直接拿",
+      "verdict": "正确",
+      "reason": "它们是 Kubric PhysicalObject 属性，也会被写入 PyBullet body 参数。",
+      "recommended_storage": "object_properties.mass/friction/restitution"
+    },
+    {
+      "name": "Static",
+      "user_claim": "配置项记录",
+      "verdict": "正确",
+      "reason": "static 是 PhysicalObject 属性，决定物体是否参与动态仿真。",
+      "recommended_storage": "object_properties.static"
+    },
+    {
+      "name": "Shape / Material / Color",
+      "user_claim": "配置项记录",
+      "verdict": "基本正确",
+      "reason": "shape/material/color 是 Kubric/Blender 场景配置，不是 PyBullet 运动输出；要手动写入 metadata。",
+      "recommended_storage": "object_properties.shape/material/color"
+    },
+    {
+      "name": "Position / Quaternion",
+      "user_claim": "原生直接拿",
+      "verdict": "正确",
+      "reason": "PyBullet.getBasePositionAndOrientation() 被 Kubric 包装成 animation[obj]['position'/'quaternion']。",
+      "recommended_storage": "object_states.positions/quaternions"
+    },
+    {
+      "name": "Linear Velocity",
+      "user_claim": "原生直接拿",
+      "verdict": "正确",
+      "reason": "PyBullet.getBaseVelocity() 第一项就是线速度。",
+      "recommended_storage": "object_states.velocities"
+    },
+    {
+      "name": "Angular Velocity",
+      "user_claim": "原生直接拿",
+      "verdict": "正确",
+      "reason": "PyBullet.getBaseVelocity() 第二项就是刚体角速度；它不是 2D 轨迹转向代理。",
+      "recommended_storage": "object_states.angular_velocities"
+    },
+    {
+      "name": "Visibility",
+      "user_claim": "原生直接拿",
+      "verdict": "需要修正",
+      "reason": "Kubric 可以从 segmentation 后处理得到可见像素数，但 PyBullet 本身不提供 visibility。",
+      "recommended_storage": "derived_from_render.visibility 或 visibility_ratio"
+    },
+    {
+      "name": "Depth",
+      "user_claim": "标准输出",
+      "verdict": "正确但不是 PyBullet",
+      "reason": "depth 是 Blender renderer layer，不是物理仿真器输出。",
+      "recommended_storage": "render_layers.depth"
+    },
+    {
+      "name": "Optical Flow",
+      "user_claim": "标准输出",
+      "verdict": "正确但当前示例未保存",
+      "reason": "Kubric Blender renderer 支持 forward_flow/backward_flow；当前快照对应的生成脚本只请求 rgba/segmentation/depth。",
+      "recommended_storage": "render_layers.forward_flow/backward_flow"
+    },
+    {
+      "name": "3D BBox",
+      "user_claim": "标准输出",
+      "verdict": "需要修正",
+      "reason": "Kubric 可以用 instance.bbox_3d/get_instance_info 逐帧计算；不是 renderer 默认数组，也不是 PyBullet contact 输出。",
+      "recommended_storage": "object_states.bboxes_3d"
+    },
+    {
+      "name": "2D BBox",
+      "user_claim": "未单独列为选中项",
+      "verdict": "派生",
+      "reason": "由 segmentation mask 后处理得到。",
+      "recommended_storage": "derived_from_segmentation.bboxes_2d"
+    },
+    {
+      "name": "Acceleration",
+      "user_claim": "简单计算",
+      "verdict": "正确",
+      "reason": "由相邻帧 velocity 差分得到，推荐用 3D velocity 而不是 2D mask 中心。",
+      "recommended_storage": "derived_motion.accelerations"
+    },
+    {
+      "name": "Speed / Angular Speed",
+      "user_claim": "简单计算",
+      "verdict": "正确",
+      "reason": "分别是 velocity 和 angular_velocity 的模长。",
+      "recommended_storage": "derived_motion.speed/angular_speed"
+    },
+    {
+      "name": "Collision",
+      "user_claim": "原生直接拿",
+      "verdict": "一半正确",
+      "reason": "PyBullet 原生给 contact samples；如果标注 Collision event，应把连续 contact segment 的起点视为碰撞瞬时事件。",
+      "recommended_storage": "pair_events.collision_events"
+    },
+    {
+      "name": "Contact",
+      "user_claim": "简单推导",
+      "verdict": "正确",
+      "reason": "由 collision/contact samples 按 pair 聚合成持续区间。",
+      "recommended_storage": "pair_events.contact_intervals"
+    },
+    {
+      "name": "Strong Collision",
+      "user_claim": "简单推导",
+      "verdict": "正确",
+      "reason": "由 contact force 阈值判断。",
+      "recommended_storage": "pair_events.strong_collision_events"
+    },
+    {
+      "name": "Stop / Start Moving / Sliding / Falling / Spinning",
+      "user_claim": "阈值或多条件判定",
+      "verdict": "正确",
+      "reason": "这些都是从速度、角速度、接触状态派生的 object-level events。",
+      "recommended_storage": "object_events.*"
+    }
+  ],
+  "current_output_inventory": {
+    "labels_json": "/root/project/task2_perporty&evnet/input/video/label/labels.json",
+    "label_top_level_fields": [
+      "collision_events",
+      "depth_npy",
+      "duration_seconds",
+      "fps",
+      "frame_dir",
+      "note",
+      "num_frames",
+      "object_labels",
+      "object_segment_dir",
+      "resolution",
+      "segmentation_ids_npy",
+      "segmentation_video",
+      "video"
+    ],
+    "object_label_fields": [
+      "friction",
+      "mass",
+      "name",
+      "restitution",
+      "segmentation_id",
+      "shape",
+      "static"
+    ],
+    "num_objects": 3,
+    "num_collision_samples": 1336,
+    "collision_event_fields": [
+      "force",
+      "frame",
+      "instances",
+      "position"
+    ],
+    "collision_pairs": {
+      "['object_b', 'floor']": 704,
+      "['object_a', 'floor']": 631,
+      "['object_b', 'object_a']": 1
+    },
+    "saved_arrays": {
+      "segmentation_ids": {
+        "exists": true,
+        "shape": [
+          36,
+          192,
+          192
+        ],
+        "dtype": "int32",
+        "checked_path": "/root/project/task2_perporty&evnet/input/video/segmentation_ids.npy",
+        "label_path": "/root/project/task1_副本/output/video/segmentation_ids.npy"
+      },
+      "depth": {
+        "exists": true,
+        "shape": [
+          36,
+          192,
+          192
+        ],
+        "dtype": "float32",
+        "checked_path": "/root/project/task2_perporty&evnet/input/video/depth.npy",
+        "label_path": "/root/project/task1_副本/output/video/depth.npy"
+      },
+      "slot_masks": {
+        "exists": true,
+        "shape": [
+          6,
+          6,
+          128,
+          128
+        ],
+        "dtype": "float32"
+      },
+      "slots": {
+        "exists": true,
+        "shape": [
+          6,
+          6,
+          192
+        ],
+        "dtype": "float32"
+      }
+    },
+    "slot_alignment": {
+      "alignment_json": "/root/project/task2_perporty&evnet/input/alignment/alignment_result.json",
+      "available": true,
+      "object_to_slot": {
+        "object_a": 1,
+        "object_b": 5,
+        "floor": 2
+      },
+      "mean_iou": 0.650745717828122
+    },
+    "missing_from_current_labels_but_pybullet_or_kubric_can_provide": [
+      "positions",
+      "quaternions",
+      "velocities",
+      "angular_velocities",
+      "bboxes_3d"
+    ]
+  }
+}

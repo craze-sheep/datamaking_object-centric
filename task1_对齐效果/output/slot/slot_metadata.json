@@ -1,0 +1,70 @@
+{
+  "video_path": "/root/project/task1_副本/output/video/rgb.mp4",
+  "label_json": "/root/project/task1_副本/output/video/label/labels.json",
+  "frame_indices": [
+    0,
+    7,
+    14,
+    21,
+    28,
+    35
+  ],
+  "num_slots": 6,
+  "object_count_from_labels": 3,
+  "matching_mode": "3:6",
+  "object_labels": [
+    {
+      "name": "object_a",
+      "segmentation_id": 1,
+      "shape": "sphere",
+      "mass": 0.55,
+      "friction": 0.15,
+      "restitution": 0.82,
+      "static": 0.0
+    },
+    {
+      "name": "object_b",
+      "segmentation_id": 2,
+      "shape": "sphere",
+      "mass": 1.25,
+      "friction": 0.3,
+      "restitution": 0.42,
+      "static": 0.0
+    },
+    {
+      "name": "floor",
+      "segmentation_id": 10,
+      "shape": "cube",
+      "mass": null,
+      "friction": 0.18,
+      "restitution": 0.72,
+      "static": 1.0
+    }
+  ],
+  "params_module": "configs.steve_physion_params",
+  "weight_path": "/root/project/SlotFormer-master/pretrained/steve_physion_params/model_10.pth",
+  "slots_shape": [
+    6,
+    6,
+    192
+  ],
+  "slot_masks_shape": [
+    6,
+    6,
+    128,
+    128
+  ],
+  "hard_mask_shape": [
+    6,
+    128,
+    128
+  ],
+  "num_skipped_checkpoint_keys": 0,
+  "num_missing_model_keys": 0,
+  "artifacts": {
+    "slots_npy": "/root/project/task1_副本/output/slot/slots.npy",
+    "slot_masks_npy": "/root/project/task1_副本/output/slot/slot_masks.npy",
+    "segment_dir": "/root/project/task1_副本/output/slot/segment",
+    "overview": "/root/project/task1_副本/output/slot/slot_segment_overview.png"
+  }
+}
