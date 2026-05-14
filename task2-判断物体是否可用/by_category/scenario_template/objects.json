@@ -1,0 +1,16 @@
+[
+  {
+    "object_id": "bouncing_balls: sphere/cube/mixed",
+    "group": "scenario_template",
+    "scenes": "S14",
+    "source": "kubric examples/bouncing_balls.py",
+    "status": "OK*",
+    "verdict_cn": "场景模板和物体类型设计可用；仍受当前 Kubric 依赖缺失影响。",
+    "evidence_cn": "对象由 sphere/cube primitive 组成，逻辑上不依赖额外资产。",
+    "render_kind": "card",
+    "shape": "",
+    "scale": "",
+    "urdf": "",
+    "note_cn": ""
+  }
+]

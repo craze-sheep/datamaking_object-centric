@@ -1,0 +1,72 @@
+[
+  {
+    "object_id": "wall_x",
+    "group": "basic_static",
+    "scenes": "S4/S13",
+    "source": "kb.Cube / PyBullet primitive",
+    "status": "OK*",
+    "verdict_cn": "可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。",
+    "evidence_cn": "可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。",
+    "render_kind": "primitive",
+    "shape": "cube",
+    "scale": "(0.08,1.8,0.7)",
+    "urdf": "",
+    "note_cn": ""
+  },
+  {
+    "object_id": "wall_y",
+    "group": "basic_static",
+    "scenes": "optional",
+    "source": "kb.Cube / PyBullet primitive",
+    "status": "OK*",
+    "verdict_cn": "可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。",
+    "evidence_cn": "可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。",
+    "render_kind": "primitive",
+    "shape": "cube",
+    "scale": "(1.8,0.08,0.7)",
+    "urdf": "",
+    "note_cn": ""
+  },
+  {
+    "object_id": "ramp",
+    "group": "basic_static",
+    "scenes": "S3",
+    "source": "kb.Cube / PyBullet primitive",
+    "status": "OK*",
+    "verdict_cn": "可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。",
+    "evidence_cn": "可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。",
+    "render_kind": "primitive",
+    "shape": "cube",
+    "scale": "(1.8,0.7,0.08), rotated",
+    "urdf": "",
+    "note_cn": ""
+  },
+  {
+    "object_id": "occluder",
+    "group": "basic_static",
+    "scenes": "S13",
+    "source": "kb.Cube / PyBullet primitive",
+    "status": "OK*",
+    "verdict_cn": "可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。",
+    "evidence_cn": "可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。",
+    "render_kind": "primitive",
+    "shape": "cube",
+    "scale": "(0.08,1.2,0.9)",
+    "urdf": "",
+    "note_cn": ""
+  },
+  {
+    "object_id": "pillar",
+    "group": "basic_static",
+    "scenes": "S13",
+    "source": "kb.Cylinder / PyBullet primitive",
+    "status": "OK*",
+    "verdict_cn": "可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。",
+    "evidence_cn": "可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。",
+    "render_kind": "primitive",
+    "shape": "cylinder",
+    "scale": "(0.16,0.16,0.8)",
+    "urdf": "",
+    "note_cn": ""
+  }
+]

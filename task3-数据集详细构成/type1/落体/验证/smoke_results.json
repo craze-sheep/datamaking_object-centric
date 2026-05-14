@@ -1,0 +1,34 @@
+[
+  {
+    "id": "level1_sphere",
+    "ok": true,
+    "image": "outputs/level1_sphere.png",
+    "video": "outputs/level1_sphere.mp4",
+    "trajectory": "outputs/level1_sphere.json",
+    "final_z": 0.6049635721257707
+  },
+  {
+    "id": "level2_sphere",
+    "ok": true,
+    "image": "outputs/level2_sphere.png",
+    "video": "outputs/level2_sphere.mp4",
+    "trajectory": "outputs/level2_sphere.json",
+    "final_z": 0.2799874879510734
+  },
+  {
+    "id": "level3_sphere",
+    "ok": true,
+    "image": "outputs/level3_sphere.png",
+    "video": "outputs/level3_sphere.mp4",
+    "trajectory": "outputs/level3_sphere.json",
+    "final_z": 0.17998977825862555
+  },
+  {
+    "id": "level3_cube",
+    "ok": true,
+    "image": "outputs/level3_cube.png",
+    "video": "outputs/level3_cube.mp4",
+    "trajectory": "outputs/level3_cube.json",
+    "final_z": 0.14998939195740546
+  }
+]

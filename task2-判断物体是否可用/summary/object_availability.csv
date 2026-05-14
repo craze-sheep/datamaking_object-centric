@@ -1,0 +1,36 @@
+object_id,group,scenes,source,status,verdict_cn,evidence_cn,render_kind,shape,scale,urdf,note_cn
+sphere_s,basic_dynamic,S1/S4,kb.Sphere / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,sphere,0.18,,
+sphere_m,basic_dynamic,S1/S3/S5-S8/S13/S14,kb.Sphere / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,sphere,0.22,,
+sphere_l,basic_dynamic,S1/S4,kb.Sphere / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,sphere,0.28,,
+cube_s,basic_dynamic,S1/S2/S14,kb.Cube / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cube,"(0.18,0.18,0.18)",,
+cube_m,basic_dynamic,S1-S3/S6/S8/S13/S14,kb.Cube / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cube,"(0.24,0.24,0.24)",,
+cube_l,basic_dynamic,S1/S2/S14,kb.Cube / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cube,"(0.30,0.30,0.30)",,
+cylinder_s,basic_dynamic,S1/S2,kb.Cylinder / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cylinder,"(0.16,0.16,0.22)",,
+cylinder_m,basic_dynamic,S1-S3/S9,kb.Cylinder / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cylinder,"(0.20,0.20,0.28)",,
+cylinder_l,basic_dynamic,S1/S2,kb.Cylinder / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cylinder,"(0.24,0.24,0.34)",,
+wall_x,basic_static,S4/S13,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(0.08,1.8,0.7)",,
+wall_y,basic_static,optional,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(1.8,0.08,0.7)",,
+ramp,basic_static,S3,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(1.8,0.7,0.08), rotated",,
+occluder,basic_static,S13,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(0.08,1.2,0.9)",,
+pillar,basic_static,S13,kb.Cylinder / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cylinder,"(0.16,0.16,0.8)",,
+cone,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+torus,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+gear,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+torus_knot,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+sponge,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+spot,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+teapot,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+suzanne,kubasic,S9,gs://kubric-public/assets/KuBasic/KuBasic.json,OK*,远端 manifest 中存在该 asset id；本地未下载，需用 Kubric AssetSource 下载/缓存。,已读取 KuBasic public manifest，8 个目标 id 均存在。,card,,,,建议先补 Kubric 依赖，再跑小样本验证 mesh 尺寸、贴地高度和碰撞稳定性。
+soccerball.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,soccerball.urdf,
+cube.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,cube.urdf,
+block.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,block.urdf,
+lego/lego.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,lego/lego.urdf,
+duck_vhacd.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,duck_vhacd.urdf,
+teddy_vhacd.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,teddy_vhacd.urdf,
+objects/mug.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,objects/mug.urdf,
+tray/tray.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,tray/tray.urdf,
+domino/domino.urdf,pybullet_urdf,S11,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,domino/domino.urdf,
+jenga/jenga.urdf,pybullet_urdf,S12,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,jenga/jenga.urdf,
+random_urdfs/000-999,pybullet_random_urdfs,S16,pybullet_data/random_urdfs,OK,当前环境可用；本机检测到 1000 个随机 URDF。,适合做杂物和静态/动态干扰物，但应抽样剔除极端尺寸或不稳定物体。,card,,,,
+Google Scanned Objects,gso,S15/S16,gs://kubric-public/assets/GSO/GSO.json,CHECK,当前工作区没有本地 GSO manifest；远端 manifest 本次请求失败，暂不算已验证可用。,MOVi 脚本引用 GSO，但生成前需要下载/缓存资产并做尺寸、碰撞稳定性抽检。,card,,,,
+bouncing_balls: sphere/cube/mixed,scenario_template,S14,kubric examples/bouncing_balls.py,OK*,场景模板和物体类型设计可用；仍受当前 Kubric 依赖缺失影响。,对象由 sphere/cube primitive 组成，逻辑上不依赖额外资产。,card,,,,

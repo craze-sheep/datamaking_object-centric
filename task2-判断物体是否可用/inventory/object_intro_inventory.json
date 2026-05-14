@@ -1,0 +1,40 @@
+{
+  "source": "/home/lzy/project/slot-datamaking/kubric-main/场景/object简介.md",
+  "current_pybullet_data_scan": {
+    "pybullet_data_path": "/home/lzy/.local/lib/python3.13/site-packages/pybullet_data",
+    "urdf": 1095,
+    "sdf": 15,
+    "mjcf_xml": 26,
+    "obj_mesh": 1117,
+    "stl_mesh": 86,
+    "dae_mesh": 12,
+    "loadable_model_files": 1136,
+    "mesh_resource_files": 1215,
+    "all_resource_files": 2351,
+    "random_urdfs": 1000,
+    "non_random_urdf": 95
+  },
+  "explicit_intro_counts": {
+    "pybullet_entries_expanded_random_urdfs": 1105,
+    "pybullet_entries_unexpanded_random_urdfs": 106,
+    "with_kubric_implementation_entries_expanded": 1108,
+    "with_kubric_implementation_entries_unexpanded": 109
+  },
+  "categories": [
+    {"category": "PyBullet native geometry", "count_entries": 7, "count_expanded": 7, "first_version_recommendation": "recommended"},
+    {"category": "ground/site", "count_entries": 7, "count_expanded": 7, "first_version_recommendation": "partial"},
+    {"category": "spheres", "count_entries": 9, "count_expanded": 9, "first_version_recommendation": "recommended_subset"},
+    {"category": "blocks/bricks", "count_entries": 9, "count_expanded": 9, "first_version_recommendation": "recommended_subset"},
+    {"category": "daily objects/containers/toys", "count_entries": 9, "count_expanded": 9, "first_version_recommendation": "recommended_later"},
+    {"category": "tables/shelves/environment", "count_entries": 3, "count_expanded": 3, "first_version_recommendation": "partial"},
+    {"category": "robot arms", "count_entries": 9, "count_expanded": 9, "first_version_recommendation": "defer"},
+    {"category": "grippers", "count_entries": 8, "count_expanded": 8, "first_version_recommendation": "defer"},
+    {"category": "mobile robots/vehicles", "count_entries": 5, "count_expanded": 5, "first_version_recommendation": "defer"},
+    {"category": "quadrupeds/multi-legged robots", "count_entries": 10, "count_expanded": 10, "first_version_recommendation": "defer"},
+    {"category": "humanoid/biped/mechanisms", "count_entries": 8, "count_expanded": 8, "first_version_recommendation": "defer"},
+    {"category": "MJCF RL models", "count_entries": 17, "count_expanded": 17, "first_version_recommendation": "defer"},
+    {"category": "soft body/terrain resources", "count_entries": 4, "count_expanded": 4, "first_version_recommendation": "defer"},
+    {"category": "random_urdfs collection", "count_entries": 1, "count_expanded": 1000, "first_version_recommendation": "recommended_after_filtering"},
+    {"category": "Kubric implementation entries", "count_entries": 3, "count_expanded": 3, "first_version_recommendation": "implementation_only"}
+  ]
+}

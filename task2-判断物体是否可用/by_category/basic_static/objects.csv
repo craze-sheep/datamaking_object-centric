@@ -1,0 +1,6 @@
+object_id,group,scenes,source,status,verdict_cn,evidence_cn,render_kind,shape,scale,urdf,note_cn
+wall_x,basic_static,S4/S13,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(0.08,1.8,0.7)",,
+wall_y,basic_static,optional,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(1.8,0.08,0.7)",,
+ramp,basic_static,S3,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(1.8,0.7,0.08), rotated",,
+occluder,basic_static,S13,kb.Cube / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cube,"(0.08,1.2,0.9)",,
+pillar,basic_static,S13,kb.Cylinder / PyBullet primitive,OK*,可用；属于基础静态碰撞几何，需在 Kubric 环境补齐依赖后批量渲染。,可用 Cube/Cylinder 参数化生成，适合墙、斜面、遮挡板和柱体。,primitive,cylinder,"(0.16,0.16,0.8)",,

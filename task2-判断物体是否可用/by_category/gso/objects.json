@@ -1,0 +1,16 @@
+[
+  {
+    "object_id": "Google Scanned Objects",
+    "group": "gso",
+    "scenes": "S15/S16",
+    "source": "gs://kubric-public/assets/GSO/GSO.json",
+    "status": "CHECK",
+    "verdict_cn": "当前工作区没有本地 GSO manifest；远端 manifest 本次请求失败，暂不算已验证可用。",
+    "evidence_cn": "MOVi 脚本引用 GSO，但生成前需要下载/缓存资产并做尺寸、碰撞稳定性抽检。",
+    "render_kind": "card",
+    "shape": "",
+    "scale": "",
+    "urdf": "",
+    "note_cn": ""
+  }
+]

@@ -1,0 +1,11 @@
+object_id,group,scenes,source,status,verdict_cn,evidence_cn,render_kind,shape,scale,urdf,note_cn
+soccerball.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,soccerball.urdf,
+cube.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,cube.urdf,
+block.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,block.urdf,
+lego/lego.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,lego/lego.urdf,
+duck_vhacd.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,duck_vhacd.urdf,
+teddy_vhacd.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,teddy_vhacd.urdf,
+objects/mug.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,objects/mug.urdf,
+tray/tray.urdf,pybullet_urdf,S10,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,tray/tray.urdf,
+domino/domino.urdf,pybullet_urdf,S11,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,domino/domino.urdf,
+jenga/jenga.urdf,pybullet_urdf,S12,pybullet_data,OK,当前环境可直接加载。,pybullet_data 文件存在，并已用 p.loadURDF(DIRECT) 加载成功。,urdf,,,jenga/jenga.urdf,

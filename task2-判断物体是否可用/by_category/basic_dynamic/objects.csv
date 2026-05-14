@@ -1,0 +1,10 @@
+object_id,group,scenes,source,status,verdict_cn,evidence_cn,render_kind,shape,scale,urdf,note_cn
+sphere_s,basic_dynamic,S1/S4,kb.Sphere / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,sphere,0.18,,
+sphere_m,basic_dynamic,S1/S3/S5-S8/S13/S14,kb.Sphere / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,sphere,0.22,,
+sphere_l,basic_dynamic,S1/S4,kb.Sphere / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,sphere,0.28,,
+cube_s,basic_dynamic,S1/S2/S14,kb.Cube / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cube,"(0.18,0.18,0.18)",,
+cube_m,basic_dynamic,S1-S3/S6/S8/S13/S14,kb.Cube / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cube,"(0.24,0.24,0.24)",,
+cube_l,basic_dynamic,S1/S2/S14,kb.Cube / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cube,"(0.30,0.30,0.30)",,
+cylinder_s,basic_dynamic,S1/S2,kb.Cylinder / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cylinder,"(0.16,0.16,0.22)",,
+cylinder_m,basic_dynamic,S1-S3/S9,kb.Cylinder / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cylinder,"(0.20,0.20,0.28)",,
+cylinder_l,basic_dynamic,S1/S2,kb.Cylinder / PyBullet primitive,OK*,物体定义可用；当前 Kubric Python 环境缺 pyquaternion，需补依赖后用 Kubric 渲染。,基础几何体可由 PyBullet 原生碰撞体创建，Kubric 源码也提供 Sphere/Cube/Cylinder。,primitive,cylinder,"(0.24,0.24,0.34)",,

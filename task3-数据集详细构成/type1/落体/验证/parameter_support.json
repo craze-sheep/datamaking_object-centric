@@ -1,0 +1,532 @@
+{
+  "ground": {
+    "lateralFriction": [
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.25,
+        "ok": true
+      },
+      {
+        "value": 0.5,
+        "ok": true
+      },
+      {
+        "value": 0.75,
+        "ok": true
+      },
+      {
+        "value": 1,
+        "ok": true
+      },
+      {
+        "value": 2,
+        "ok": true
+      },
+      {
+        "value": 3,
+        "ok": true
+      }
+    ],
+    "rollingFriction": [
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.001,
+        "ok": true
+      },
+      {
+        "value": 0.005,
+        "ok": true
+      },
+      {
+        "value": 0.007,
+        "ok": true
+      },
+      {
+        "value": 0.01,
+        "ok": true
+      },
+      {
+        "value": 0.05,
+        "ok": true
+      },
+      {
+        "value": 0.1,
+        "ok": true
+      },
+      {
+        "value": 0.2,
+        "ok": true
+      },
+      {
+        "value": 0.3,
+        "ok": true
+      },
+      {
+        "value": 0.5,
+        "ok": true
+      }
+    ],
+    "spinningFriction": [
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.003,
+        "ok": true
+      },
+      {
+        "value": 0.005,
+        "ok": true
+      },
+      {
+        "value": 0.008,
+        "ok": true
+      },
+      {
+        "value": 0.03,
+        "ok": true
+      },
+      {
+        "value": 0.08,
+        "ok": true
+      },
+      {
+        "value": 0.18,
+        "ok": true
+      },
+      {
+        "value": 0.28,
+        "ok": true
+      },
+      {
+        "value": 0.48,
+        "ok": true
+      }
+    ],
+    "restitution": [
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.1,
+        "ok": true
+      },
+      {
+        "value": 0.3,
+        "ok": true
+      },
+      {
+        "value": 0.5,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      },
+      {
+        "value": 1,
+        "ok": true
+      }
+    ]
+  },
+  "sphere": {
+    "radius": [
+      {
+        "value": 0.18,
+        "ok": true
+      },
+      {
+        "value": 0.22,
+        "ok": true
+      },
+      {
+        "value": 0.28,
+        "ok": true
+      }
+    ],
+    "position_x": [
+      {
+        "value": -0.4,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      }
+    ],
+    "position_y": [
+      {
+        "value": -0.4,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      }
+    ],
+    "position_z": [
+      {
+        "value": 0.8,
+        "ok": true
+      },
+      {
+        "value": 1.2,
+        "ok": true
+      },
+      {
+        "value": 1.6,
+        "ok": true
+      },
+      {
+        "value": 2.0,
+        "ok": true
+      }
+    ],
+    "velocity_x": [
+      {
+        "value": -0.6,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      }
+    ],
+    "velocity_y": [
+      {
+        "value": -0.6,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      }
+    ],
+    "velocity_z": [
+      {
+        "value": -1.0,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 1.0,
+        "ok": true
+      }
+    ],
+    "angular_velocity_x": [
+      {
+        "value": 0,
+        "ok": true
+      }
+    ],
+    "angular_velocity_y": [
+      {
+        "value": 0,
+        "ok": true
+      }
+    ],
+    "angular_velocity_z": [
+      {
+        "value": 0,
+        "ok": true
+      }
+    ],
+    "mass": [
+      {
+        "value": 0.5,
+        "ok": true
+      },
+      {
+        "value": 1.0,
+        "ok": true
+      },
+      {
+        "value": 2.0,
+        "ok": true
+      }
+    ],
+    "restitution": [
+      {
+        "value": 0.1,
+        "ok": true
+      },
+      {
+        "value": 0.5,
+        "ok": true
+      },
+      {
+        "value": 0.85,
+        "ok": true
+      }
+    ],
+    "friction": [
+      {
+        "value": 0.1,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      }
+    ],
+    "color": [
+      {
+        "value": "red",
+        "ok": true
+      },
+      {
+        "value": "blue",
+        "ok": true
+      },
+      {
+        "value": "yellow",
+        "ok": true
+      },
+      {
+        "value": "green",
+        "ok": true
+      }
+    ]
+  },
+  "cube": {
+    "size": [
+      {
+        "value": [
+          0.18,
+          0.18,
+          0.18
+        ],
+        "ok": true
+      },
+      {
+        "value": [
+          0.24,
+          0.24,
+          0.24
+        ],
+        "ok": true
+      },
+      {
+        "value": [
+          0.3,
+          0.3,
+          0.3
+        ],
+        "ok": true
+      }
+    ],
+    "position_x": [
+      {
+        "value": -0.4,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      }
+    ],
+    "position_y": [
+      {
+        "value": -0.4,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      }
+    ],
+    "position_z": [
+      {
+        "value": 0.8,
+        "ok": true
+      },
+      {
+        "value": 1.2,
+        "ok": true
+      },
+      {
+        "value": 1.6,
+        "ok": true
+      },
+      {
+        "value": 2.0,
+        "ok": true
+      }
+    ],
+    "velocity_x": [
+      {
+        "value": -0.6,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      }
+    ],
+    "velocity_y": [
+      {
+        "value": -0.6,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      }
+    ],
+    "velocity_z": [
+      {
+        "value": -1.0,
+        "ok": true
+      },
+      {
+        "value": 0,
+        "ok": true
+      },
+      {
+        "value": 1.0,
+        "ok": true
+      }
+    ],
+    "angular_velocity_x": [
+      {
+        "value": 0,
+        "ok": true
+      }
+    ],
+    "angular_velocity_y": [
+      {
+        "value": 0,
+        "ok": true
+      }
+    ],
+    "angular_velocity_z": [
+      {
+        "value": 0,
+        "ok": true
+      }
+    ],
+    "mass": [
+      {
+        "value": 0.5,
+        "ok": true
+      },
+      {
+        "value": 1.0,
+        "ok": true
+      },
+      {
+        "value": 2.0,
+        "ok": true
+      }
+    ],
+    "restitution": [
+      {
+        "value": 0.1,
+        "ok": true
+      },
+      {
+        "value": 0.5,
+        "ok": true
+      },
+      {
+        "value": 0.85,
+        "ok": true
+      }
+    ],
+    "friction": [
+      {
+        "value": 0.1,
+        "ok": true
+      },
+      {
+        "value": 0.4,
+        "ok": true
+      },
+      {
+        "value": 0.8,
+        "ok": true
+      }
+    ],
+    "color": [
+      {
+        "value": "red",
+        "ok": true
+      },
+      {
+        "value": "blue",
+        "ok": true
+      },
+      {
+        "value": "yellow",
+        "ok": true
+      },
+      {
+        "value": "green",
+        "ok": true
+      }
+    ]
+  }
+}

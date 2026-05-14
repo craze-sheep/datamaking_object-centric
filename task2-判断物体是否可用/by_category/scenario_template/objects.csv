@@ -1,0 +1,2 @@
+object_id,group,scenes,source,status,verdict_cn,evidence_cn,render_kind,shape,scale,urdf,note_cn
+bouncing_balls: sphere/cube/mixed,scenario_template,S14,kubric examples/bouncing_balls.py,OK*,场景模板和物体类型设计可用；仍受当前 Kubric 依赖缺失影响。,对象由 sphere/cube primitive 组成，逻辑上不依赖额外资产。,card,,,,

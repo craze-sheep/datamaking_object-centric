@@ -1,0 +1,16 @@
+[
+  {
+    "object_id": "random_urdfs/000-999",
+    "group": "pybullet_random_urdfs",
+    "scenes": "S16",
+    "source": "pybullet_data/random_urdfs",
+    "status": "OK",
+    "verdict_cn": "当前环境可用；本机检测到 1000 个随机 URDF。",
+    "evidence_cn": "适合做杂物和静态/动态干扰物，但应抽样剔除极端尺寸或不稳定物体。",
+    "render_kind": "card",
+    "shape": "",
+    "scale": "",
+    "urdf": "",
+    "note_cn": ""
+  }
+]

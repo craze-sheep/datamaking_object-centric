@@ -1,0 +1,2 @@
+object_id,group,scenes,source,status,verdict_cn,evidence_cn,render_kind,shape,scale,urdf,note_cn
+random_urdfs/000-999,pybullet_random_urdfs,S16,pybullet_data/random_urdfs,OK,当前环境可用；本机检测到 1000 个随机 URDF。,适合做杂物和静态/动态干扰物，但应抽样剔除极端尺寸或不稳定物体。,card,,,,
