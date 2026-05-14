@@ -16,43 +16,43 @@ ROOT = Path(__file__).resolve().parent
 OUT_DIR = ROOT / "outputs"
 
 GROUND = {
-    "lateralFriction": [0, 0.25, 0.5, 0.75, 1, 2, 3],
-    "rollingFriction": [0, 0.001, 0.005, 0.007, 0.01, 0.05, 0.1, 0.2, 0.3, 0.5],
-    "spinningFriction": [0, 0.003, 0.005, 0.008, 0.03, 0.08, 0.18, 0.28, 0.48],
-    "restitution": [0, 0.1, 0.3, 0.5, 0.8, 1],
+    "lateralFriction": [0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0],
+    "rollingFriction": [0, 0.001, 0.003, 0.006, 0.01, 0.02, 0.04, 0.07, 0.1, 0.15],
+    "spinningFriction": [0, 0.0005, 0.001, 0.003, 0.006, 0.01, 0.02, 0.04, 0.08],
+    "restitution": [0.05, 0.15, 0.3, 0.5, 0.7, 0.9],
 }
 
 SPHERE = {
     "radius": [0.18, 0.22, 0.28],
-    "position_x": [-0.4, 0, 0.4],
-    "position_y": [-0.4, 0, 0.4],
-    "position_z": [0.8, 1.2, 1.6, 2.0],
-    "velocity_x": [-0.6, 0, 0.4, 0.8],
-    "velocity_y": [-0.6, 0, 0.4, 0.8],
-    "velocity_z": [-1.0, 0, 1.0],
+    "position_x": [-0.6, 0, 0.6],
+    "position_y": [-0.6, 0, 0.6],
+    "position_z": [1.0, 1.5, 2.0, 2.5],
+    "velocity_x": [-0.6, -0.2, 0.2, 0.6],
+    "velocity_y": [-0.6, -0.2, 0.2, 0.6],
+    "velocity_z": [-0.6, 0, 0.6],
     "angular_velocity_x": [0],
     "angular_velocity_y": [0],
     "angular_velocity_z": [0],
     "mass": [0.5, 1.0, 2.0],
-    "restitution": [0.1, 0.5, 0.85],
-    "friction": [0.1, 0.4, 0.8],
+    "restitution": [0.5],
+    "friction": [0.2, 0.5, 0.8],
     "color": ["red", "blue", "yellow", "green"],
 }
 
 CUBE = {
     "size": [(0.18, 0.18, 0.18), (0.24, 0.24, 0.24), (0.30, 0.30, 0.30)],
-    "position_x": [-0.4, 0, 0.4],
-    "position_y": [-0.4, 0, 0.4],
-    "position_z": [0.8, 1.2, 1.6, 2.0],
-    "velocity_x": [-0.6, 0, 0.4, 0.8],
-    "velocity_y": [-0.6, 0, 0.4, 0.8],
-    "velocity_z": [-1.0, 0, 1.0],
+    "position_x": [-0.6, 0, 0.6],
+    "position_y": [-0.6, 0, 0.6],
+    "position_z": [1.0, 1.5, 2.0, 2.5],
+    "velocity_x": [-0.6, -0.2, 0.2, 0.6],
+    "velocity_y": [-0.6, -0.2, 0.2, 0.6],
+    "velocity_z": [-0.6, 0, 0.6],
     "angular_velocity_x": [0],
     "angular_velocity_y": [0],
     "angular_velocity_z": [0],
     "mass": [0.5, 1.0, 2.0],
-    "restitution": [0.1, 0.5, 0.85],
-    "friction": [0.1, 0.4, 0.8],
+    "restitution": [0.5],
+    "friction": [0.2, 0.5, 0.8],
     "color": ["red", "blue", "yellow", "green"],
 }
 
@@ -154,8 +154,8 @@ def make_cube(params: dict) -> int:
 def render_image() -> Image.Image:
     width, height = 320, 240
     view = p.computeViewMatrix(
-        cameraEyePosition=[3.0, -4.0, 2.8],
-        cameraTargetPosition=[0.0, 0.0, 0.8],
+        cameraEyePosition=[3.6, -5.0, 3.4],
+        cameraTargetPosition=[0.0, 0.0, 1.1],
         cameraUpVector=[0.0, 0.0, 1.0],
     )
     proj = p.computeProjectionMatrixFOV(
@@ -178,7 +178,7 @@ def render_png(path: Path) -> None:
     render_image().save(path)
 
 
-def write_mp4(frames: list[Image.Image], path: Path, fps: int = 12) -> None:
+def write_mp4(frames: list[Image.Image], path: Path, fps: int = 24) -> None:
     if not frames:
         raise ValueError("No frames to write")
     width, height = frames[0].size
@@ -238,7 +238,7 @@ def simulate(body_id: int, frames: int = 64, steps_per_frame: int = 4) -> list[d
 
 def simulate_with_frames(
     body_id: int,
-    frames: int = 64,
+    frames: int = 72,
     steps_per_frame: int = 4,
 ) -> tuple[list[dict], list[Image.Image]]:
     trajectory = []
@@ -291,8 +291,8 @@ def validate_parameter_support() -> dict:
                     make_ground(
                         {
                             "lateralFriction": 0.5,
-                            "rollingFriction": 0.01,
-                            "spinningFriction": 0.005,
+                            "rollingFriction": 0.005,
+                            "spinningFriction": 0.001,
                             "restitution": 0.5,
                         }
                     )
@@ -304,7 +304,7 @@ def validate_parameter_support() -> dict:
                             "initial_angular_velocity": [0, 0, 0],
                             "mass": 1.0,
                             "restitution": 0.5,
-                            "friction": 0.4,
+                            "friction": 0.5,
                             "color": "red",
                         }
                         if name == "radius":
@@ -332,7 +332,7 @@ def validate_parameter_support() -> dict:
                             "initial_angular_velocity": [0, 0, 0],
                             "mass": 1.0,
                             "restitution": 0.5,
-                            "friction": 0.4,
+                            "friction": 0.5,
                             "color": "red",
                         }
                         if name == "size":
@@ -400,40 +400,40 @@ def run_case(case: dict) -> dict:
 def smoke_cases() -> list[dict]:
     base_ground = {
         "lateralFriction": 0.5,
-        "rollingFriction": 0.01,
-        "spinningFriction": 0.005,
+        "rollingFriction": 0.005,
+        "spinningFriction": 0.001,
         "restitution": 0.5,
     }
     return [
         {
             "id": "level1_sphere",
             "level": 1,
-            "ground": {**base_ground, "restitution": 0.8},
+            "ground": {**base_ground, "restitution": 0.7},
             "object": {
                 "type": "sphere",
                 "radius": 0.22,
-                "initial_position": [0, 0, 1.6],
-                "initial_velocity": [0, 0, -1.0],
+                "initial_position": [0, 0, 1.8],
+                "initial_velocity": [0, 0, -0.3],
                 "initial_angular_velocity": [0, 0, 0],
                 "mass": 1.0,
-                "restitution": 0.85,
-                "friction": 0.4,
+                "restitution": 0.5,
+                "friction": 0.5,
                 "color": "red",
             },
         },
         {
             "id": "level2_sphere",
             "level": 2,
-            "ground": {**base_ground, "restitution": 0.3},
+            "ground": {**base_ground, "restitution": 0.2},
             "object": {
                 "type": "sphere",
-                "radius": 0.28,
-                "initial_position": [0.4, -0.4, 2.0],
-                "initial_velocity": [0, 0, 1.0],
+                "radius": 0.22,
+                "initial_position": [0.5, -0.5, 2.0],
+                "initial_velocity": [0, 0, 0],
                 "initial_angular_velocity": [0, 0, 0],
-                "mass": 2.0,
+                "mass": 1.0,
                 "restitution": 0.5,
-                "friction": 0.4,
+                "friction": 0.5,
                 "color": "blue",
             },
         },
@@ -441,19 +441,19 @@ def smoke_cases() -> list[dict]:
             "id": "level3_sphere",
             "level": 3,
             "ground": {
-                "lateralFriction": 2,
-                "rollingFriction": 0.1,
-                "spinningFriction": 0.08,
-                "restitution": 1,
+                "lateralFriction": 1.5,
+                "rollingFriction": 0.04,
+                "spinningFriction": 0.02,
+                "restitution": 0.7,
             },
             "object": {
                 "type": "sphere",
                 "radius": 0.18,
-                "initial_position": [-0.4, 0.4, 1.2],
-                "initial_velocity": [0.8, -0.6, 1.0],
+                "initial_position": [-0.5, 0.5, 1.6],
+                "initial_velocity": [0.4, -0.15, 0.5],
                 "initial_angular_velocity": [0, 0, 0],
                 "mass": 0.5,
-                "restitution": 0.1,
+                "restitution": 0.5,
                 "friction": 0.8,
                 "color": "green",
             },
@@ -463,19 +463,19 @@ def smoke_cases() -> list[dict]:
             "level": 3,
             "ground": {
                 "lateralFriction": 0.25,
-                "rollingFriction": 0.005,
-                "spinningFriction": 0.003,
-                "restitution": 0.1,
+                "rollingFriction": 0.003,
+                "spinningFriction": 0.001,
+                "restitution": 0.15,
             },
             "object": {
                 "type": "cube",
                 "size": [0.30, 0.30, 0.30],
-                "initial_position": [0.4, 0.4, 0.8],
-                "initial_velocity": [-0.6, 0.4, -1.0],
+                "initial_position": [0.5, 0.5, 1.2],
+                "initial_velocity": [-0.4, 0.15, -0.5],
                 "initial_angular_velocity": [0, 0, 0],
                 "mass": 2.0,
-                "restitution": 0.85,
-                "friction": 0.1,
+                "restitution": 0.5,
+                "friction": 0.2,
                 "color": "yellow",
             },
         },
@@ -515,6 +515,7 @@ def write_report(param_results: dict, case_results: list[dict]) -> None:
         "- PyBullet 可配置物体参数：radius/size, initial_position, initial_velocity, initial_angular_velocity, mass, restitution, friction, color",
         "- color 通过 visual shape 设置，不属于动力学参数",
         "- 其他属性使用 PyBullet 默认值",
+        "- smoke case 视频：72 帧，24fps，时长约 3 秒",
         "",
         "## Smoke Cases",
     ]
