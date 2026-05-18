@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3)",
+      "Bash(cat ~/.claude/settings.json 2>/dev/null || echo \"File not found\")",
+      "Read(//home/lzy/.claude/**)",
+      "mcp__memory__open_nodes",
+      "mcp__memory__create_entities"
+    ],
+    "additionalDirectories": [
+      "/home/lzy/.claude"
+    ]
+  }
+}
