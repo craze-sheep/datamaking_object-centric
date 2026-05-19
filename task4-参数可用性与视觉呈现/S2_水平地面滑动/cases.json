@@ -1,0 +1,118 @@
+[
+  {
+    "case_id": "cube_mu025",
+    "title": "cube slide mu=0.25",
+    "notes": "longer stopping distance",
+    "view": "top",
+    "video": "S2_水平地面滑动/videos/cube_mu025.mp4",
+    "total_contact_samples": 2777,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "cube": {
+        "position": [
+          -0.1878,
+          0.0,
+          0.12
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "cube_mu10",
+    "title": "cube slide mu=1.0",
+    "notes": "shorter stopping distance",
+    "view": "top",
+    "video": "S2_水平地面滑动/videos/cube_mu10.mp4",
+    "total_contact_samples": 2690,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "cube": {
+        "position": [
+          -0.8489,
+          -0.0002,
+          0.12
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "sphere_roll",
+    "title": "sphere rollingFriction=0.05",
+    "notes": "sliding to rolling then decay",
+    "view": "oblique",
+    "video": "S2_水平地面滑动/videos/sphere_roll.mp4",
+    "total_contact_samples": 784,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "ball": {
+        "position": [
+          2.3129,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.4185,
+        "angular_speed": 1.9024
+      }
+    }
+  },
+  {
+    "case_id": "cylinder_lie",
+    "title": "cylinder lying",
+    "notes": "cylinder PyBullet primitive probe",
+    "view": "oblique",
+    "video": "S2_水平地面滑动/videos/cylinder_lie.mp4",
+    "total_contact_samples": 1339,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "cylinder": {
+        "position": [
+          -0.4419,
+          0.0,
+          0.2
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      }
+    }
+  }
+]

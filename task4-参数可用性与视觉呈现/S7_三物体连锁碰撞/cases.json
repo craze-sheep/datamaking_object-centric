@@ -1,0 +1,199 @@
+[
+  {
+    "case_id": "chain_e03",
+    "title": "chain restitution=0.3",
+    "notes": "weak terminal transfer",
+    "view": "top",
+    "video": "S7_三物体连锁碰撞/videos/chain_e03.mp4",
+    "total_contact_samples": 2181,
+    "dynamic_dynamic_contact_samples": 21,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          1.089,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.5486,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          1.5433,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.5541,
+        "angular_speed": 0.0
+      },
+      "C": {
+        "position": [
+          2.3777,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.6974,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "chain_e10",
+    "title": "chain restitution=1.0",
+    "notes": "strong terminal transfer",
+    "view": "top",
+    "video": "S7_三物体连锁碰撞/videos/chain_e10.mp4",
+    "total_contact_samples": 2036,
+    "dynamic_dynamic_contact_samples": 2,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -0.5037,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.0239,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          -0.051,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.0268,
+        "angular_speed": 0.0
+      },
+      "C": {
+        "position": [
+          5.5649,
+          -0.0,
+          -1.3971
+        ],
+        "speed": 5.9069,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "middle_heavy",
+    "title": "middle mass=2.5",
+    "notes": "mass sequence changes transfer",
+    "view": "top",
+    "video": "S7_三物体连锁碰撞/videos/middle_heavy.mp4",
+    "total_contact_samples": 2162,
+    "dynamic_dynamic_contact_samples": 2,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -1.5943,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.4113,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          1.5446,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.5455,
+        "angular_speed": 0.0
+      },
+      "C": {
+        "position": [
+          3.9428,
+          -0.0,
+          0.22
+        ],
+        "speed": 1.2476,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "right_wall",
+    "title": "chain with right wall",
+    "notes": "terminal rebound creates later contacts",
+    "view": "top",
+    "video": "S7_三物体连锁碰撞/videos/right_wall.mp4",
+    "total_contact_samples": 2187,
+    "dynamic_dynamic_contact_samples": 25,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "wall": {
+        "position": [
+          1.35,
+          0.0,
+          0.6
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -1.1254,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.4809,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          0.405,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.1145,
+        "angular_speed": 0.0
+      },
+      "C": {
+        "position": [
+          0.8454,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.1149,
+        "angular_speed": 0.0
+      }
+    }
+  }
+]

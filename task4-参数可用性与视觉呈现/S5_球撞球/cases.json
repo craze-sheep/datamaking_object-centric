@@ -1,0 +1,154 @@
+[
+  {
+    "case_id": "bb_e03",
+    "title": "ball-ball e=0.3",
+    "notes": "low separation speed",
+    "view": "top",
+    "video": "S5_球撞球/videos/bb_e03.mp4",
+    "total_contact_samples": 1443,
+    "dynamic_dynamic_contact_samples": 3,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          1.4918,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.5581,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          3.6082,
+          -0.0,
+          0.22
+        ],
+        "speed": 1.2419,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "bb_e10",
+    "title": "ball-ball e=1.0",
+    "notes": "high separation speed",
+    "view": "top",
+    "video": "S5_球撞球/videos/bb_e10.mp4",
+    "total_contact_samples": 1304,
+    "dynamic_dynamic_contact_samples": 1,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -0.0596,
+          0.0,
+          0.22
+        ],
+        "speed": 0.0719,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          5.1596,
+          -0.0,
+          -1.656
+        ],
+        "speed": 6.3266,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "target_heavy",
+    "title": "heavy target mass=5",
+    "notes": "mass ratio changes transfer",
+    "view": "top",
+    "video": "S5_球撞球/videos/target_heavy.mp4",
+    "total_contact_samples": 1441,
+    "dynamic_dynamic_contact_samples": 1,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -2.8083,
+          0.0,
+          0.22
+        ],
+        "speed": 1.1398,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          2.2617,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.668,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "offset",
+    "title": "impact offset y=0.25",
+    "notes": "scattering angle visible",
+    "view": "top",
+    "video": "S5_球撞球/videos/offset.mp4",
+    "total_contact_samples": 1441,
+    "dynamic_dynamic_contact_samples": 1,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          2.313,
+          -2.3576,
+          0.22
+        ],
+        "speed": 1.2667,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          3.937,
+          2.6076,
+          0.22
+        ],
+        "speed": 1.648,
+        "angular_speed": 0.0
+      }
+    }
+  }
+]

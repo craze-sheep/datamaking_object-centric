@@ -1,0 +1,165 @@
+{
+  "schema_version": "slot-datamaking-meta-v1",
+  "physical_sample_id": "S5_L1_seed000123",
+  "video_id": "S5_L1_seed000123_top",
+  "scene_type": "S5_球撞球",
+  "level_id": "L1",
+  "level_name": "恢复系数的影响",
+  "random_seed": 123,
+  "duration_s": 3.0,
+  "fps": 12,
+  "num_frames": 36,
+  "resolution": [64, 64],
+  "gravity": [0.0, 0.0, -9.8],
+  "units": {
+    "length": "m",
+    "mass": "kg",
+    "time": "s",
+    "linear_velocity": "m/s",
+    "angular_velocity": "rad/s",
+    "angle": "rad"
+  },
+  "engine": {
+    "physics": "PyBullet",
+    "renderer": "Kubric/Blender",
+    "docker_image": "kubricdockerhub/kubruntu",
+    "notes": "Record exact versions at generation time."
+  },
+  "sampled_params": {
+    "main_variable": "sphere_b.restitution",
+    "sphere_b.restitution": 0.8,
+    "initial_speed": 1.8,
+    "impact_offset_y": 0.0
+  },
+  "objects": [
+    {
+      "object_id": "ground",
+      "role": "ground",
+      "object_type": "cube",
+      "static": true,
+      "size": [8.0, 6.0, 0.08],
+      "initial_position": [0.0, 0.0, -0.04],
+      "initial_quaternion": [1.0, 0.0, 0.0, 0.0],
+      "mass": 1.0,
+      "lateralFriction": 0.0,
+      "rollingFriction": 0.0,
+      "spinningFriction": 0.0,
+      "restitution": 0.0,
+      "color_name": "gray",
+      "rgba": [0.55, 0.55, 0.55, 1.0]
+    },
+    {
+      "object_id": "sphere_a",
+      "role": "moving_ball",
+      "object_type": "sphere",
+      "static": false,
+      "radius": 0.22,
+      "contact_offset": 0.22,
+      "initial_position": [-0.85, 0.0, 0.22],
+      "initial_quaternion": [1.0, 0.0, 0.0, 0.0],
+      "initial_velocity": [1.8, 0.0, 0.0],
+      "initial_angular_velocity": [0.0, 0.0, 0.0],
+      "mass": 1.0,
+      "friction": 0.0,
+      "rollingFriction": 0.0,
+      "spinningFriction": 0.0,
+      "restitution": 1.0,
+      "color_name": "red",
+      "rgba": [0.86, 0.1, 0.08, 1.0]
+    },
+    {
+      "object_id": "sphere_b",
+      "role": "target_ball",
+      "object_type": "sphere",
+      "static": false,
+      "radius": 0.22,
+      "contact_offset": 0.22,
+      "initial_position": [0.55, 0.0, 0.22],
+      "initial_quaternion": [1.0, 0.0, 0.0, 0.0],
+      "initial_velocity": [0.0, 0.0, 0.0],
+      "initial_angular_velocity": [0.0, 0.0, 0.0],
+      "mass": 1.0,
+      "friction": 0.0,
+      "rollingFriction": 0.0,
+      "spinningFriction": 0.0,
+      "restitution": 0.8,
+      "color_name": "blue",
+      "rgba": [0.08, 0.2, 0.86, 1.0]
+    }
+  ],
+  "cameras": [
+    {
+      "view_name": "top",
+      "position": [0.0, 0.0, 5.0],
+      "look_at": [0.0, 0.0, 0.0],
+      "fov": 50.0,
+      "resolution": [64, 64],
+      "video_path": "videos/S5_L1_seed000123_top.mp4",
+      "segmentation_path": "segmentation/S5_L1_seed000123_top.npz",
+      "depth_path": "depth/S5_L1_seed000123_top.npz"
+    }
+  ],
+  "events": [
+    {
+      "event_type": "dynamic_dynamic_contact",
+      "time": 0.5833,
+      "frame": 7,
+      "objects": ["sphere_a", "sphere_b"],
+      "position": [0.33, 0.0, 0.22],
+      "normal": [1.0, 0.0, 0.0],
+      "pre_velocity": {
+        "sphere_a": [1.8, 0.0, 0.0],
+        "sphere_b": [0.0, 0.0, 0.0]
+      },
+      "post_velocity": {
+        "sphere_a": [0.18, 0.0, 0.0],
+        "sphere_b": [1.62, 0.0, 0.0]
+      }
+    }
+  ],
+  "derived_labels": {
+    "first_contact_time": 0.5833,
+    "first_contact_frame": 7,
+    "pre_collision_velocity_a": [1.8, 0.0, 0.0],
+    "pre_collision_velocity_b": [0.0, 0.0, 0.0],
+    "post_collision_velocity_a": [0.18, 0.0, 0.0],
+    "post_collision_velocity_b": [1.62, 0.0, 0.0],
+    "incident_speed_normal": 1.8,
+    "separation_speed_normal": 1.44,
+    "effective_restitution": 0.8,
+    "momentum_before": [1.8, 0.0, 0.0],
+    "momentum_after": [1.8, 0.0, 0.0],
+    "kinetic_energy_before": 1.62,
+    "kinetic_energy_after": 1.3284,
+    "scattering_angle_a": 0.0,
+    "scattering_angle_b": 0.0,
+    "final_position_a": [0.42, 0.0, 0.22],
+    "final_position_b": [3.0, 0.0, 0.22],
+    "final_linear_speed_a": 0.18,
+    "final_linear_speed_b": 1.62,
+    "final_angular_speed_a": 0.0,
+    "final_angular_speed_b": 0.0,
+    "ball_a_left_visible_area": false,
+    "ball_b_left_visible_area": true
+  },
+  "quality_checks": {
+    "valid_sample": true,
+    "invalid_reason": null,
+    "initial_overlap": false,
+    "required_contact_sequence_satisfied": true,
+    "unexpected_dynamic_contact": false,
+    "contact_counts": {
+      "dynamic_dynamic": 1,
+      "dynamic_static": 72,
+      "total": 73
+    },
+    "min_visible_frames_by_object": {
+      "sphere_a": 36,
+      "sphere_b": 24
+    },
+    "warnings": [
+      "sphere_b leaves visible area after enough post-contact frames; keep as boundary sample."
+    ]
+  },
+  "state_file": "states/S5_L1_seed000123.npz"
+}

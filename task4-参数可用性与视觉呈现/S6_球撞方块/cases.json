@@ -1,0 +1,154 @@
+[
+  {
+    "case_id": "bc_e03",
+    "title": "ball-cube e=0.3",
+    "notes": "low separation/cube travel",
+    "view": "top",
+    "video": "S6_球撞方块/videos/bc_e03.mp4",
+    "total_contact_samples": 2783,
+    "dynamic_dynamic_contact_samples": 39,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "ball": {
+        "position": [
+          2.0424,
+          -0.0,
+          0.22
+        ],
+        "speed": 0.7513,
+        "angular_speed": 0.0
+      },
+      "cube": {
+        "position": [
+          3.0576,
+          0.0,
+          0.1199
+        ],
+        "speed": 1.0487,
+        "angular_speed": 0.0189
+      }
+    }
+  },
+  {
+    "case_id": "bc_e10",
+    "title": "ball-cube e=1.0",
+    "notes": "high cube travel",
+    "view": "top",
+    "video": "S6_球撞方块/videos/bc_e10.mp4",
+    "total_contact_samples": 2718,
+    "dynamic_dynamic_contact_samples": 1,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "ball": {
+        "position": [
+          1.5372,
+          0.0,
+          0.22
+        ],
+        "speed": 0.5512,
+        "angular_speed": 0.0
+      },
+      "cube": {
+        "position": [
+          3.5628,
+          -0.0,
+          0.1196
+        ],
+        "speed": 1.2489,
+        "angular_speed": 0.1233
+      }
+    }
+  },
+  {
+    "case_id": "cube_heavy",
+    "title": "heavy cube mass=5",
+    "notes": "mass ratio changes cube motion",
+    "view": "top",
+    "video": "S6_球撞方块/videos/cube_heavy.mp4",
+    "total_contact_samples": 3549,
+    "dynamic_dynamic_contact_samples": 1,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "ball": {
+        "position": [
+          -2.1809,
+          0.0,
+          0.22
+        ],
+        "speed": 0.9513,
+        "angular_speed": 0.0
+      },
+      "cube": {
+        "position": [
+          2.1362,
+          -0.0,
+          0.12
+        ],
+        "speed": 0.6303,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "cube_yaw45",
+    "title": "cube yaw 45deg",
+    "notes": "edge contact and rotation",
+    "view": "top",
+    "video": "S6_球撞方块/videos/cube_yaw45.mp4",
+    "total_contact_samples": 2977,
+    "dynamic_dynamic_contact_samples": 1,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "ball": {
+        "position": [
+          2.855,
+          0.7981,
+          0.22
+        ],
+        "speed": 1.1015,
+        "angular_speed": 3.2357
+      },
+      "cube": {
+        "position": [
+          3.395,
+          -0.6981,
+          0.1197
+        ],
+        "speed": 1.1679,
+        "angular_speed": 4.853
+      }
+    }
+  }
+]

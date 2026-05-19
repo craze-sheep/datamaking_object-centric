@@ -1,0 +1,181 @@
+[
+  {
+    "case_id": "parallel_lanes",
+    "title": "parallel lanes no collision",
+    "notes": "spatial separation",
+    "view": "top",
+    "video": "S8_泛化样本/videos/parallel_lanes.mp4",
+    "total_contact_samples": 2160,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          1.8,
+          -0.8,
+          0.22
+        ],
+        "speed": 1.2,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          3.2,
+          -0.0,
+          0.22
+        ],
+        "speed": 1.6,
+        "angular_speed": 0.0
+      },
+      "C": {
+        "position": [
+          1.6,
+          0.8,
+          0.22
+        ],
+        "speed": 1.0,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "time_gap",
+    "title": "same region time gap",
+    "notes": "paths cross at different times",
+    "view": "top",
+    "video": "S8_泛化样本/videos/time_gap.mp4",
+    "total_contact_samples": 1440,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          4.2,
+          -0.0,
+          0.22
+        ],
+        "speed": 2.0,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          0.0,
+          1.0,
+          0.22
+        ],
+        "speed": 0.8,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "blocked_by_wall",
+    "title": "static obstacle blocks",
+    "notes": "dynamic-static contact allowed",
+    "view": "top",
+    "video": "S8_泛化样本/videos/blocked_by_wall.mp4",
+    "total_contact_samples": 2366,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "obstacle": {
+        "position": [
+          0.0,
+          0.0,
+          0.45
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -0.31,
+          -0.25,
+          0.22
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          0.31,
+          0.25,
+          0.22
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      }
+    }
+  },
+  {
+    "case_id": "static_many",
+    "title": "static multi-object",
+    "notes": "all velocities zero",
+    "view": "oblique",
+    "video": "S8_泛化样本/videos/static_many.mp4",
+    "total_contact_samples": 6420,
+    "dynamic_dynamic_contact_samples": 0,
+    "final": {
+      "ground": {
+        "position": [
+          0.0,
+          0.0,
+          -0.04
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "A": {
+        "position": [
+          -0.9,
+          -0.5,
+          0.22
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "B": {
+        "position": [
+          -0.0,
+          0.35,
+          0.12
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      },
+      "C": {
+        "position": [
+          0.9,
+          -0.25,
+          0.14
+        ],
+        "speed": 0.0,
+        "angular_speed": 0.0
+      }
+    }
+  }
+]
