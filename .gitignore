@@ -14,6 +14,7 @@ tools/
 *.blend
 *.exr
 *.png
+.*
 
 # python cache
 __pycache__/
