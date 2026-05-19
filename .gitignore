@@ -15,6 +15,7 @@ tools/
 *.exr
 *.png
 .*
+!/.gitignore
 
 # python cache
 __pycache__/
