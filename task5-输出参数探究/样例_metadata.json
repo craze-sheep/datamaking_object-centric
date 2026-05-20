@@ -34,7 +34,6 @@
   "objects": [
     {
       "object_id": "ground",
-      "role": "ground",
       "object_type": "cube",
       "static": true,
       "size": [8.0, 6.0, 0.08],
@@ -50,11 +49,9 @@
     },
     {
       "object_id": "sphere_a",
-      "role": "moving_ball",
       "object_type": "sphere",
       "static": false,
       "radius": 0.22,
-      "contact_offset": 0.22,
       "initial_position": [-0.85, 0.0, 0.22],
       "initial_quaternion": [1.0, 0.0, 0.0, 0.0],
       "initial_velocity": [1.8, 0.0, 0.0],
@@ -69,11 +66,9 @@
     },
     {
       "object_id": "sphere_b",
-      "role": "target_ball",
       "object_type": "sphere",
       "static": false,
       "radius": 0.22,
-      "contact_offset": 0.22,
       "initial_position": [0.55, 0.0, 0.22],
       "initial_quaternion": [1.0, 0.0, 0.0, 0.0],
       "initial_velocity": [0.0, 0.0, 0.0],
