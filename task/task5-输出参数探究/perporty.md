@@ -21,7 +21,7 @@ video.json
       "position": [0.0, 0.0, 5.0],
       "look_at": [0.0, 0.0, 0.0],
       "fov": 50.0,
-      "resolution": [64, 64],
+      "resolution": [128, 128],
       "video_path": "video/top.mp4",
       "depth_path": "depth_path/top.npz"
     }

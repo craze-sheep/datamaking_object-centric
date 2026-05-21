@@ -1,0 +1,48 @@
+[
+  {
+    "object_id": 0,
+    "segmentation_id": 1,
+    "object_type": "ground",
+    "static": true,
+    "radius": null,
+    "size": [
+      8.0,
+      6.0,
+      0.08
+    ],
+    "height": null,
+    "mass": null,
+    "lateralFriction": 0.5,
+    "rollingFriction": 0.005,
+    "spinningFriction": 0.001,
+    "restitution": 0.0,
+    "color_name": "gray",
+    "rgba": [
+      0.55,
+      0.55,
+      0.55,
+      1.0
+    ]
+  },
+  {
+    "object_id": 1,
+    "segmentation_id": 2,
+    "object_type": "sphere",
+    "static": false,
+    "radius": 0.22,
+    "size": null,
+    "height": null,
+    "mass": 1.0,
+    "lateralFriction": 0.4,
+    "rollingFriction": 0.0,
+    "spinningFriction": 0.0,
+    "restitution": 0.0,
+    "color_name": "red",
+    "rgba": [
+      0.88,
+      0.1,
+      0.08,
+      1.0
+    ]
+  }
+]

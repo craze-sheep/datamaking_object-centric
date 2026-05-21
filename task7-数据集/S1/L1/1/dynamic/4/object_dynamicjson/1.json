@@ -1,0 +1,27 @@
+{
+  "object_id": 1,
+  "time": 0.25,
+  "visible_area": 47,
+  "position": [
+    -0.20000000298023224,
+    -0.20000000298023224,
+    0.2886458511153856
+  ],
+  "quaternion": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "velocity": [
+    0.0,
+    0.0,
+    -2.4500000476837154
+  ],
+  "angular_velocity": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "segmentation_path": "../object_segment/1.npz"
+}
