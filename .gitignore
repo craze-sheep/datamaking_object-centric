@@ -15,6 +15,9 @@ CLAUDE.md
 *.exr
 *.png
 .*
+
+*.json
+*.npz
 !/.gitignore
 
 # python cache

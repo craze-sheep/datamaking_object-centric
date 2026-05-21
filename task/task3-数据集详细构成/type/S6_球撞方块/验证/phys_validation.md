@@ -68,7 +68,7 @@ e_a×e_b 共 9 种组合 (0.09~1.00)。✓
 
 ### Level 5：碰撞偏心距（有摩擦）
 
-**参数修复后**：sphere_a.friction=1.0, cube_b.friction=0.5, offset=[-0.25~0.25]×7。
+**参数修复后**：sphere_a.lateralFriction=1.0, cube_b.lateralFriction=0.5, offset=[-0.25~0.25]×7。
 
 有摩擦时切向冲量 `j_t = min(μ_eff × j_n, m_eff × |v_rel_t|)` 使球获得 y 向速度 → 球偏转 + 方块旋转。
 
@@ -79,7 +79,7 @@ e_a×e_b 共 9 种组合 (0.09~1.00)。✓
 | ±0.20 | 0.14m | 16.9 rad/s | 明显偏转 |
 | ±0.25 | 0.09m | 21.1 rad/s | 大幅偏转 |
 
-旧版 friction=0 → 球不偏转的问题已修复。offset 上限从 0.30 收紧至 0.25，保证重叠 ≥ 0.09m。✓
+旧版 lateralFriction=0 → 球不偏转的问题已修复。offset 上限从 0.30 收紧至 0.25，保证重叠 ≥ 0.09m。✓
 
 ```
 数量：offset(7) × v0(2) × x(2) × color(4)² = 448 ✓
@@ -95,10 +95,10 @@ e_a×e_b 共 9 种组合 (0.09~1.00)。✓
 
 ### Level 7：碰撞摩擦系数
 
-offset=[±0.25,±0.18], friction=[0,0.2,0.5,0.8,1.0]。μ=0 为无摩擦基线，μ=1.0 切向接近清零。offset 上限从 0.28 收紧至 0.25。✓
+offset=[±0.25,±0.18], lateralFriction=[0,0.2,0.5,0.8,1.0]。μ=0 为无摩擦基线，μ=1.0 切向接近清零。offset 上限从 0.28 收紧至 0.25。✓
 
 ```
-数量：offset(4)×friction(5) × v0(2) × x(2) × color(4)² = 1280 ✓
+数量：offset(4)×lateralFriction(5) × v0(2) × x(2) × color(4)² = 1280 ✓
 ```
 
 ### Level 8：方块初始姿态
@@ -123,7 +123,7 @@ spin_z: 接触点切向贡献 = 8×r (1.44~2.24 m/s)，与 v0=2.2 同量级。sp
 
 | # | 严重度 | 问题 | 修复方式 | 状态 |
 |:---:|:---:|---|---|:---:|
-| 1 | ❌→✓ | L5 friction=0 球不偏转 | sphere_a.friction=1.0, cube_b.friction=0.5 | **已修复** |
+| 1 | ❌→✓ | L5 lateralFriction=0 球不偏转 | sphere_a.lateralFriction=1.0, cube_b.lateralFriction=0.5 | **已修复** |
 | 2 | ⚠→✓ | L5 offset=±0.30 擦边 | 上限降至 ±0.25 | **已修复** |
 | 3 | ⚠→✓ | L7 offset=±0.28 擦边 | 上限降至 ±0.25 | **已修复** |
 | 4 | ⚠ | L8 yaw_45 边角碰撞 | 渲染抽检 | 待验证 |

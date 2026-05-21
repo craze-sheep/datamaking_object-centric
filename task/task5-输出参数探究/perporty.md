@@ -62,6 +62,7 @@ object_id.json
   "quaternion": [1.0, 0.0, 0.0, 0.0],
   "velocity": [1.8, 0.0, 0.0],
   "angular_velocity": [0.0, 0.0, 0.0],
+  "resultant force": [0.0, 0.0, 0.0],
   "segmentation_path": "../object_segment/1.npz"
 }
 ```

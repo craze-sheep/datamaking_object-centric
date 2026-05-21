@@ -108,7 +108,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output_root", default="task7-数据集")
     parser.add_argument("--levels", nargs="+", type=int, default=[1])
     parser.add_argument("--samples_per_level", type=int, default=None)
-    parser.add_argument("--all", action="store_true", help="Generate every S1 config instead of stratified samples.")
     parser.add_argument("--start_id", type=int, default=1)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--views", nargs="+", choices=sorted(VIEWS), default=["front", "top"])
@@ -245,175 +244,16 @@ def with_ids(configs: list[dict[str, Any]], level_id: int, start_id: int, seed: 
     return samples
 
 
-def build_s1_all_level_configs(level_id: int, start_id: int, seed: int) -> list[SampleSpec]:
-    colors = ["red", "blue", "yellow", "green"]
-    configs: list[dict[str, Any]] = []
-
-    if level_id == 1:
-        for z, x, y, color in itertools.product(
-            [0.6, 0.9, 1.3, 1.8, 2.4],
-            [-0.2, 0.0, 0.2],
-            [-0.2, 0.0, 0.2],
-            colors,
-        ):
-            obj = sphere_spec(1, 0.22, (x, y, z), (0.0, 0.0, 0.0), 1.0, 0.0, color)
-            configs.append(
-                {
-                    "level_name": "free_fall_height",
-                    "subtask": "height_to_first_contact_time",
-                    "main_variable": "initial_position.z",
-                    "objects": (ground_spec(0.0), obj),
-                }
-            )
-
-    elif level_id == 2:
-        for z, vz, color in itertools.product(
-            [0.9, 1.2, 1.6, 2.0],
-            [-1.2, -0.8, -0.4, 0.0, 0.4, 0.8, 1.2],
-            colors,
-        ):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), 1.0, 0.0, color)
-            configs.append(
-                {
-                    "level_name": "vertical_initial_velocity",
-                    "subtask": "v0z_to_contact_time_and_trajectory",
-                    "main_variable": "initial_velocity.z",
-                    "objects": (ground_spec(0.0), obj),
-                }
-            )
-
-    elif level_id == 3:
-        for ground_restitution, z, vz, color in itertools.product(
-            [0.0, 0.3, 0.5, 0.8, 1.0],
-            [0.9, 1.2, 1.6, 2.0],
-            [-0.4, 0.0, 0.4],
-            colors,
-        ):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), 1.0, 1.0, color)
-            configs.append(
-                {
-                    "level_name": "bounce_restitution",
-                    "subtask": "restitution_to_rebound_height",
-                    "main_variable": "ground.restitution",
-                    "objects": (ground_spec(ground_restitution), obj),
-                }
-            )
-
-    elif level_id == 4:
-        for x, y, z, color in itertools.product(
-            [-0.6, -0.3, 0.0, 0.3, 0.6],
-            [-0.6, -0.3, 0.0, 0.3, 0.6],
-            [1.0, 1.4, 1.8],
-            colors,
-        ):
-            obj = sphere_spec(1, 0.22, (x, y, z), (0.0, 0.0, 0.0), 1.0, 0.0, color)
-            configs.append(
-                {
-                    "level_name": "horizontal_independence",
-                    "subtask": "xy_position_irrelevance",
-                    "main_variable": "initial_position.xy",
-                    "objects": (ground_spec(0.0), obj),
-                }
-            )
-        projectile_velocities = [
-            (0.4, 0.0, 0.0),
-            (-0.4, 0.0, 0.0),
-            (0.0, 0.4, 0.0),
-            (0.0, -0.4, 0.0),
-            (0.6, 0.0, 0.0),
-            (-0.6, 0.0, 0.0),
-            (0.0, 0.6, 0.0),
-            (0.0, -0.6, 0.0),
-            (0.45, 0.45, 0.0),
-            (-0.45, 0.45, 0.0),
-        ]
-        for velocity, z, color in itertools.product(projectile_velocities, [1.0, 1.4, 1.8], colors):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), velocity, 1.0, 0.0, color)
-            configs.append(
-                {
-                    "level_name": "horizontal_independence",
-                    "subtask": "projectile_xy_velocity_independence",
-                    "main_variable": "initial_velocity.xy",
-                    "objects": (ground_spec(0.0), obj),
-                }
-            )
-
-    elif level_id == 5:
-        for mass, z, vz, color in itertools.product(
-            [0.3, 0.5, 1.0, 2.0, 4.0],
-            [0.8, 1.2, 1.6, 2.0],
-            [-0.5, 0.0, 0.5],
-            colors,
-        ):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), mass, 0.0, color)
-            configs.append(
-                {
-                    "level_name": "mass_irrelevance",
-                    "subtask": "mass_does_not_change_free_fall_time",
-                    "main_variable": "mass",
-                    "objects": (ground_spec(0.0), obj),
-                }
-            )
-
-    elif level_id == 6:
-        for radius, clearance, vz, mass, x, y, color in itertools.product(
-            [0.18, 0.22, 0.28],
-            [0.5, 0.8, 1.2, 1.6, 2.0],
-            [-0.4, 0.0, 0.4],
-            [0.5, 1.0, 2.0],
-            [-0.3, 0.0, 0.3],
-            [-0.3, 0.0, 0.3],
-            colors,
-        ):
-            z = radius + clearance
-            obj = sphere_spec(1, radius, (x, y, z), (0.0, 0.0, vz), mass, 0.0, color)
-            configs.append(
-                {
-                    "level_name": "size_irrelevance",
-                    "subtask": "radius_does_not_change_clearance_fall_time",
-                    "main_variable": "radius",
-                    "objects": (ground_spec(0.0), obj),
-                }
-            )
-
-    elif level_id == 7:
-        size_pairs = [(0.18, (0.18, 0.18, 0.18)), (0.22, (0.24, 0.24, 0.24)), (0.28, (0.30, 0.30, 0.30))]
-        for shape, pair, clearance, vz, mass, ground_restitution, x, y, color in itertools.product(
-            ["sphere", "cube"],
-            size_pairs,
-            [0.5, 0.8, 1.2, 1.6, 2.0],
-            [-0.5, 0.0, 0.5],
-            [0.5, 1.0, 2.0],
-            [0.0, 0.3, 0.6],
-            [-0.3, 0.0, 0.3],
-            [-0.3, 0.0, 0.3],
-            colors,
-        ):
-            radius, cube_size = pair
-            if shape == "sphere":
-                z = radius + clearance
-                obj = sphere_spec(1, radius, (x, y, z), (0.0, 0.0, vz), mass, 0.5, color)
-            else:
-                z = cube_size[2] / 2.0 + clearance
-                obj = cube_spec(1, cube_size, (x, y, z), (0.0, 0.0, vz), mass, 0.5, color)
-            configs.append(
-                {
-                    "level_name": "shape_generalization",
-                    "subtask": "sphere_vs_cube_same_clearance",
-                    "main_variable": "object_type",
-                    "objects": (ground_spec(ground_restitution), obj),
-                }
-            )
-    else:
-        raise ValueError(f"S1 supports levels 1..7, got L{level_id}")
-
-    return with_ids(configs, level_id, start_id, seed)
-
-
 def cycle_values(values: list[Any], count: int, rng: np.random.Generator) -> list[Any]:
     repeated = list(itertools.islice(itertools.cycle(values), count))
     rng.shuffle(repeated)
     return repeated
+
+
+def balanced_counts(values: list[Any], count: int) -> dict[Any, int]:
+    base = count // len(values)
+    extra = count % len(values)
+    return {value: base + (1 if idx < extra else 0) for idx, value in enumerate(values)}
 
 
 def pick(values: list[Any], rng: np.random.Generator) -> Any:
@@ -447,12 +287,12 @@ def build_s1_stratified_level_configs(level_id: int, start_id: int, seed: int, c
             configs.append(make_cfg("free_fall_height", "height_to_first_contact_time", "initial_position.z", (ground_spec(0.0), obj)))
 
     elif level_id == 2:
-        vz_values = cycle_values([-1.2, -0.8, -0.4, 0.0, 0.4, 0.8, 1.2], count, rng)
-        z_values = cycle_values([0.9, 1.2, 1.6, 2.0], count, rng)
-        color_values = cycle_values(colors, count, rng)
-        for z, vz, color in zip(z_values, vz_values, color_values):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), 1.0, 0.0, color)
-            configs.append(make_cfg("vertical_initial_velocity", "v0z_to_contact_time_and_trajectory", "initial_velocity.z", (ground_spec(0.0), obj)))
+        vz_values = [-1.2, -0.8, -0.4, 0.0, 0.4, 0.8, 1.2]
+        z_values = [0.9, 1.2, 1.6, 2.0]
+        for vz, vz_count in balanced_counts(vz_values, count).items():
+            for z, color in zip(cycle_values(z_values, vz_count, rng), cycle_values(colors, vz_count, rng)):
+                obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), 1.0, 0.0, color)
+                configs.append(make_cfg("vertical_initial_velocity", "v0z_to_contact_time_and_trajectory", "initial_velocity.z", (ground_spec(0.0), obj)))
 
     elif level_id == 3:
         restitution_values = cycle_values([0.0, 0.3, 0.5, 0.8, 1.0], count, rng)
@@ -467,40 +307,57 @@ def build_s1_stratified_level_configs(level_id: int, start_id: int, seed: int, c
         position_count = count // 2
         projectile_count = count - position_count
 
-        xy_positions = [
-            (-0.6, -0.6), (-0.6, 0.0), (-0.6, 0.6),
-            (0.0, -0.6), (0.0, 0.0), (0.0, 0.6),
-            (0.6, -0.6), (0.6, 0.0), (0.6, 0.6),
-        ]
-        for (x, y), z, color in zip(
-            cycle_values(xy_positions, position_count, rng),
-            cycle_values([1.0, 1.4, 1.8], position_count, rng),
-            cycle_values(colors, position_count, rng),
-        ):
-            obj = sphere_spec(1, 0.22, (x, y, z), (0.0, 0.0, 0.0), 1.0, 0.0, color)
-            configs.append(make_cfg("horizontal_independence", "xy_position_irrelevance", "initial_position.xy", (ground_spec(0.0), obj)))
+        xy_positions = list(itertools.product([-0.6, -0.3, 0.0, 0.3, 0.6], [-0.6, -0.3, 0.0, 0.3, 0.6]))
+        color_values = cycle_values(colors, position_count, rng)
+        color_idx = 0
+        z_group = 0
+        while len(configs) < position_count:
+            z = [1.0, 1.4, 1.8][z_group % 3]
+            z_group += 1
+            positions = xy_positions.copy()
+            rng.shuffle(positions)
+            for x, y in positions:
+                if len(configs) >= position_count:
+                    break
+                obj = sphere_spec(1, 0.22, (x, y, z), (0.0, 0.0, 0.0), 1.0, 0.0, color_values[color_idx])
+                color_idx += 1
+                configs.append(make_cfg("horizontal_independence", "xy_position_irrelevance", "initial_position.xy", (ground_spec(0.0), obj)))
 
         projectile_velocities = [
             (0.4, 0.0, 0.0), (-0.4, 0.0, 0.0), (0.0, 0.4, 0.0), (0.0, -0.4, 0.0),
             (0.6, 0.0, 0.0), (-0.6, 0.0, 0.0), (0.0, 0.6, 0.0), (0.0, -0.6, 0.0),
             (0.45, 0.45, 0.0), (-0.45, 0.45, 0.0),
         ]
-        for velocity, z, color in zip(
-            cycle_values(projectile_velocities, projectile_count, rng),
-            cycle_values([1.0, 1.4, 1.8], projectile_count, rng),
-            cycle_values(colors, projectile_count, rng),
-        ):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), velocity, 1.0, 0.0, color)
-            configs.append(make_cfg("horizontal_independence", "projectile_xy_velocity_independence", "initial_velocity.xy", (ground_spec(0.0), obj)))
+        color_values = cycle_values(colors, projectile_count, rng)
+        color_idx = 0
+        start_len = len(configs)
+        z_group = 0
+        while len(configs) - start_len < projectile_count:
+            z = [1.0, 1.4, 1.8][z_group % 3]
+            z_group += 1
+            velocities = projectile_velocities.copy()
+            rng.shuffle(velocities)
+            for velocity in velocities:
+                if len(configs) - start_len >= projectile_count:
+                    break
+                obj = sphere_spec(1, 0.22, (0.0, 0.0, z), velocity, 1.0, 0.0, color_values[color_idx])
+                color_idx += 1
+                configs.append(make_cfg("horizontal_independence", "projectile_xy_velocity_independence", "initial_velocity.xy", (ground_spec(0.0), obj)))
 
     elif level_id == 5:
-        mass_values = cycle_values([0.3, 0.5, 1.0, 2.0, 4.0], count, rng)
-        z_values = cycle_values([0.8, 1.2, 1.6, 2.0], count, rng)
-        vz_values = cycle_values([-0.5, 0.0, 0.5], count, rng)
+        mass_values = [0.3, 0.5, 1.0, 2.0, 4.0]
+        core_configs = list(itertools.product([0.8, 1.2, 1.6, 2.0], [-0.5, 0.0, 0.5]))
+        rng.shuffle(core_configs)
         color_values = cycle_values(colors, count, rng)
-        for mass, z, vz, color in zip(mass_values, z_values, vz_values, color_values):
-            obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), mass, 0.0, color)
-            configs.append(make_cfg("mass_irrelevance", "mass_does_not_change_free_fall_time", "mass", (ground_spec(0.0), obj)))
+        color_idx = 0
+        while len(configs) < count:
+            z, vz = core_configs[(len(configs) // len(mass_values)) % len(core_configs)]
+            for mass in mass_values:
+                if len(configs) >= count:
+                    break
+                obj = sphere_spec(1, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), mass, 0.0, color_values[color_idx])
+                color_idx += 1
+                configs.append(make_cfg("mass_irrelevance", "mass_does_not_change_free_fall_time", "mass", (ground_spec(0.0), obj)))
 
     elif level_id == 6:
         core_configs = list(itertools.product([0.5, 0.8, 1.2, 1.6, 2.0], [-0.4, 0.0, 0.4], [0.5, 1.0, 2.0]))
@@ -519,13 +376,23 @@ def build_s1_stratified_level_configs(level_id: int, start_id: int, seed: int, c
 
     elif level_id == 7:
         size_pairs = [(0.18, (0.18, 0.18, 0.18)), (0.22, (0.24, 0.24, 0.24)), (0.28, (0.30, 0.30, 0.30))]
-        core_configs = list(itertools.product(size_pairs, [0.5, 0.8, 1.2, 1.6, 2.0], [-0.5, 0.0, 0.5], [0.5, 1.0, 2.0], [0.0, 0.3, 0.6]))
-        rng.shuffle(core_configs)
-        while len(configs) < count:
-            (radius, cube_size), clearance, vz, mass, ground_restitution = core_configs[len(configs) // 2 % len(core_configs)]
-            x = pick([-0.3, 0.0, 0.3], rng)
-            y = pick([-0.3, 0.0, 0.3], rng)
-            color = pick(colors, rng)
+        pair_count = (count + 1) // 2
+        pair_values = cycle_values(size_pairs, pair_count, rng)
+        clearance_values = cycle_values([0.5, 0.8, 1.2, 1.6, 2.0], pair_count, rng)
+        vz_values = cycle_values([-0.5, 0.0, 0.5], pair_count, rng)
+        mass_values = cycle_values([0.5, 1.0, 2.0], pair_count, rng)
+        restitution_values = cycle_values([0.0, 0.3, 0.5], pair_count, rng)
+        xy_values = cycle_values(list(itertools.product([-0.3, 0.0, 0.3], [-0.3, 0.0, 0.3])), pair_count, rng)
+        color_values = cycle_values(colors, pair_count, rng)
+        for (radius, cube_size), clearance, vz, mass, ground_restitution, (x, y), color in zip(
+            pair_values,
+            clearance_values,
+            vz_values,
+            mass_values,
+            restitution_values,
+            xy_values,
+            color_values,
+        ):
             sphere = sphere_spec(1, radius, (x, y, radius + clearance), (0.0, 0.0, vz), mass, 0.5, color)
             cube = cube_spec(1, cube_size, (x, y, cube_size[2] / 2.0 + clearance), (0.0, 0.0, vz), mass, 0.5, color)
             for obj in [sphere, cube]:
@@ -547,13 +414,7 @@ def target_count_for_level(level_id: int, requested_count: int | None) -> int:
     return LEVEL_TARGETS[level_id]
 
 
-def take_samples(level_id: int, start_id: int, seed: int, count: int | None, use_all: bool) -> list[SampleSpec]:
-    if use_all:
-        configs = build_s1_all_level_configs(level_id, start_id, seed)
-        if count is not None:
-            return configs[:count]
-        return configs
-
+def take_samples(level_id: int, start_id: int, seed: int, count: int | None) -> list[SampleSpec]:
     target_count = target_count_for_level(level_id, count)
     return build_s1_stratified_level_configs(level_id, start_id, seed, target_count)
 
@@ -672,6 +533,19 @@ def add_force(matrix: list[list[Any]], row: int, col: int, vec: np.ndarray) -> N
     matrix[row][col] = (current + vec).astype(float).tolist()
 
 
+def average_force_matrix(matrix: list[list[Any]], divisor: int) -> list[list[Any]]:
+    averaged: list[list[Any]] = []
+    for row in matrix:
+        averaged_row = []
+        for cell in row:
+            if cell is None:
+                averaged_row.append(None)
+            else:
+                averaged_row.append((np.array(cell, dtype=np.float64) / divisor).astype(float).tolist())
+        averaged.append(averaged_row)
+    return averaged
+
+
 def simulate_and_keyframe(
     scene,
     simulator: PyBullet,
@@ -706,7 +580,7 @@ def simulate_and_keyframe(
             if object_a is None or object_b is None:
                 continue
 
-            force_on_b_by_a = normal_force * normal_on_b
+            force_on_b_by_a = -normal_force * normal_on_b
             add_force(frame_forces[frame_idx], object_b, object_a, force_on_b_by_a)
             add_force(frame_forces[frame_idx], object_a, object_b, -force_on_b_by_a)
 
@@ -738,8 +612,9 @@ def simulate_and_keyframe(
             asset.keyframe_insert("velocity", frame_idx)
             asset.keyframe_insert("angular_velocity", frame_idx)
 
+    averaged_forces = [average_force_matrix(matrix, steps_per_frame) for matrix in frame_forces]
     force_payloads = [
-        {"object_order": object_ids, "force_matrix": frame_forces[i]}
+        {"object_order": object_ids, "force_matrix": averaged_forces[i]}
         for i in range(NUM_FRAMES)
     ]
     return frame_states, force_payloads
@@ -774,6 +649,17 @@ def static_json(sample: SampleSpec) -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def resultant_force(spec: ObjectSpec, force_matrix: list[list[Any]]) -> list[float]:
+    total = np.zeros(3, dtype=np.float64)
+    if spec.object_id < len(force_matrix):
+        for force in force_matrix[spec.object_id]:
+            if force is not None:
+                total += np.array(force, dtype=np.float64)
+    if not spec.static and spec.mass is not None:
+        total += np.array(GRAVITY, dtype=np.float64) * spec.mass
+    return total.astype(float).tolist()
 
 
 def video_json(sample: SampleSpec, resolution: int, view_name: str) -> dict[str, Any]:
@@ -857,12 +743,13 @@ def write_dynamic_outputs(
     rendered: dict[str, np.ndarray],
 ) -> None:
     object_ids = [spec.object_id for spec in sample.objects]
+    specs_by_id = {spec.object_id: spec for spec in sample.objects}
 
     for frame_idx in range(NUM_FRAMES):
         frame_num = frame_idx + 1
         frame_dir = sample_dir / "dynamic" / str(frame_num)
 
-        imageio.imwrite(frame_dir / f"frame_{frame_num}.png", rendered["rgba"][frame_idx, ..., :3])
+        imageio.imwrite(frame_dir / f"{frame_num}.png", rendered["rgba"][frame_idx, ..., :3])
 
         write_json(frame_dir / "force_matrix.json", force_payloads[frame_idx])
 
@@ -887,6 +774,7 @@ def write_dynamic_outputs(
                 "quaternion": state["quaternion"],
                 "velocity": state["velocity"],
                 "angular_velocity": state["angular_velocity"],
+                "resultant force": resultant_force(specs_by_id[object_id], force_payloads[frame_idx]["force_matrix"]),
                 "segmentation_path": f"../object_segment/{object_id}.npz",
             }
             write_json(frame_dir / "object_dynamicjson" / f"{object_id}.json", dynamic)
@@ -950,7 +838,7 @@ def main() -> None:
     if len(args.views) != len(set(args.views)):
         raise ValueError("--views cannot contain duplicates")
     for level_id in args.levels:
-        physical_samples = take_samples(level_id, 1, args.seed, args.samples_per_level, args.all)
+        physical_samples = take_samples(level_id, 1, args.seed, args.samples_per_level)
         output_id = args.start_id
         for physical_idx, sample in enumerate(physical_samples, start=1):
             last_output_id = output_id + len(args.views) - 1
