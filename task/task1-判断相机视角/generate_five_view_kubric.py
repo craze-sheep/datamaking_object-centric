@@ -9,6 +9,7 @@ then the same keyed animation is rendered from each camera.
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import numbers
 import shutil
@@ -100,6 +101,28 @@ def material(color_id: str, roughness: float = 0.55, metallic: float = 0.0):
 def rgba_to_mp4(rgba, path: Path, fps: int) -> None:
     rgb = rgba[..., :3]
     imageio.mimsave(path, list(rgb), fps=fps, quality=8, macro_block_size=1)
+
+
+def replay_scene_keyframes(scene) -> None:
+    # A renderer created after simulation must receive the keyframes already stored on assets.
+    for asset in scene.assets:
+        keyframes = getattr(asset, "keyframes", None)
+        if not keyframes:
+            continue
+        for member, frame_values in list(keyframes.items()):
+            original = getattr(asset, member)
+            try:
+                for frame, value in sorted(list(frame_values.items())):
+                    setattr(asset, member, value)
+                    asset.keyframe_insert(member, frame)
+            finally:
+                setattr(asset, member, original)
+
+
+def unlink_renderer(scene, renderer: Blender) -> None:
+    scene.unlink_view(renderer)
+    for asset in scene.assets:
+        asset.linked_objects.pop(renderer, None)
 
 
 def make_camera(view_id: str, spec: dict):
@@ -283,24 +306,41 @@ def main() -> None:
 
     scene, cameras, sample_spec = build_scene(args.resolution, args.num_frames, args.fps)
     simulator = PyBullet(scene, scratch_root / "pybullet")
-    renderer = Blender(
+    state_renderer = Blender(
         scene,
-        scratch_root / "blender_front",
+        scratch_root / "blender_state",
         adaptive_sampling=True,
         use_denoising=True,
         samples_per_pixel=args.samples,
     )
 
     animation, collisions = simulator.run(frame_start=0, frame_end=scene.frame_end)
-    renderer.save_state(output_dir / "five_view_scene.blend")
+    state_renderer.save_state(output_dir / "five_view_scene.blend")
+    unlink_renderer(scene, state_renderer)
+    gc.collect()
 
     view_outputs = {}
     for view_id, camera in cameras.items():
         view_dir = views_dir / view_id
-        view_dir.mkdir(parents=True, exist_ok=True)
-        scene.camera = camera
-        renderer.scratch_dir = scratch_root / f"blender_{view_id}"
-        frames = renderer.render(return_layers=("rgba", "segmentation"))
+        try:
+            view_dir.mkdir(parents=True, exist_ok=True)
+            renderer = Blender(
+                scene,
+                scratch_root / f"blender_{view_id}",
+                adaptive_sampling=True,
+                use_denoising=True,
+                samples_per_pixel=args.samples,
+            )
+            try:
+                replay_scene_keyframes(scene)
+                scene.camera = camera
+                frames = renderer.render(return_layers=("rgba", "segmentation"))
+            finally:
+                unlink_renderer(scene, renderer)
+                gc.collect()
+        except Exception:
+            shutil.rmtree(view_dir, ignore_errors=True)
+            raise
 
         video_path = view_dir / f"{view_id}.mp4"
         first_frame_path = view_dir / f"{view_id}_first_frame.png"

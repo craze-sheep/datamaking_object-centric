@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate S1 falling/projectile samples with Kubric.
+"""Generate S4 horizontal sliding samples with Kubric.
 
 Run inside the official Kubric Docker image from the repository root, for example:
 
@@ -9,10 +9,7 @@ Run inside the official Kubric Docker image from the repository root, for exampl
     --volume "/home/lzy/project/slot-datamaking/kubric-main:/kubric" \
     --workdir /workspace \
     kubricdockerhub/kubruntu \
-    /usr/bin/python3 task/task6-脚本编写/generate_s1_dataset.py --levels 1 --samples_per_level 2
-
-The script intentionally owns its data model instead of copying an existing
-example script. Existing project docs are treated as the output contract.
+    /usr/bin/python3 task/task6-脚本编写/generate_s2_dataset.py --levels 1 --samples_per_level 2
 """
 
 from __future__ import annotations
@@ -21,6 +18,7 @@ import argparse
 import gc
 import itertools
 import json
+import math
 import numbers
 import shutil
 import sys
@@ -53,10 +51,11 @@ SIM_HZ = 240
 DURATION_S = 3.0
 RESOLUTION = 128
 GRAVITY = (0.0, 0.0, -9.8)
-SCENE_ID = 1
+SCENE_ID = 4
 GROUND_OBJECT_ID = 1
 PRIMARY_OBJECT_ID = 2
-LEVEL_TARGETS = {1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 150, 7: 150}
+WALL_OBJECT_ID = 3
+LEVEL_TARGETS = {1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 150, 7: 150, 8: 150, 9: 150}
 VIEWS = {
     "front": {
         "type": "Perspective",
@@ -71,6 +70,13 @@ VIEWS = {
         "look_at": (0.0, 0.0, 0.0),
         "orthographic_scale": 5.0,
     },
+    "left": {
+        "type": "Perspective",
+        "position": (-7.5, 0.0, 3.2),
+        "look_at": (0.0, 0.0, 0.35),
+        "focal_length": 35,
+        "sensor_width": 32,
+    },
 }
 
 COLORS = {
@@ -79,6 +85,7 @@ COLORS = {
     "blue": (0.08, 0.20, 0.85, 1.0),
     "yellow": (0.95, 0.80, 0.08, 1.0),
     "green": (0.12, 0.55, 0.20, 1.0),
+    "brown": (0.45, 0.30, 0.15, 1.0),
 }
 
 
@@ -101,6 +108,7 @@ class ObjectSpec:
     spinning_friction: float = 0.0
     restitution: float = 0.0
     color_name: str = "red"
+
 
 @dataclass(frozen=True)
 class SampleSpec:
@@ -162,8 +170,8 @@ def material(color_name: str, roughness: float = 0.55) -> kb.PrincipledBSDFMater
     return kb.PrincipledBSDFMaterial(color=COLORS[color_name], roughness=roughness)
 
 
-def ground_spec(restitution: float, friction: float = 0.5) -> ObjectSpec:
-    size = (8.0, 6.0, 0.08)
+def ground_spec(restitution: float = 0.0, friction: float = 0.0) -> ObjectSpec:
+    size = (10.0, 5.0, 0.08)
     return ObjectSpec(
         object_id=GROUND_OBJECT_ID,
         object_type="ground",
@@ -179,40 +187,19 @@ def ground_spec(restitution: float, friction: float = 0.5) -> ObjectSpec:
     )
 
 
-def sphere_spec(
-    object_id: int,
-    radius: float,
-    position: tuple[float, float, float],
-    velocity: tuple[float, float, float],
-    mass: float,
-    restitution: float,
-    color_name: str,
-) -> ObjectSpec:
-    return ObjectSpec(
-        object_id=object_id,
-        object_type="sphere",
-        name=f"sphere_{object_id}",
-        static=False,
-        radius=radius,
-        position=position,
-        velocity=velocity,
-        mass=mass,
-        lateral_friction=0.4,
-        rolling_friction=0.0,
-        spinning_friction=0.0,
-        restitution=restitution,
-        color_name=color_name,
-    )
-
-
 def cube_spec(
     object_id: int,
     size: tuple[float, float, float],
     position: tuple[float, float, float],
     velocity: tuple[float, float, float],
-    mass: float,
-    restitution: float,
-    color_name: str,
+    angular_velocity: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    quaternion: tuple[float, float, float, float] = (1.0, 0.0, 0.0, 0.0),
+    mass: float = 1.0,
+    restitution: float = 0.0,
+    lateral_friction: float = 0.4,
+    rolling_friction: float = 0.0,
+    spinning_friction: float = 0.0,
+    color_name: str = "red",
 ) -> ObjectSpec:
     return ObjectSpec(
         object_id=object_id,
@@ -221,11 +208,104 @@ def cube_spec(
         static=False,
         size=size,
         position=position,
+        quaternion=quaternion,
         velocity=velocity,
+        angular_velocity=angular_velocity,
         mass=mass,
-        lateral_friction=0.4,
-        rolling_friction=0.0,
-        spinning_friction=0.0,
+        lateral_friction=lateral_friction,
+        rolling_friction=rolling_friction,
+        spinning_friction=spinning_friction,
+        restitution=restitution,
+        color_name=color_name,
+    )
+
+
+def sphere_spec(
+    object_id: int,
+    radius: float,
+    position: tuple[float, float, float],
+    velocity: tuple[float, float, float],
+    angular_velocity: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    quaternion: tuple[float, float, float, float] = (1.0, 0.0, 0.0, 0.0),
+    mass: float = 1.0,
+    restitution: float = 0.0,
+    lateral_friction: float = 0.4,
+    rolling_friction: float = 0.0,
+    spinning_friction: float = 0.0,
+    color_name: str = "red",
+) -> ObjectSpec:
+    return ObjectSpec(
+        object_id=object_id,
+        object_type="sphere",
+        name=f"sphere_{object_id}",
+        static=False,
+        radius=radius,
+        position=position,
+        quaternion=quaternion,
+        velocity=velocity,
+        angular_velocity=angular_velocity,
+        mass=mass,
+        lateral_friction=lateral_friction,
+        rolling_friction=rolling_friction,
+        spinning_friction=spinning_friction,
+        restitution=restitution,
+        color_name=color_name,
+    )
+
+
+def cylinder_spec(
+    object_id: int,
+    radius: float,
+    height: float,
+    position: tuple[float, float, float],
+    velocity: tuple[float, float, float],
+    angular_velocity: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    quaternion: tuple[float, float, float, float] = (1.0, 0.0, 0.0, 0.0),
+    mass: float = 1.0,
+    restitution: float = 0.0,
+    lateral_friction: float = 0.4,
+    rolling_friction: float = 0.0,
+    spinning_friction: float = 0.0,
+    color_name: str = "red",
+) -> ObjectSpec:
+    return ObjectSpec(
+        object_id=object_id,
+        object_type="cylinder",
+        name=f"cylinder_{object_id}",
+        static=False,
+        radius=radius,
+        height=height,
+        position=position,
+        quaternion=quaternion,
+        velocity=velocity,
+        angular_velocity=angular_velocity,
+        mass=mass,
+        lateral_friction=lateral_friction,
+        rolling_friction=rolling_friction,
+        spinning_friction=spinning_friction,
+        restitution=restitution,
+        color_name=color_name,
+    )
+
+
+
+def wall_spec(
+    object_id: int,
+    size: tuple[float, float, float],
+    position: tuple[float, float, float],
+    restitution: float = 0.5,
+    lateral_friction: float = 0.0,
+    color_name: str = "gray",
+) -> ObjectSpec:
+    return ObjectSpec(
+        object_id=object_id,
+        object_type="wall",
+        name="wall",
+        static=True,
+        size=size,
+        position=position,
+        mass=1.0,
+        lateral_friction=lateral_friction,
         restitution=restitution,
         color_name=color_name,
     )
@@ -278,135 +358,180 @@ def make_cfg(level_name: str, subtask: str, main_variable: str, objects: tuple[O
     }
 
 
-def build_s1_stratified_level_configs(level_id: int, start_id: int, seed: int, count: int) -> list[SampleSpec]:
+def build_s4_stratified_level_configs(level_id: int, start_id: int, seed: int, count: int) -> list[SampleSpec]:
     rng = np.random.default_rng(seed + level_id * 1000)
     colors = ["red", "blue", "yellow", "green"]
+    wall_size = (0.10, 5.00, 1.20)
+    wall_pos = (1.20, 0.0, 0.60)
     configs: list[dict[str, Any]] = []
 
     if level_id == 1:
-        heights = cycle_values([0.6, 0.9, 1.3, 1.8, 2.4], count, rng)
-        xy_pairs = cycle_values(list(itertools.product([-0.2, 0.0, 0.2], [-0.2, 0.0, 0.2])), count, rng)
+        # Level 1: 墙面恢复系数的影响 (restitution -> 反弹速度比)
+        restitution_values = cycle_values([0.0, 0.3, 0.5, 0.8, 1.0], count, rng)
+        x_positions = cycle_values([-0.75, -0.55, -0.35], count, rng)
+        y_positions = cycle_values([-0.25, 0.0, 0.25], count, rng)
         color_values = cycle_values(colors, count, rng)
-        for z, (x, y), color in zip(heights, xy_pairs, color_values):
-            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, z), (0.0, 0.0, 0.0), 1.0, 0.0, color)
-            configs.append(make_cfg("free_fall_height", "height_to_first_contact_time", "initial_position.z", (ground_spec(0.0), obj)))
+        for restitution, x, y, color in zip(restitution_values, x_positions, y_positions, color_values):
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=restitution, lateral_friction=0.0, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, 0.22), (2.0, 0.0, 0.0), mass=1.0, restitution=1.0, lateral_friction=0.0, color_name=color)
+            configs.append(make_cfg("wall_restitution", "restitution_to_rebound_speed", "wall.restitution",
+                                   (ground_spec(), wall, obj)))
 
     elif level_id == 2:
-        vz_values = [-1.2, -0.8, -0.4, 0.0, 0.4, 0.8, 1.2]
-        z_values = [0.9, 1.2, 1.6, 2.0]
-        for vz, vz_count in balanced_counts(vz_values, count).items():
-            for z, color in zip(cycle_values(z_values, vz_count, rng), cycle_values(colors, vz_count, rng)):
-                obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), 1.0, 0.0, color)
-                configs.append(make_cfg("vertical_initial_velocity", "v0z_to_contact_time_and_trajectory", "initial_velocity.z", (ground_spec(0.0), obj)))
+        # Level 2: 入射速度大小的影响 (v0 -> 反弹后距离)
+        speed_values = cycle_values([1.4, 1.7, 2.0, 2.4, 2.8], count, rng)
+        x_positions = cycle_values([-0.75, -0.55, -0.35], count, rng)
+        y_positions = cycle_values([-0.25, 0.0, 0.25], count, rng)
+        color_values = cycle_values(colors, count, rng)
+        for speed, x, y, color in zip(speed_values, x_positions, y_positions, color_values):
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=0.5, lateral_friction=0.0, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, 0.22), (speed, 0.0, 0.0), mass=1.0, restitution=1.0, lateral_friction=0.0, color_name=color)
+            configs.append(make_cfg("initial_velocity", "v0_to_rebound_distance", "speed",
+                                   (ground_spec(), wall, obj)))
 
     elif level_id == 3:
-        restitution_values = cycle_values([0.0, 0.3, 0.5, 0.8, 1.0], count, rng)
-        z_values = cycle_values([0.9, 1.2, 1.6, 2.0], count, rng)
-        vz_values = cycle_values([-0.4, 0.0, 0.4], count, rng)
+        # Level 3: 质量无关性验证 (质量不影响理想碰撞恢复规律)
+        mass_values = cycle_values([0.3, 0.5, 1.0, 2.0, 5.0], count, rng)
+        speed_values = cycle_values([1.6, 2.2], count, rng)
+        restitution_values = cycle_values([0.5, 0.8], count, rng)
+        y_positions = cycle_values([-0.25, 0.0, 0.25], count, rng)
         color_values = cycle_values(colors, count, rng)
-        for ground_restitution, z, vz, color in zip(restitution_values, z_values, vz_values, color_values):
-            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), 1.0, 1.0, color)
-            configs.append(make_cfg("bounce_restitution", "restitution_to_rebound_height", "ground.restitution", (ground_spec(ground_restitution), obj)))
+        for mass, speed, restitution, y, color in zip(mass_values, speed_values, restitution_values, y_positions, color_values):
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=restitution, lateral_friction=0.0, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (-0.65, y, 0.22), (speed, 0.0, 0.0), mass=mass, restitution=1.0, lateral_friction=0.0, color_name=color)
+            configs.append(make_cfg("mass_irrelevance", "mass_does_not_change_restitution", "mass",
+                                   (ground_spec(), wall, obj)))
 
     elif level_id == 4:
-        position_count = count // 2
-        projectile_count = count - position_count
-
-        xy_positions = list(itertools.product([-0.6, -0.3, 0.0, 0.3, 0.6], [-0.6, -0.3, 0.0, 0.3, 0.6]))
-        color_values = cycle_values(colors, position_count, rng)
-        color_idx = 0
-        z_group = 0
-        while len(configs) < position_count:
-            z = [1.0, 1.4, 1.8][z_group % 3]
-            z_group += 1
-            positions = xy_positions.copy()
-            rng.shuffle(positions)
-            for x, y in positions:
-                if len(configs) >= position_count:
-                    break
-                obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, z), (0.0, 0.0, 0.0), 1.0, 0.0, color_values[color_idx])
-                color_idx += 1
-                configs.append(make_cfg("horizontal_independence", "xy_position_irrelevance", "initial_position.xy", (ground_spec(0.0), obj)))
-
-        projectile_velocities = [
-            (0.4, 0.0, 0.0), (-0.4, 0.0, 0.0), (0.0, 0.4, 0.0), (0.0, -0.4, 0.0),
-            (0.6, 0.0, 0.0), (-0.6, 0.0, 0.0), (0.0, 0.6, 0.0), (0.0, -0.6, 0.0),
-            (0.45, 0.45, 0.0), (-0.45, 0.45, 0.0),
-        ]
-        color_values = cycle_values(colors, projectile_count, rng)
-        color_idx = 0
-        start_len = len(configs)
-        z_group = 0
-        while len(configs) - start_len < projectile_count:
-            z = [1.0, 1.4, 1.8][z_group % 3]
-            z_group += 1
-            velocities = projectile_velocities.copy()
-            rng.shuffle(velocities)
-            for velocity in velocities:
-                if len(configs) - start_len >= projectile_count:
-                    break
-                obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (0.0, 0.0, z), velocity, 1.0, 0.0, color_values[color_idx])
-                color_idx += 1
-                configs.append(make_cfg("horizontal_independence", "projectile_xy_velocity_independence", "initial_velocity.xy", (ground_spec(0.0), obj)))
+        # Level 4: 物体尺寸无关性验证 (球半径/方块尺寸不影响反弹速度比)
+        object_type_idx = cycle_values([0, 1], count, rng)  # 0=sphere, 1=cube
+        speed_values = cycle_values([1.6, 2.2], count, rng)
+        restitution_values = cycle_values([0.5, 0.8], count, rng)
+        y_positions = cycle_values([-0.2, 0.2], count, rng)
+        color_values = cycle_values(colors, count, rng)
+        size_values_sphere = cycle_values([0.18, 0.22, 0.28], count, rng)
+        size_values_cube = cycle_values([(0.18, 0.18, 0.18), (0.24, 0.24, 0.24), (0.30, 0.30, 0.30)], count, rng)
+        for i, (speed, restitution, y, color) in enumerate(zip(speed_values, restitution_values, y_positions, color_values)):
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=restitution, lateral_friction=0.0, color_name="gray")
+            if object_type_idx[i] == 0:
+                radius = size_values_sphere[i]
+                obj = sphere_spec(PRIMARY_OBJECT_ID, radius, (-0.65, y, radius), (speed, 0.0, 0.0), mass=1.0, restitution=1.0, lateral_friction=0.0, color_name=color)
+            else:
+                size = size_values_cube[i]
+                obj = cube_spec(PRIMARY_OBJECT_ID, size, (-0.65, y, size[2] / 2), (speed, 0.0, 0.0), mass=1.0, restitution=1.0, lateral_friction=0.0, color_name=color)
+            configs.append(make_cfg("size_irrelevance", "size_does_not_change_restitution", "size",
+                                   (ground_spec(), wall, obj)))
 
     elif level_id == 5:
-        mass_values = [0.3, 0.5, 1.0, 2.0, 4.0]
-        core_configs = list(itertools.product([0.8, 1.2, 1.6, 2.0], [-0.5, 0.0, 0.5]))
-        rng.shuffle(core_configs)
+        # Level 5: 物体恢复系数的影响 (物体 restitution 与墙面 restitution 组合)
+        wall_restitution_values = cycle_values([0.3, 0.5, 1.0], count, rng)
+        obj_restitution_values = cycle_values([0.3, 0.5, 1.0], count, rng)
+        speed_values = cycle_values([1.6, 2.2], count, rng)
+        x_positions = cycle_values([-0.75, -0.55], count, rng)
+        y_positions = cycle_values([-0.25, 0.0, 0.25], count, rng)
         color_values = cycle_values(colors, count, rng)
-        color_idx = 0
-        while len(configs) < count:
-            z, vz = core_configs[(len(configs) // len(mass_values)) % len(core_configs)]
-            for mass in mass_values:
-                if len(configs) >= count:
-                    break
-                obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (0.0, 0.0, z), (0.0, 0.0, vz), mass, 0.0, color_values[color_idx])
-                color_idx += 1
-                configs.append(make_cfg("mass_irrelevance", "mass_does_not_change_free_fall_time", "mass", (ground_spec(0.0), obj)))
+        for wall_e, obj_e, speed, x, y, color in zip(wall_restitution_values, obj_restitution_values, speed_values, x_positions, y_positions, color_values):
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=wall_e, lateral_friction=0.0, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, 0.22), (speed, 0.0, 0.0), mass=1.0, restitution=obj_e, lateral_friction=0.0, color_name=color)
+            configs.append(make_cfg("combined_restitution", "combined_restitution_effect", "object.restitution",
+                                   (ground_spec(), wall, obj)))
 
     elif level_id == 6:
-        core_configs = list(itertools.product([0.5, 0.8, 1.2, 1.6, 2.0], [-0.4, 0.0, 0.4], [0.5, 1.0, 2.0]))
-        rng.shuffle(core_configs)
-        while len(configs) < count:
-            clearance, vz, mass = core_configs[len(configs) // 3 % len(core_configs)]
-            x = pick([-0.3, 0.0, 0.3], rng)
-            y = pick([-0.3, 0.0, 0.3], rng)
-            color = pick(colors, rng)
-            for radius in [0.18, 0.22, 0.28]:
-                if len(configs) >= count:
-                    break
-                z = radius + clearance
-                obj = sphere_spec(PRIMARY_OBJECT_ID, radius, (x, y, z), (0.0, 0.0, vz), mass, 0.0, color)
-                configs.append(make_cfg("size_irrelevance", "radius_does_not_change_clearance_fall_time", "radius", (ground_spec(0.0), obj)))
+        # Level 6: 入射角度的影响 (斜碰，法向速度与切向速度分解)
+        speed_values = cycle_values([1.8, 2.4], count, rng)
+        angle_values = cycle_values([-45, -30, -15, 0, 15, 30, 45], count, rng)
+        restitution_values = cycle_values([0.5, 0.8], count, rng)
+        x_positions = cycle_values([-0.80, -0.60], count, rng)
+        y_positions = cycle_values([-0.35, 0.0, 0.35], count, rng)
+        color_values = cycle_values(colors, count, rng)
+        for speed, angle_deg, restitution, x, y, color in zip(speed_values, angle_values, restitution_values, x_positions, y_positions, color_values):
+            angle_rad = math.radians(angle_deg)
+            vx = speed * math.cos(angle_rad)
+            vy = speed * math.sin(angle_rad)
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=restitution, lateral_friction=0.0, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, 0.22), (vx, vy, 0.0), mass=1.0, restitution=1.0, lateral_friction=0.0, color_name=color)
+            configs.append(make_cfg("incident_angle", "angle_affects_rebound", "incident_angle_degree",
+                                   (ground_spec(), wall, obj)))
 
     elif level_id == 7:
-        size_pairs = [(0.18, (0.18, 0.18, 0.18)), (0.22, (0.24, 0.24, 0.24)), (0.28, (0.30, 0.30, 0.30))]
-        pair_count = (count + 1) // 2
-        pair_values = cycle_values(size_pairs, pair_count, rng)
-        clearance_values = cycle_values([0.5, 0.8, 1.2, 1.6, 2.0], pair_count, rng)
-        vz_values = cycle_values([-0.5, 0.0, 0.5], pair_count, rng)
-        mass_values = cycle_values([0.5, 1.0, 2.0], pair_count, rng)
-        restitution_values = cycle_values([0.0, 0.3, 0.5], pair_count, rng)
-        xy_values = cycle_values(list(itertools.product([-0.3, 0.0, 0.3], [-0.3, 0.0, 0.3])), pair_count, rng)
-        color_values = cycle_values(colors, pair_count, rng)
-        for (radius, cube_size), clearance, vz, mass, ground_restitution, (x, y), color in zip(
-            pair_values,
-            clearance_values,
-            vz_values,
-            mass_values,
-            restitution_values,
-            xy_values,
-            color_values,
-        ):
-            sphere = sphere_spec(PRIMARY_OBJECT_ID, radius, (x, y, radius + clearance), (0.0, 0.0, vz), mass, 0.5, color)
-            cube = cube_spec(PRIMARY_OBJECT_ID, cube_size, (x, y, cube_size[2] / 2.0 + clearance), (0.0, 0.0, vz), mass, 0.5, color)
-            for obj in [sphere, cube]:
-                if len(configs) >= count:
-                    break
-                configs.append(make_cfg("shape_generalization", "sphere_vs_cube_same_clearance", "object_type", (ground_spec(ground_restitution), obj)))
+        # Level 7: 墙面摩擦系数的影响 (斜碰时切向速度损失)
+        friction_values = cycle_values([0.0, 0.2, 0.5, 0.8, 1.0], count, rng)
+        speed_values = cycle_values([2.0, 2.6], count, rng)
+        angle_values = cycle_values([-45, -30, 30, 45], count, rng)
+        x_positions = cycle_values([-0.80, -0.60], count, rng)
+        y_positions = cycle_values([-0.35, 0.0, 0.35], count, rng)
+        color_values = cycle_values(colors, count, rng)
+        for friction, speed, angle_deg, x, y, color in zip(friction_values, speed_values, angle_values, x_positions, y_positions, color_values):
+            angle_rad = math.radians(angle_deg)
+            vx = speed * math.cos(angle_rad)
+            vy = speed * math.sin(angle_rad)
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=0.8, lateral_friction=friction, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, 0.22, (x, y, 0.22), (vx, vy, 0.0), mass=1.0, restitution=1.0, lateral_friction=1.0, color_name=color)
+            configs.append(make_cfg("wall_friction", "friction_affects_tangential_velocity", "wall.lateralFriction",
+                                   (ground_spec(), wall, obj)))
+
+    elif level_id == 8:
+        # Level 8: 球体碰撞与旋转效应 (入射角速度影响反弹轨迹)
+        radius_values = cycle_values([0.18, 0.22, 0.28], count, rng)
+        velocity_values = cycle_values([(2.2, 0, 0), (2.2, 0.6, 0), (2.2, -0.6, 0)], count, rng)
+        spin_modes = cycle_values(["no_spin", "spin_z_pos", "spin_z_neg", "spin_y_pos", "spin_y_neg"], count, rng)
+        friction_values = cycle_values([0.6, 1.0], count, rng)
+        x_positions = cycle_values([-0.75, -0.55], count, rng)
+        y_positions = cycle_values([-0.25, 0.25], count, rng)
+        color_values = cycle_values(colors, count, rng)
+        for radius, vel, spin, friction, x, y, color in zip(radius_values, velocity_values, spin_modes, friction_values, x_positions, y_positions, color_values):
+            if spin == "no_spin":
+                ang_vel = (0, 0, 0)
+            elif spin == "spin_z_pos":
+                ang_vel = (0, 0, 8)
+            elif spin == "spin_z_neg":
+                ang_vel = (0, 0, -8)
+            elif spin == "spin_y_pos":
+                ang_vel = (0, 8, 0)
+            else:
+                ang_vel = (0, -8, 0)
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=0.8, lateral_friction=friction, color_name="gray")
+            obj = sphere_spec(PRIMARY_OBJECT_ID, radius, (x, y, radius), vel, angular_velocity=ang_vel, mass=1.0, restitution=1.0, lateral_friction=1.0, color_name=color)
+            configs.append(make_cfg("spin_effect", "spin_affects_rebound", "initial_angular_velocity",
+                                   (ground_spec(), wall, obj)))
+
+    elif level_id == 9:
+        # Level 9: 形状泛化 (sphere vs cube，正碰与斜碰)
+        object_type_idx = cycle_values([0, 1], count, rng)  # 0=sphere, 1=cube
+        speed_values = cycle_values([1.8, 2.4], count, rng)
+        angle_values = cycle_values([0, -30, 30], count, rng)
+        restitution_values = cycle_values([0.5, 0.8], count, rng)
+        friction_values = cycle_values([0.0, 0.5], count, rng)
+        y_positions = cycle_values([-0.25, 0.25], count, rng)
+        radius_values = cycle_values([0.18, 0.22, 0.28], count, rng)
+        size_values = cycle_values([(0.18, 0.18, 0.18), (0.24, 0.24, 0.24), (0.30, 0.30, 0.30)], count, rng)
+        color_values = cycle_values(colors, count, rng)
+        for i, (speed, angle_deg, restitution, friction, y, color) in enumerate(zip(speed_values, angle_values, restitution_values, friction_values, y_positions, color_values)):
+            angle_rad = math.radians(angle_deg)
+            vx = speed * math.cos(angle_rad)
+            vy = speed * math.sin(angle_rad)
+            wall = wall_spec(WALL_OBJECT_ID, wall_size, wall_pos, restitution=restitution, lateral_friction=friction, color_name="gray")
+            if object_type_idx[i] == 0:
+                radius = radius_values[i]
+                obj = sphere_spec(PRIMARY_OBJECT_ID, radius, (-0.70, y, radius), (vx, vy, 0.0), mass=1.0, restitution=1.0, lateral_friction=1.0, color_name=color)
+            else:
+                # cube with optional yaw rotation
+                yaw = 0.3827 if angle_deg != 0 else 0.0
+                quat = (0.9239, 0, 0, yaw) if yaw > 0 else (1.0, 0.0, 0.0, 0.0)
+                size = size_values[i]
+                obj = cube_spec(PRIMARY_OBJECT_ID, size, (-0.70, y, size[2] / 2), (vx, vy, 0.0), quaternion=quat, mass=1.0, restitution=1.0, lateral_friction=1.0, color_name=color)
+            configs.append(make_cfg("shape_generalization", "sphere_vs_cube_bounce", "object_type",
+                                   (ground_spec(), wall, obj)))
 
     else:
-        raise ValueError(f"S1 supports levels 1..7, got L{level_id}")
+        raise ValueError(f"S4 supports levels 1..9, got L{level_id}")
+
+    for idx, cfg in enumerate(configs):
+        wall_color = "gray" if idx % 2 == 0 else "blue"
+        cfg["objects"] = tuple(
+            replace(obj, color_name=wall_color) if obj.object_type == "wall" else obj
+            for obj in cfg["objects"]
+        )
 
     return with_ids(configs, level_id, start_id, seed, shuffle=False)
 
@@ -415,13 +540,13 @@ def target_count_for_level(level_id: int, requested_count: int | None) -> int:
     if requested_count is not None:
         return requested_count
     if level_id not in LEVEL_TARGETS:
-        raise ValueError(f"S1 supports levels 1..7, got L{level_id}")
+        raise ValueError(f"S4 supports levels 1..9, got L{level_id}")
     return LEVEL_TARGETS[level_id]
 
 
 def take_samples(level_id: int, start_id: int, seed: int, count: int | None) -> list[SampleSpec]:
     target_count = target_count_for_level(level_id, count)
-    return build_s1_stratified_level_configs(level_id, start_id, seed, target_count)
+    return build_s4_stratified_level_configs(level_id, start_id, seed, target_count)
 
 
 def make_camera(view_name: str, spec: dict[str, Any]):
@@ -463,11 +588,14 @@ def build_asset(spec: ObjectSpec):
     if spec.object_type == "sphere":
         assert spec.radius is not None
         return kb.Sphere(scale=spec.radius, **kwargs)
-    if spec.object_type in {"cube", "ground"}:
+    if spec.object_type in {"cube", "ground", "wall"}:
         assert spec.size is not None
         scale = tuple(v / 2.0 for v in spec.size)
         return kb.Cube(scale=scale, **kwargs)
-    raise ValueError(f"Unsupported object type for S1: {spec.object_type}")
+    if spec.object_type == "cylinder":
+        assert spec.radius is not None and spec.height is not None
+        return kb.Cylinder(scale=(spec.radius, spec.radius, spec.height / 2.0), **kwargs)
+    raise ValueError(f"Unsupported object type for S4: {spec.object_type}")
 
 
 def build_scene(sample: SampleSpec, resolution: int, view_names: list[str]):
@@ -888,7 +1016,7 @@ def main() -> None:
         for physical_idx, sample in enumerate(physical_samples, start=1):
             last_output_id = output_id + len(args.views) - 1
             print(
-                f"Generating S1/L{sample.level_id} physical {physical_idx} "
+                f"Generating S{SCENE_ID}/L{sample.level_id} physical {physical_idx} "
                 f"as video dirs {output_id}-{last_output_id}: {sample.level_name}"
             )
             generate_physical_sample(args, sample, output_id)

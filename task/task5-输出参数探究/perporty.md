@@ -22,8 +22,8 @@ video.json
       "look_at": [0.0, 0.0, 0.0],
       "fov": 50.0,
       "resolution": [128, 128],
-      "video_path": "video/top.mp4",
-      "depth_path": "depth_path/top.npz"
+      "video_path": "{sample_id}.mp4",
+      "depth_path": "{sample_id}.npz"
     }
    ]
 }
@@ -36,7 +36,7 @@ video.json
 object_static.json
 ```json
 {
-  "object_id": 1,
+  "object_id": 2,
   "object_type": "sphere",
   "static": false,
   "radius": 0.22,
@@ -55,7 +55,7 @@ object_static.json
 object_id.json
 ```json
 {
-  "object_id": 1,
+  "object_id": 2,
   "time":3,
   "visible_area":1,
   "position": [-0.85, 0.0, 0.22],
@@ -63,11 +63,10 @@ object_id.json
   "velocity": [1.8, 0.0, 0.0],
   "angular_velocity": [0.0, 0.0, 0.0],
   "resultant force": [0.0, 0.0, 0.0],
-  "segmentation_path": "../object_segment/1.npz"
+  "segmentation_path": "../object_segment/2.npz"
 }
 ```
 
 ## 作用力矩阵_二维矩阵：最多才9个物体，10*10够用了
 force_matrix.json
 10*10的二维矩阵
-

@@ -1,0 +1,51 @@
+FROM nvidia/cuda:12.2.0-base-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Blender 3.6 运行时依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxi6 libxrender1 libxfixes3 libxkbcommon0 \
+    libgl1-mesa-glx libgl1 libegl1 libxxf86vm1 \
+    libsm6 libice6 libxrandr2 libxinerama1 libxcursor1 \
+    wget ca-certificates xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Blender 3.6.15 LTS（自带 CUDA 12.1 内核，支持 RTX 4060）
+RUN wget -q https://download.blender.org/release/Blender3.6/blender-3.6.15-linux-x64.tar.xz \
+        -O /tmp/blender.tar.xz \
+    && tar xf /tmp/blender.tar.xz -C /opt/ \
+    && rm /tmp/blender.tar.xz \
+    && ln -s /opt/blender-3.6.15-linux-x64/blender /usr/local/bin/blender
+
+# 安装 kubric Python 依赖到 Blender 内嵌 Python 3.10
+# 注意：不要装 OpenEXR/Imath，会和 Blender 内置库 ABI 冲突导致 segfault
+# 已修补 kubric/renderer/blender_utils.py 用 bpy 内置 EXR 读取替代
+RUN /opt/blender-3.6.15-linux-x64/3.6/python/bin/python3.10 -m pip install --no-cache-dir \
+    numpy==1.24.3 \
+    scipy \
+    imageio \
+    imageio-ffmpeg \
+    Pillow \
+    trimesh \
+    pyquaternion \
+    pybullet \
+    munch \
+    pypng \
+    bidict \
+    absl-py \
+    traitlets \
+    etils \
+    typing_extensions \
+    importlib_metadata \
+    importlib_resources \
+    einops \
+    scikit-learn \
+    tqdm \
+    requests
+
+WORKDIR /workspace
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
