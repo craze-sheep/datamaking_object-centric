@@ -37,7 +37,7 @@ if _SCRIPT_DIR not in sys.path:
 import blender_argv_fix  # noqa: E402  — must come before argparse
 
 import numpy as np
-from physics_label_utils import compute_physics_labels
+
 
 imageio = None
 kb = None
@@ -323,14 +323,17 @@ def ramp_spec(
 
 
 def ramp_surface_point(s: float, y: float, incline_angle: float, ramp_size: tuple[float, float, float]) -> tuple[float, float, float]:
-    """Calculate a point on the ramp surface.
+    """Calculate a point on the ramp's outer top surface.
     s: distance along ramp from center (positive = downhill)
     y: lateral offset
     """
     cos_a = math.cos(incline_angle)
     sin_a = math.sin(incline_angle)
-    x = s * cos_a
-    z = ramp_size[2] + 0.5 * ramp_size[0] * sin_a + s * sin_a
+    normal = ramp_normal(incline_angle)
+    half_thickness = ramp_size[2] / 2.0
+    center_z = ramp_size[2] + 0.5 * ramp_size[0] * sin_a
+    x = s * cos_a + normal[0] * half_thickness
+    z = center_z - s * sin_a + normal[2] * half_thickness
     return (x, y, z)
 
 
@@ -999,7 +1002,7 @@ def write_dynamic_outputs(
     force_payloads: list[dict[str, Any]],
     rendered: dict[str, np.ndarray],
 ) -> None:
-    write_json(sample_dir / "physics_labels.json", compute_physics_labels(sample, frame_states, force_payloads, FPS))
+
     object_ids = [spec.object_id for spec in sample.objects]
     specs_by_id = {spec.object_id: spec for spec in sample.objects}
 

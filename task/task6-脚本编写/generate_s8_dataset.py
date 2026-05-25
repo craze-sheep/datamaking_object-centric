@@ -474,12 +474,18 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
         object_counts = cycle_values([2, 3, 4, 5], count, rng)
         speed_values = cycle_values([0.8, 1.1, 1.5, 2.0], count, rng)
         color_values = cycle_values(colors, count, rng)
-        path_directions = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0)]
+        path_directions = [
+            (1.0, 0.0, 0.0),
+            (0.309017, 0.951057, 0.0),
+            (-0.809017, 0.587785, 0.0),
+            (-0.809017, -0.587785, 0.0),
+            (0.309017, -0.951057, 0.0),
+        ]
         for obj_count, speed, color in zip(object_counts, speed_values, color_values):
             objects = []
             for i in range(obj_count):
                 direction = path_directions[i % len(path_directions)]
-                distance = 1.8 + i * 0.35 * speed
+                distance = 1.8 + i * 1.5 * speed
                 x = -distance * direction[0]
                 y = -distance * direction[1]
                 obj = sphere_spec(PRIMARY_OBJECT_ID + i, 0.22, (x, y, 0.22),
@@ -497,10 +503,10 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
         front_speeds = cycle_values([1.4, 1.8, 2.2], count, rng)
         rear_speeds = cycle_values([0.4, 0.8, 1.2], count, rng)
         y_positions = cycle_values([-0.25, 0.0, 0.25], count, rng)
-        crossing_speeds = cycle_values([0.8, 1.2, 1.8, 2.4], count, rng)
+        crossing_speeds = cycle_values([2.0, 2.4], count, rng)
         color_values = cycle_values(colors, count, rng)
         x_positions = [-1.6, -0.6, 0.4, 1.2]
-        path_directions = [(1.0, 0.0), (0.0, 1.0), (-1.0, 0.0), (0.0, -1.0)]
+        path_directions = [(1.0, 0.0), (-0.5, 0.8660254), (-0.5, -0.8660254)]
         for idx, (mode, front_speed, rear_speed, y, crossing_speed, color) in enumerate(zip(modes, front_speeds, rear_speeds, y_positions, crossing_speeds, color_values)):
             objects = []
             if mode == "cannot_catch_up":
@@ -525,15 +531,15 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
                 obj_count = crossing_counts[idx]
                 for i in range(obj_count):
                     direction = np.array(path_directions[i], dtype=np.float64)
-                    speed = crossing_speed if i == 0 else float(pick([0.8, 1.2, 1.8, 2.4], rng))
-                    arrival_time = 0.85 + i * 0.35
+                    speed = crossing_speed if i == 0 else float(pick([2.0, 2.4], rng))
+                    arrival_time = 0.75 + i * 0.55
                     start_xy = -direction * speed * arrival_time
                     objects.append(sphere_spec(PRIMARY_OBJECT_ID + i, 0.22, (float(start_xy[0]), float(start_xy[1]), 0.22),
                                                (float(speed * direction[0]), float(speed * direction[1]), 0.0),
                                                mass=1.0, restitution=0.8, lateral_friction=0.0, color_name=color))
                 configs.append(make_cfg("speed_difference", "crossing_paths_time_offset", "arrival_time_gap",
                                        (ground_spec(), *objects),
-                                       metadata={"subscene": "B", "arrival_time_gap_min": 0.25}))
+                                       metadata={"subscene": "B", "arrival_time_gap_min": 0.55}))
 
     elif level_id == 4:
         # Level 4: 随机参数全空间的未碰撞过滤
@@ -572,7 +578,7 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
     elif level_id == 5:
         # Level 5: 物体被静态障碍物阻隔导致未碰撞
         object_counts = cycle_values([2, 3, 4, 5], count, rng)
-        obstacle_sizes = cycle_values(OBSTACLE_SIZES, count, rng)
+        obstacle_sizes = cycle_values([(0.30, 3.20, 0.80), (0.40, 3.00, 0.80)], count, rng)
         obstacle_restitutions = cycle_values([0.5, 0.8], count, rng)
         obstacle_y_values = cycle_values([-0.30, 0.0, 0.30], count, rng)
         speed_values = cycle_values([0.8, 1.2, 1.6], count, rng)
@@ -585,7 +591,7 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
                 shape = pick(["sphere", "cube"], rng)
                 side = 1 if i % 2 == 0 else -1
                 x = side * rng.uniform(1.0, 2.0)
-                y = rng.uniform(-0.8, 0.8)
+                y = obs_y + [-1.20, -0.60, 0.0, 0.60, 1.20][i]
                 vx = -side * speed
                 if shape == "sphere":
                     radius = float(pick([0.18, 0.22, 0.28], rng))
@@ -631,27 +637,25 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
     elif level_id == 7:
         # Level 7: 物体轨迹在三维空间高度上错开
         object_counts = cycle_values([2, 3, 4, 5], count, rng)
-        speed_values = cycle_values([0.8, 1.2, 1.6], count, rng)
+        speed_values = cycle_values([0.30, 0.40, 0.50], count, rng)
         vz_values = cycle_values([-0.4, 0.0, 0.4], count, rng)
         color_values = cycle_values(colors, count, rng)
-        height_pool = [0.22, 0.80, 1.20, 1.60, 2.00]
+        height_pool = [0.22, 0.95, 1.70, 2.45, 3.20]
+        lanes = [(-1.80, -1.20), (-0.90, -0.60), (0.0, 0.0), (0.90, 0.60), (1.80, 1.20)]
         for obj_count, speed, vz, color in zip(object_counts, speed_values, vz_values, color_values):
             objects = []
             z_values = rng.choice(height_pool, size=obj_count, replace=False)
             for i in range(obj_count):
                 radius = float(pick([0.18, 0.22], rng))
-                angle = rng.uniform(0, 2 * math.pi)
-                x = 1.5 * math.cos(angle)
-                y = 1.2 * math.sin(angle)
-                vx = speed * math.cos(angle + math.pi)
-                vy = speed * math.sin(angle + math.pi)
+                x, y = lanes[i]
                 z = float(z_values[i])
                 obj = sphere_spec(PRIMARY_OBJECT_ID + i, radius, (x, y, z),
-                                 (vx, vy, vz),
+                                 (speed, 0.0, vz),
                                  mass=1.0, restitution=0.5, lateral_friction=0.0, color_name=color)
                 objects.append(obj)
-            configs.append(make_cfg("height_separation", "different_heights_no_collision", "z_position",
-                                   (ground_spec(), *objects)))
+            configs.append(make_cfg("height_separation", "height_and_lane_separation_no_collision", "z_and_lane_separation",
+                                   (ground_spec(), *objects),
+                                   metadata={"separation_factors": ["z_position", "xy_lane"]}))
 
     elif level_id == 8:
         # Level 8: 物体被其他运动物体阻挡但未直接碰撞
@@ -704,7 +708,7 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
         stress_values = cycle_values([False] * 19 + [True], count, rng)
         margin_values = cycle_values([0.0, 0.005, 0.01], count, rng)
         speed_values = cycle_values([0.8, 1.2, 1.6], count, rng)
-        y_offsets = cycle_values([-0.12, 0.12, 0.18, -0.18], count, rng)
+        y_offsets = cycle_values([-0.42, 0.42, 0.50, -0.50], count, rng)
         color_values = cycle_values(colors, count, rng)
         for obj_count, radius, stress, margin, speed, y_off, color in zip(object_counts, radius_values, stress_values, margin_values, speed_values, y_offsets, color_values):
             if stress:
@@ -737,8 +741,8 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
         for obj_count, shape, angular, speed, ground_friction, object_friction, restitution, color in zip(object_counts, shape_values, angular_modes, speed_values, ground_frictions, object_frictions, restitution_values, color_values):
             objects = []
             for i in range(obj_count):
-                x = -1.2 + i * 1.2
-                y = [-0.20, 0.20, 0.45][i % 3]
+                x = -1.6 + i * 1.6
+                y = [-0.75, 0.75, 1.75][i % 3]
                 vx = speed if i == 0 else -speed * 0.5
                 if shape == "cube":
                     size = pick([(0.18, 0.18, 0.18), (0.24, 0.24, 0.24)], rng)
@@ -758,16 +762,16 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
 
     elif level_id == 12:
         # Level 12: 力或冲量干预使物体在碰撞前转向
-        object_counts = cycle_values([2, 3], count, rng)
-        speed_values = cycle_values([1.0, 1.4, 1.8], count, rng)
-        apply_times = cycle_values([0.35, 0.50, 0.70], count, rng)
-        impulses = cycle_values([(0.0, 0.35, 0.0), (0.0, -0.35, 0.0), (-0.45, 0.0, 0.0)], count, rng)
+        object_counts = cycle_values([2], count, rng)
+        speed_values = cycle_values([0.8, 1.0, 1.2], count, rng)
+        apply_times = cycle_values([0.20, 0.30, 0.40], count, rng)
+        impulses = cycle_values([(0.0, 1.20, 0.0), (0.0, -1.20, 0.0)], count, rng)
         duration_values = cycle_values([1, 2], count, rng)
         target_values = cycle_values([PRIMARY_OBJECT_ID, PRIMARY_OBJECT_ID + 1], count, rng)
         color_values = cycle_values(colors, count, rng)
         for obj_count, speed, apply_time, impulse, duration, target_object, color in zip(object_counts, speed_values, apply_times, impulses, duration_values, target_values, color_values):
             objects = []
-            starts = [(-1.4, 0.0), (1.4, 0.0), (0.0, -1.4)]
+            starts = [(-1.8, 0.0), (1.8, 0.0), (0.0, -1.8)]
             for i in range(obj_count):
                 x, y = starts[i]
                 direction = np.array([-x, -y], dtype=np.float64)
@@ -1233,7 +1237,6 @@ def write_dynamic_outputs(
     force_payloads: list[dict[str, Any]],
     rendered: dict[str, np.ndarray],
 ) -> None:
-    write_json(sample_dir / "physics_labels.json", compute_physics_labels(sample, frame_states, force_payloads, FPS))
     object_ids = [spec.object_id for spec in sample.objects]
     specs_by_id = {spec.object_id: spec for spec in sample.objects}
 

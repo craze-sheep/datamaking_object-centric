@@ -4,6 +4,7 @@ SlotFormer-master/pretrained/
 tools/
 CLAUDE.md
 # generated outputs
+database/
 
 # large file types
 *.zip

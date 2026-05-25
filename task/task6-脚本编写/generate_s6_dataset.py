@@ -37,7 +37,6 @@ if _SCRIPT_DIR not in sys.path:
 import blender_argv_fix  # noqa: E402  — must come before argparse
 
 import numpy as np
-from physics_label_utils import compute_physics_labels
 
 imageio = None
 kb = None
@@ -867,7 +866,6 @@ def write_dynamic_outputs(
     force_payloads: list[dict[str, Any]],
     rendered: dict[str, np.ndarray],
 ) -> None:
-    write_json(sample_dir / "physics_labels.json", compute_physics_labels(sample, frame_states, force_payloads, FPS))
     object_ids = [spec.object_id for spec in sample.objects]
     specs_by_id = {spec.object_id: spec for spec in sample.objects}
 
