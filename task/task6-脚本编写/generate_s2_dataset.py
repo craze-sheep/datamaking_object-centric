@@ -121,7 +121,7 @@ class SampleSpec:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output_root", default="database")
+    parser.add_argument("--output_root", default="database1")
     parser.add_argument("--levels", nargs="+", type=int, default=[1])
     parser.add_argument("--samples_per_level", type=int, default=None)
     parser.add_argument("--start_id", type=int, default=1)

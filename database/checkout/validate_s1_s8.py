@@ -12,7 +12,7 @@ from typing import Any
 import numpy as np
 
 
-DB = Path("/home/lzy/project/slot-datamaking/database1")
+DB = Path("/home/lzy/project/slot-datamaking/database")
 REPORT_PATH = Path("validation_report_s1_s8.txt")
 
 SCENES = [f"S{i}" for i in range(1, 9)]

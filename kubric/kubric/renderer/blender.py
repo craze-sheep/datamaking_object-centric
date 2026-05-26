@@ -220,18 +220,42 @@ class Blender(core.View):
     self.blender_scene.cycles.device = "GPU" if value else "CPU"
     if value:
       cycles_prefs = bpy.context.preferences.addons["cycles"].preferences
-      compute_device_type = os.getenv("KUBRIC_GPU_BACKEND", "CUDA").upper()
-      try:
-        cycles_prefs.compute_device_type = compute_device_type
-      except TypeError:
-        logger.warning("Unsupported Cycles compute device type: %s", compute_device_type)
+      requested_device_type = os.getenv("KUBRIC_GPU_BACKEND", "CUDA").upper()
+      fallback_device_types = ("CUDA",) if requested_device_type != "CUDA" else ()
 
-      # call get_devices() to let Blender detect GPU devices
-      cycles_prefs.get_devices()
-      for device in cycles_prefs.devices:
-        device.use = device.type == cycles_prefs.compute_device_type
-      devices_used = [d.name for d in cycles_prefs.devices if d.use]
-      logger.info("Using the following GPU Device(s): %s", devices_used)
+      device_details = []
+      devices_used = []
+      selected_device_type = None
+      for compute_device_type in (requested_device_type,) + fallback_device_types:
+        try:
+          cycles_prefs.compute_device_type = compute_device_type
+        except TypeError:
+          logger.warning("Unsupported Cycles compute device type: %s", compute_device_type)
+          continue
+
+        # call get_devices() to let Blender detect GPU devices
+        cycles_prefs.get_devices()
+        for device in cycles_prefs.devices:
+          device.use = device.type == cycles_prefs.compute_device_type
+        devices_used = [d.name for d in cycles_prefs.devices if d.use]
+        device_details = [(d.name, d.type, d.use) for d in cycles_prefs.devices]
+        if devices_used:
+          selected_device_type = compute_device_type
+          break
+
+        logger.warning("No %s Cycles GPU devices detected. Devices: %s",
+                       compute_device_type, device_details)
+
+      if not devices_used:
+        self.blender_scene.cycles.device = "CPU"
+        raise RuntimeError(
+            f"No usable Cycles GPU devices detected for {requested_device_type}. "
+            f"Devices: {device_details}")
+
+      if selected_device_type != requested_device_type:
+        logger.warning("Falling back from %s to %s for Cycles GPU rendering.",
+                       requested_device_type, selected_device_type)
+      logger.info("Using %s GPU Device(s): %s", selected_device_type, devices_used)
 
   def set_exr_output_path(self, path_prefix: Optional[PathLike]):
     """Set the target path prefix for EXR output.

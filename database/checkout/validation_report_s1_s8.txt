@@ -1,0 +1,614 @@
+======================================================================
+S1-S8 全面数据验证
+======================================================================
+
+--- Phase 1: 文件完整性 ---
+  S1/L1: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S1/L2: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S1/L3: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S1/L4: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S1/L5: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S1/L6: 样本=300/300, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S1/L7: 样本=300/300, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L1: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L2: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L3: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L4: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L5: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L6: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S2/L7: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L1: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L2: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L3: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L4: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L5: 样本=240/240, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L6: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L7: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L8: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S3/L9: 样本=360/360, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L1: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L2: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L3: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L4: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L5: 样本=200/200, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L6: 样本=300/300, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L7: 样本=300/300, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L8: 样本=300/300, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S4/L9: 样本=300/300, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L1: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L2: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L3: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L4: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L5: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L6: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L7: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L8: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S5/L9: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L1: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L2: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L3: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L4: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L5: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L6: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L7: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L8: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S6/L9: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L1: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L2: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L3: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L4: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L5: 样本=400/400, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L6: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L7: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L8: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L9: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L10: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L11: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S7/L12: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L1: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L2: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L3: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L4: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L5: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L6: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L7: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L8: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L9: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L10: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L11: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L12: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L13: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+  S8/L14: 样本=600/600, 缺顶层文件=0, 帧号异常样本=0, 帧文件/目录问题=0
+
+--- Phase 2: JSON结构 ---
+  S1/L1: 视角=[('front', 100), ('top', 100)], 物体数=[2], force_matrix抽检=600
+  S1/L2: 视角=[('front', 100), ('top', 100)], 物体数=[2], force_matrix抽检=600
+  S1/L3: 视角=[('front', 100), ('top', 100)], 物体数=[2], force_matrix抽检=600
+  S1/L4: 视角=[('front', 100), ('top', 100)], 物体数=[2], force_matrix抽检=600
+  S1/L5: 视角=[('front', 100), ('top', 100)], 物体数=[2], force_matrix抽检=600
+  S1/L6: 视角=[('front', 150), ('top', 150)], 物体数=[2], force_matrix抽检=900
+  S1/L7: 视角=[('front', 150), ('top', 150)], 物体数=[2], force_matrix抽检=900
+  S2/L1: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[2], force_matrix抽检=720
+  S2/L2: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[2], force_matrix抽检=720
+  S2/L3: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[2], force_matrix抽检=720
+  S2/L4: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[2], force_matrix抽检=720
+  S2/L5: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[2], force_matrix抽检=1080
+  S2/L6: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[2], force_matrix抽检=1080
+  S2/L7: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[2], force_matrix抽检=1080
+  S3/L1: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[3], force_matrix抽检=720
+  S3/L2: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[3], force_matrix抽检=720
+  S3/L3: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[3], force_matrix抽检=720
+  S3/L4: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[3], force_matrix抽检=720
+  S3/L5: 视角=[('front', 80), ('top', 80), ('left', 80)], 物体数=[3], force_matrix抽检=720
+  S3/L6: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[3], force_matrix抽检=1080
+  S3/L7: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[3], force_matrix抽检=1080
+  S3/L8: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[3], force_matrix抽检=1080
+  S3/L9: 视角=[('front', 120), ('top', 120), ('left', 120)], 物体数=[3], force_matrix抽检=1080
+  S4/L1: 视角=[('front', 100), ('top', 100)], 物体数=[3], force_matrix抽检=600
+  S4/L2: 视角=[('front', 100), ('top', 100)], 物体数=[3], force_matrix抽检=600
+  S4/L3: 视角=[('front', 100), ('top', 100)], 物体数=[3], force_matrix抽检=600
+  S4/L4: 视角=[('front', 100), ('top', 100)], 物体数=[3], force_matrix抽检=600
+  S4/L5: 视角=[('front', 100), ('top', 100)], 物体数=[3], force_matrix抽检=600
+  S4/L6: 视角=[('front', 150), ('top', 150)], 物体数=[3], force_matrix抽检=900
+  S4/L7: 视角=[('front', 150), ('top', 150)], 物体数=[3], force_matrix抽检=900
+  S4/L8: 视角=[('front', 150), ('top', 150)], 物体数=[3], force_matrix抽检=900
+  S4/L9: 视角=[('front', 150), ('top', 150)], 物体数=[3], force_matrix抽检=900
+  S5/L1: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S5/L2: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S5/L3: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S5/L4: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S5/L5: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S5/L6: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S5/L7: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S5/L8: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S5/L9: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S6/L1: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S6/L2: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S6/L3: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S6/L4: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S6/L5: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[3], force_matrix抽检=1200
+  S6/L6: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S6/L7: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S6/L8: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S6/L9: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S7/L1: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[4], force_matrix抽检=1200
+  S7/L2: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[4], force_matrix抽检=1200
+  S7/L3: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[4], force_matrix抽检=1200
+  S7/L4: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[4], force_matrix抽检=1200
+  S7/L5: 视角=[('front', 80), ('back', 80), ('left', 80), ('right', 80), ('top', 80)], 物体数=[4], force_matrix抽检=1200
+  S7/L6: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S7/L7: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S7/L8: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S7/L9: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S7/L10: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[5, 6], force_matrix抽检=1800
+  S7/L11: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S7/L12: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S8/L1: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5, 6, 7], force_matrix抽检=1800
+  S8/L2: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5, 6], force_matrix抽检=1800
+  S8/L3: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5], force_matrix抽检=1800
+  S8/L4: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[2, 3, 4, 5, 6, 7], force_matrix抽检=1800
+  S8/L5: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4, 5, 6, 7], force_matrix抽检=1800
+  S8/L6: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5], force_matrix抽检=1800
+  S8/L7: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5, 6], force_matrix抽检=1800
+  S8/L8: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4], force_matrix抽检=1800
+  S8/L9: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[6, 7, 8, 9], force_matrix抽检=1800
+  S8/L10: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5], force_matrix抽检=1800
+  S8/L11: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4], force_matrix抽检=1800
+  S8/L12: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3], force_matrix抽检=1800
+  S8/L13: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[3, 4, 5, 6, 7], force_matrix抽检=1800
+  S8/L14: 视角=[('front', 120), ('back', 120), ('left', 120), ('right', 120), ('top', 120)], 物体数=[4, 5, 6, 7], force_matrix抽检=1800
+
+--- Phase 3: 深度分割 ---
+  S1/L1: depth=200, segment=14400, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S1/L2: depth=200, segment=14400, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S1/L3: depth=200, segment=14400, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S1/L4: depth=200, segment=14400, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S1/L5: depth=200, segment=14400, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S1/L6: depth=300, segment=21600, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S1/L7: depth=300, segment=21600, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S2/L1: depth=240, segment=17280, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S2/L2: depth=240, segment=17280, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S2/L3: depth=240, segment=17280, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S2/L4: depth=240, segment=17280, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S2/L5: depth=360, segment=25920, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S2/L6: depth=360, segment=25920, seg全零=655, 缺dynamic_json=0, 缺segment=0
+  S2/L7: depth=360, segment=25920, seg全零=235, 缺dynamic_json=0, 缺segment=0
+  S3/L1: depth=240, segment=25920, seg全零=798, 缺dynamic_json=0, 缺segment=0
+  S3/L2: depth=240, segment=25920, seg全零=54, 缺dynamic_json=0, 缺segment=0
+  S3/L3: depth=240, segment=25920, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S3/L4: depth=240, segment=25920, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S3/L5: depth=240, segment=25920, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S3/L6: depth=360, segment=38880, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S3/L7: depth=360, segment=38880, seg全零=3302, 缺dynamic_json=0, 缺segment=0
+  S3/L8: depth=360, segment=38880, seg全零=2845, 缺dynamic_json=0, 缺segment=0
+  S3/L9: depth=360, segment=38880, seg全零=819, 缺dynamic_json=0, 缺segment=0
+  S4/L1: depth=200, segment=21600, seg全零=123, 缺dynamic_json=0, 缺segment=0
+  S4/L2: depth=200, segment=21600, seg全零=7, 缺dynamic_json=0, 缺segment=0
+  S4/L3: depth=200, segment=21600, seg全零=100, 缺dynamic_json=0, 缺segment=0
+  S4/L4: depth=200, segment=21600, seg全零=69, 缺dynamic_json=0, 缺segment=0
+  S4/L5: depth=200, segment=21600, seg全零=70, 缺dynamic_json=0, 缺segment=0
+  S4/L6: depth=300, segment=32400, seg全零=1330, 缺dynamic_json=0, 缺segment=0
+  S4/L7: depth=300, segment=32400, seg全零=1990, 缺dynamic_json=0, 缺segment=0
+  S4/L8: depth=300, segment=32400, seg全零=470, 缺dynamic_json=0, 缺segment=0
+  S4/L9: depth=300, segment=32400, seg全零=536, 缺dynamic_json=0, 缺segment=0
+  S5/L1: depth=400, segment=43200, seg全零=1374, 缺dynamic_json=0, 缺segment=0
+  S5/L2: depth=400, segment=43200, seg全零=3299, 缺dynamic_json=0, 缺segment=0
+  S5/L3: depth=400, segment=43200, seg全零=2540, 缺dynamic_json=0, 缺segment=0
+  S5/L4: depth=400, segment=43200, seg全零=1297, 缺dynamic_json=0, 缺segment=0
+  S5/L5: depth=400, segment=43200, seg全零=2020, 缺dynamic_json=0, 缺segment=0
+  S5/L6: depth=600, segment=64800, seg全零=3621, 缺dynamic_json=0, 缺segment=0
+  S5/L7: depth=600, segment=64800, seg全零=3480, 缺dynamic_json=0, 缺segment=0
+  S5/L8: depth=600, segment=64800, seg全零=3735, 缺dynamic_json=0, 缺segment=0
+  S5/L9: depth=600, segment=64800, seg全零=3741, 缺dynamic_json=0, 缺segment=0
+  S6/L1: depth=400, segment=43200, seg全零=1297, 缺dynamic_json=0, 缺segment=0
+  S6/L2: depth=400, segment=43200, seg全零=2349, 缺dynamic_json=0, 缺segment=0
+  S6/L3: depth=400, segment=43200, seg全零=1785, 缺dynamic_json=0, 缺segment=0
+  S6/L4: depth=400, segment=43200, seg全零=1878, 缺dynamic_json=0, 缺segment=0
+  S6/L5: depth=400, segment=43200, seg全零=1285, 缺dynamic_json=0, 缺segment=0
+  S6/L6: depth=600, segment=64800, seg全零=1971, 缺dynamic_json=0, 缺segment=0
+  S6/L7: depth=600, segment=64800, seg全零=2523, 缺dynamic_json=0, 缺segment=0
+  S6/L8: depth=600, segment=64800, seg全零=2486, 缺dynamic_json=0, 缺segment=0
+  S6/L9: depth=600, segment=64800, seg全零=2209, 缺dynamic_json=0, 缺segment=0
+  S7/L1: depth=400, segment=57600, seg全零=1130, 缺dynamic_json=0, 缺segment=0
+  S7/L2: depth=400, segment=57600, seg全零=2160, 缺dynamic_json=0, 缺segment=0
+  S7/L3: depth=400, segment=57600, seg全零=1484, 缺dynamic_json=0, 缺segment=0
+  S7/L4: depth=400, segment=57600, seg全零=1454, 缺dynamic_json=0, 缺segment=0
+  S7/L5: depth=400, segment=57600, seg全零=279, 缺dynamic_json=0, 缺segment=0
+  S7/L6: depth=600, segment=86400, seg全零=2715, 缺dynamic_json=0, 缺segment=0
+  S7/L7: depth=600, segment=86400, seg全零=2643, 缺dynamic_json=0, 缺segment=0
+  S7/L8: depth=600, segment=86400, seg全零=3929, 缺dynamic_json=0, 缺segment=0
+  S7/L9: depth=600, segment=86400, seg全零=3114, 缺dynamic_json=0, 缺segment=0
+  S7/L10: depth=600, segment=118800, seg全零=19101, 缺dynamic_json=0, 缺segment=0
+  S7/L11: depth=600, segment=86400, seg全零=2791, 缺dynamic_json=0, 缺segment=0
+  S7/L12: depth=600, segment=86400, seg全零=126, 缺dynamic_json=0, 缺segment=0
+  S8/L1: depth=600, segment=109080, seg全零=19872, 缺dynamic_json=0, 缺segment=0
+  S8/L2: depth=600, segment=95220, seg全零=37106, 缺dynamic_json=0, 缺segment=0
+  S8/L3: depth=600, segment=79380, seg全零=9555, 缺dynamic_json=0, 缺segment=0
+  S8/L4: depth=600, segment=82980, seg全零=6193, 缺dynamic_json=0, 缺segment=0
+  S8/L5: depth=600, segment=118620, seg全零=12539, 缺dynamic_json=0, 缺segment=0
+  S8/L6: depth=600, segment=83880, seg全零=95, 缺dynamic_json=0, 缺segment=0
+  S8/L7: depth=600, segment=94320, seg全零=188, 缺dynamic_json=0, 缺segment=0
+  S8/L8: depth=600, segment=86400, seg全零=3000, 缺dynamic_json=0, 缺segment=0
+  S8/L9: depth=600, segment=160740, seg全零=28872, 缺dynamic_json=0, 缺segment=0
+  S8/L10: depth=600, segment=85680, seg全零=989, 缺dynamic_json=0, 缺segment=0
+  S8/L11: depth=600, segment=75060, seg全零=0, 缺dynamic_json=0, 缺segment=0
+  S8/L12: depth=600, segment=64800, seg全零=499, 缺dynamic_json=0, 缺segment=0
+  S8/L13: depth=600, segment=105120, seg全零=36, 缺dynamic_json=0, 缺segment=0
+  S8/L14: depth=600, segment=117000, seg全零=18850, 缺dynamic_json=0, 缺segment=0
+
+--- Phase 4: 跨视角一致性 ---
+  S1/L1: 事件=100, 抽检=20, 跨视角问题=0
+  S1/L2: 事件=100, 抽检=20, 跨视角问题=0
+  S1/L3: 事件=100, 抽检=20, 跨视角问题=0
+  S1/L4: 事件=100, 抽检=20, 跨视角问题=0
+  S1/L5: 事件=100, 抽检=20, 跨视角问题=0
+  S1/L6: 事件=150, 抽检=20, 跨视角问题=0
+  S1/L7: 事件=150, 抽检=20, 跨视角问题=0
+  S2/L1: 事件=80, 抽检=20, 跨视角问题=0
+  S2/L2: 事件=80, 抽检=20, 跨视角问题=0
+  S2/L3: 事件=80, 抽检=20, 跨视角问题=0
+  S2/L4: 事件=80, 抽检=20, 跨视角问题=0
+  S2/L5: 事件=120, 抽检=20, 跨视角问题=0
+  S2/L6: 事件=120, 抽检=20, 跨视角问题=0
+  S2/L7: 事件=120, 抽检=20, 跨视角问题=0
+  S3/L1: 事件=80, 抽检=20, 跨视角问题=0
+  S3/L2: 事件=80, 抽检=20, 跨视角问题=0
+  S3/L3: 事件=80, 抽检=20, 跨视角问题=0
+  S3/L4: 事件=80, 抽检=20, 跨视角问题=0
+  S3/L5: 事件=80, 抽检=20, 跨视角问题=0
+  S3/L6: 事件=120, 抽检=20, 跨视角问题=0
+  S3/L7: 事件=120, 抽检=20, 跨视角问题=0
+  S3/L8: 事件=120, 抽检=20, 跨视角问题=0
+  S3/L9: 事件=120, 抽检=20, 跨视角问题=0
+  S4/L1: 事件=100, 抽检=20, 跨视角问题=0
+  S4/L2: 事件=100, 抽检=20, 跨视角问题=0
+  S4/L3: 事件=100, 抽检=20, 跨视角问题=0
+  S4/L4: 事件=100, 抽检=20, 跨视角问题=0
+  S4/L5: 事件=100, 抽检=20, 跨视角问题=0
+  S4/L6: 事件=150, 抽检=20, 跨视角问题=0
+  S4/L7: 事件=150, 抽检=20, 跨视角问题=0
+  S4/L8: 事件=150, 抽检=20, 跨视角问题=0
+  S4/L9: 事件=150, 抽检=20, 跨视角问题=0
+  S5/L1: 事件=80, 抽检=20, 跨视角问题=0
+  S5/L2: 事件=80, 抽检=20, 跨视角问题=0
+  S5/L3: 事件=80, 抽检=20, 跨视角问题=0
+  S5/L4: 事件=80, 抽检=20, 跨视角问题=0
+  S5/L5: 事件=80, 抽检=20, 跨视角问题=0
+  S5/L6: 事件=120, 抽检=20, 跨视角问题=0
+  S5/L7: 事件=120, 抽检=20, 跨视角问题=0
+  S5/L8: 事件=120, 抽检=20, 跨视角问题=0
+  S5/L9: 事件=120, 抽检=20, 跨视角问题=0
+  S6/L1: 事件=80, 抽检=20, 跨视角问题=0
+  S6/L2: 事件=80, 抽检=20, 跨视角问题=0
+  S6/L3: 事件=80, 抽检=20, 跨视角问题=0
+  S6/L4: 事件=80, 抽检=20, 跨视角问题=0
+  S6/L5: 事件=80, 抽检=20, 跨视角问题=0
+  S6/L6: 事件=120, 抽检=20, 跨视角问题=0
+  S6/L7: 事件=120, 抽检=20, 跨视角问题=0
+  S6/L8: 事件=120, 抽检=20, 跨视角问题=0
+  S6/L9: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L1: 事件=80, 抽检=20, 跨视角问题=0
+  S7/L2: 事件=80, 抽检=20, 跨视角问题=0
+  S7/L3: 事件=80, 抽检=20, 跨视角问题=0
+  S7/L4: 事件=80, 抽检=20, 跨视角问题=0
+  S7/L5: 事件=80, 抽检=20, 跨视角问题=0
+  S7/L6: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L7: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L8: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L9: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L10: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L11: 事件=120, 抽检=20, 跨视角问题=0
+  S7/L12: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L1: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L2: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L3: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L4: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L5: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L6: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L7: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L8: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L9: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L10: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L11: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L12: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L13: 事件=120, 抽检=20, 跨视角问题=0
+  S8/L14: 事件=120, 抽检=20, 跨视角问题=0
+
+======================================================================
+验证报告摘要
+======================================================================
+总错误数: 0
+总警告数: 59
+
+--- 警告 (59条) ---
+  WARN S2/L6: 分割mask全零 655 个
+  WARN S2/L7: 分割mask全零 235 个
+  WARN S3/L1: 分割mask全零 798 个
+  WARN S3/L2: 分割mask全零 54 个
+  WARN S3/L7: 分割mask全零 3302 个
+  WARN S3/L8: 分割mask全零 2845 个
+  WARN S3/L9: 分割mask全零 819 个
+  WARN S4/L1: 分割mask全零 123 个
+  WARN S4/L2: 分割mask全零 7 个
+  WARN S4/L3: 分割mask全零 100 个
+  WARN S4/L4: 分割mask全零 69 个
+  WARN S4/L5: 分割mask全零 70 个
+  WARN S4/L6: 分割mask全零 1330 个
+  WARN S4/L7: 分割mask全零 1990 个
+  WARN S4/L8: 分割mask全零 470 个
+  WARN S4/L9: 分割mask全零 536 个
+  WARN S5/L1: 分割mask全零 1374 个
+  WARN S5/L2: 分割mask全零 3299 个
+  WARN S5/L3: 分割mask全零 2540 个
+  WARN S5/L4: 分割mask全零 1297 个
+  WARN S5/L5: 分割mask全零 2020 个
+  WARN S5/L6: 分割mask全零 3621 个
+  WARN S5/L7: 分割mask全零 3480 个
+  WARN S5/L8: 分割mask全零 3735 个
+  WARN S5/L9: 分割mask全零 3741 个
+  WARN S6/L1: 分割mask全零 1297 个
+  WARN S6/L2: 分割mask全零 2349 个
+  WARN S6/L3: 分割mask全零 1785 个
+  WARN S6/L4: 分割mask全零 1878 个
+  WARN S6/L5: 分割mask全零 1285 个
+  WARN S6/L6: 分割mask全零 1971 个
+  WARN S6/L7: 分割mask全零 2523 个
+  WARN S6/L8: 分割mask全零 2486 个
+  WARN S6/L9: 分割mask全零 2209 个
+  WARN S7/L1: 分割mask全零 1130 个
+  WARN S7/L2: 分割mask全零 2160 个
+  WARN S7/L3: 分割mask全零 1484 个
+  WARN S7/L4: 分割mask全零 1454 个
+  WARN S7/L5: 分割mask全零 279 个
+  WARN S7/L6: 分割mask全零 2715 个
+  WARN S7/L7: 分割mask全零 2643 个
+  WARN S7/L8: 分割mask全零 3929 个
+  WARN S7/L9: 分割mask全零 3114 个
+  WARN S7/L10: 分割mask全零 19101 个
+  WARN S7/L11: 分割mask全零 2791 个
+  WARN S7/L12: 分割mask全零 126 个
+  WARN S8/L1: 分割mask全零 19872 个
+  WARN S8/L2: 分割mask全零 37106 个
+  WARN S8/L3: 分割mask全零 9555 个
+  WARN S8/L4: 分割mask全零 6193 个
+  WARN S8/L5: 分割mask全零 12539 个
+  WARN S8/L6: 分割mask全零 95 个
+  WARN S8/L7: 分割mask全零 188 个
+  WARN S8/L8: 分割mask全零 3000 个
+  WARN S8/L9: 分割mask全零 28872 个
+  WARN S8/L10: 分割mask全零 989 个
+  WARN S8/L12: 分割mask全零 499 个
+  WARN S8/L13: 分割mask全零 36 个
+  WARN S8/L14: 分割mask全零 18850 个
+
+--- 统计 ---
+  S1/L1_count: 200
+  S1/L1_seg_zero: 0
+  S1/L1_views: {'front': 100, 'top': 100}
+  S1/L2_count: 200
+  S1/L2_seg_zero: 0
+  S1/L2_views: {'front': 100, 'top': 100}
+  S1/L3_count: 200
+  S1/L3_seg_zero: 0
+  S1/L3_views: {'front': 100, 'top': 100}
+  S1/L4_count: 200
+  S1/L4_seg_zero: 0
+  S1/L4_views: {'front': 100, 'top': 100}
+  S1/L5_count: 200
+  S1/L5_seg_zero: 0
+  S1/L5_views: {'front': 100, 'top': 100}
+  S1/L6_count: 300
+  S1/L6_seg_zero: 0
+  S1/L6_views: {'front': 150, 'top': 150}
+  S1/L7_count: 300
+  S1/L7_seg_zero: 0
+  S1/L7_views: {'front': 150, 'top': 150}
+  S2/L1_count: 240
+  S2/L1_seg_zero: 0
+  S2/L1_views: {'front': 80, 'top': 80, 'left': 80}
+  S2/L2_count: 240
+  S2/L2_seg_zero: 0
+  S2/L2_views: {'front': 80, 'top': 80, 'left': 80}
+  S2/L3_count: 240
+  S2/L3_seg_zero: 0
+  S2/L3_views: {'front': 80, 'top': 80, 'left': 80}
+  S2/L4_count: 240
+  S2/L4_seg_zero: 0
+  S2/L4_views: {'front': 80, 'top': 80, 'left': 80}
+  S2/L5_count: 360
+  S2/L5_seg_zero: 0
+  S2/L5_views: {'front': 120, 'top': 120, 'left': 120}
+  S2/L6_count: 360
+  S2/L6_seg_zero: 655
+  S2/L6_views: {'front': 120, 'top': 120, 'left': 120}
+  S2/L7_count: 360
+  S2/L7_seg_zero: 235
+  S2/L7_views: {'front': 120, 'top': 120, 'left': 120}
+  S3/L1_count: 240
+  S3/L1_seg_zero: 798
+  S3/L1_views: {'front': 80, 'top': 80, 'left': 80}
+  S3/L2_count: 240
+  S3/L2_seg_zero: 54
+  S3/L2_views: {'front': 80, 'top': 80, 'left': 80}
+  S3/L3_count: 240
+  S3/L3_seg_zero: 0
+  S3/L3_views: {'front': 80, 'top': 80, 'left': 80}
+  S3/L4_count: 240
+  S3/L4_seg_zero: 0
+  S3/L4_views: {'front': 80, 'top': 80, 'left': 80}
+  S3/L5_count: 240
+  S3/L5_seg_zero: 0
+  S3/L5_views: {'front': 80, 'top': 80, 'left': 80}
+  S3/L6_count: 360
+  S3/L6_seg_zero: 0
+  S3/L6_views: {'front': 120, 'top': 120, 'left': 120}
+  S3/L7_count: 360
+  S3/L7_seg_zero: 3302
+  S3/L7_views: {'front': 120, 'top': 120, 'left': 120}
+  S3/L8_count: 360
+  S3/L8_seg_zero: 2845
+  S3/L8_views: {'front': 120, 'top': 120, 'left': 120}
+  S3/L9_count: 360
+  S3/L9_seg_zero: 819
+  S3/L9_views: {'front': 120, 'top': 120, 'left': 120}
+  S4/L1_count: 200
+  S4/L1_seg_zero: 123
+  S4/L1_views: {'front': 100, 'top': 100}
+  S4/L2_count: 200
+  S4/L2_seg_zero: 7
+  S4/L2_views: {'front': 100, 'top': 100}
+  S4/L3_count: 200
+  S4/L3_seg_zero: 100
+  S4/L3_views: {'front': 100, 'top': 100}
+  S4/L4_count: 200
+  S4/L4_seg_zero: 69
+  S4/L4_views: {'front': 100, 'top': 100}
+  S4/L5_count: 200
+  S4/L5_seg_zero: 70
+  S4/L5_views: {'front': 100, 'top': 100}
+  S4/L6_count: 300
+  S4/L6_seg_zero: 1330
+  S4/L6_views: {'front': 150, 'top': 150}
+  S4/L7_count: 300
+  S4/L7_seg_zero: 1990
+  S4/L7_views: {'front': 150, 'top': 150}
+  S4/L8_count: 300
+  S4/L8_seg_zero: 470
+  S4/L8_views: {'front': 150, 'top': 150}
+  S4/L9_count: 300
+  S4/L9_seg_zero: 536
+  S4/L9_views: {'front': 150, 'top': 150}
+  S5/L1_count: 400
+  S5/L1_seg_zero: 1374
+  S5/L1_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S5/L2_count: 400
+  S5/L2_seg_zero: 3299
+  S5/L2_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S5/L3_count: 400
+  S5/L3_seg_zero: 2540
+  S5/L3_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S5/L4_count: 400
+  S5/L4_seg_zero: 1297
+  S5/L4_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S5/L5_count: 400
+  S5/L5_seg_zero: 2020
+  S5/L5_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S5/L6_count: 600
+  S5/L6_seg_zero: 3621
+  S5/L6_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S5/L7_count: 600
+  S5/L7_seg_zero: 3480
+  S5/L7_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S5/L8_count: 600
+  S5/L8_seg_zero: 3735
+  S5/L8_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S5/L9_count: 600
+  S5/L9_seg_zero: 3741
+  S5/L9_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S6/L1_count: 400
+  S6/L1_seg_zero: 1297
+  S6/L1_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S6/L2_count: 400
+  S6/L2_seg_zero: 2349
+  S6/L2_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S6/L3_count: 400
+  S6/L3_seg_zero: 1785
+  S6/L3_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S6/L4_count: 400
+  S6/L4_seg_zero: 1878
+  S6/L4_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S6/L5_count: 400
+  S6/L5_seg_zero: 1285
+  S6/L5_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S6/L6_count: 600
+  S6/L6_seg_zero: 1971
+  S6/L6_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S6/L7_count: 600
+  S6/L7_seg_zero: 2523
+  S6/L7_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S6/L8_count: 600
+  S6/L8_seg_zero: 2486
+  S6/L8_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S6/L9_count: 600
+  S6/L9_seg_zero: 2209
+  S6/L9_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L10_count: 600
+  S7/L10_seg_zero: 19101
+  S7/L10_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L11_count: 600
+  S7/L11_seg_zero: 2791
+  S7/L11_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L12_count: 600
+  S7/L12_seg_zero: 126
+  S7/L12_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L1_count: 400
+  S7/L1_seg_zero: 1130
+  S7/L1_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S7/L2_count: 400
+  S7/L2_seg_zero: 2160
+  S7/L2_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S7/L3_count: 400
+  S7/L3_seg_zero: 1484
+  S7/L3_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S7/L4_count: 400
+  S7/L4_seg_zero: 1454
+  S7/L4_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S7/L5_count: 400
+  S7/L5_seg_zero: 279
+  S7/L5_views: {'front': 80, 'back': 80, 'left': 80, 'right': 80, 'top': 80}
+  S7/L6_count: 600
+  S7/L6_seg_zero: 2715
+  S7/L6_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L7_count: 600
+  S7/L7_seg_zero: 2643
+  S7/L7_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L8_count: 600
+  S7/L8_seg_zero: 3929
+  S7/L8_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S7/L9_count: 600
+  S7/L9_seg_zero: 3114
+  S7/L9_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L10_count: 600
+  S8/L10_seg_zero: 989
+  S8/L10_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L11_count: 600
+  S8/L11_seg_zero: 0
+  S8/L11_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L12_count: 600
+  S8/L12_seg_zero: 499
+  S8/L12_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L13_count: 600
+  S8/L13_seg_zero: 36
+  S8/L13_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L14_count: 600
+  S8/L14_seg_zero: 18850
+  S8/L14_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L1_count: 600
+  S8/L1_seg_zero: 19872
+  S8/L1_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L2_count: 600
+  S8/L2_seg_zero: 37106
+  S8/L2_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L3_count: 600
+  S8/L3_seg_zero: 9555
+  S8/L3_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L4_count: 600
+  S8/L4_seg_zero: 6193
+  S8/L4_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L5_count: 600
+  S8/L5_seg_zero: 12539
+  S8/L5_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L6_count: 600
+  S8/L6_seg_zero: 95
+  S8/L6_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L7_count: 600
+  S8/L7_seg_zero: 188
+  S8/L7_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L8_count: 600
+  S8/L8_seg_zero: 3000
+  S8/L8_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+  S8/L9_count: 600
+  S8/L9_seg_zero: 28872
+  S8/L9_views: {'front': 120, 'back': 120, 'left': 120, 'right': 120, 'top': 120}
+
+报告已写入: /home/lzy/project/slot-datamaking/validation_report_s1_s8.txt

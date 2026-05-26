@@ -4,7 +4,7 @@ SlotFormer-master/pretrained/
 tools/
 CLAUDE.md
 # generated outputs
-database/
+
 
 # large file types
 *.zip
@@ -16,15 +16,14 @@ database/
 *.exr
 *.png
 .*
-
+S[1-8]
 *.json
 *.npz
 !/.gitignore
-
+tars
 # python cache
 __pycache__/
 *.pyc
-
 # local
 .conda/
 .env
