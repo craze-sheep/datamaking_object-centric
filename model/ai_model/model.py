@@ -114,7 +114,7 @@ class PhysicsObjectGraphPredictor(nn.Module):
         future_tokens = temporal_out['future_tokens']  # [B, Tp, N, hidden_dim]
 
         # 4. Decode: future tokens → state, collision, mask, RGB
-        pred = self.decoder(future_tokens, batch['valid_mask'])
+        pred = self.decoder(future_tokens, batch['valid_mask'], batch.get('obj_attrs'))
 
         return pred
 

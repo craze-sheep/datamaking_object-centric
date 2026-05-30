@@ -183,11 +183,12 @@ class RGBDecoder(nn.Module):
         # Per-object appearance: [B, Tp, N, 3]
         appearance = self.appearance_head(tokens)
 
+        # Apply valid_mask to mask_prob to exclude padding objects
+        mask_prob_valid = mask_prob * valid_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1).float()
+
         # Composite: mask * appearance per object, then sum
-        # appearance: [B, Tp, N, 3] -> [B, Tp, N, 3, 1, 1]
-        # mask_prob: [B, Tp, N, H, W] -> [B, Tp, N, 1, H, W]
         appearance_map = appearance.unsqueeze(-1).unsqueeze(-1)  # [B, Tp, N, 3, 1, 1]
-        mask_map = mask_prob.unsqueeze(3)  # [B, Tp, N, 1, H, W]
+        mask_map = mask_prob_valid.unsqueeze(3)  # [B, Tp, N, 1, H, W]
         composited = (appearance_map * mask_map).sum(dim=2)  # [B, Tp, 3, H, W]
 
         # Background from mean token
@@ -228,6 +229,7 @@ class MultiHeadDecoder(nn.Module):
         self,
         future_tokens: torch.Tensor,  # [B, Tp, N, D]
         valid_mask: torch.Tensor,      # [B, N]
+        obj_attrs: torch.Tensor = None, # [B, N, attr_dim] optional, for static flag
     ) -> Dict[str, torch.Tensor]:
         """
         Returns:
@@ -241,17 +243,24 @@ class MultiHeadDecoder(nn.Module):
         mask_logits = self.mask_head(future_tokens)
         mask_prob = torch.sigmoid(mask_logits)
 
-        # Zero out invalid objects in mask predictions
-        mask_prob = mask_prob * valid_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1).float()
-        mask_logits = mask_logits * valid_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1).float()
+        # Zero out invalid objects in mask predictions (use large negative for sigmoid→0)
+        invalid = ~valid_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1)  # [B, 1, N, 1, 1]
+        mask_logits = mask_logits.masked_fill(invalid, -10.0)
+        mask_prob = torch.sigmoid(mask_logits)
 
         rgb_pred = self.rgb_decoder(future_tokens, mask_prob, valid_mask)
 
-        # Pair mask for collision (exclude self-edges and padding)
+        # Pair mask for collision (exclude self-edges, padding, and static-static pairs)
         B, Tp, N, _ = future_tokens.shape
         pair_mask = valid_mask.unsqueeze(1).unsqueeze(2) * valid_mask.unsqueeze(1).unsqueeze(3)
         eye = torch.eye(N, device=future_tokens.device).unsqueeze(0).unsqueeze(0)
         pair_mask = pair_mask.float() * (1 - eye)
+
+        # Exclude static-static pairs if obj_attrs provided
+        if obj_attrs is not None:
+            static_flag = (obj_attrs[..., 8] > 0.5)  # [B, N]
+            static_pair = static_flag.unsqueeze(1).unsqueeze(2) & static_flag.unsqueeze(1).unsqueeze(3)
+            pair_mask = pair_mask * (~static_pair).float()
 
         return {
             'state_pred': state_pred,

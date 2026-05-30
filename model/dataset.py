@@ -205,7 +205,22 @@ class PhysicsVideoDataset(Dataset):
     
     def __len__(self) -> int:
         return len(self.samples)
-    
+
+    def _empty_sample(self, num_objects: int) -> Dict[str, torch.Tensor]:
+        """Return a zero-filled sample when no frames are available."""
+        T = self.total_length
+        N = min(num_objects, self.max_objects)
+        return {
+            'rgb': torch.zeros(T, 3, 128, 128),
+            'mask': torch.zeros(T, N, 128, 128),
+            'obj_attrs': torch.zeros(self.max_objects, self.attr_dim),
+            'dyn_state': torch.zeros(T, N, 16),
+            'force_matrix': torch.zeros(T, N, N, 3),
+            'valid_mask': torch.zeros(self.max_objects, dtype=torch.bool),
+            'scene_id': 0,
+            'sample_id': 0,
+        }
+
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
         sample_info = self.samples[idx]
         sample_path = sample_info['path']
@@ -222,6 +237,9 @@ class PhysicsVideoDataset(Dataset):
         ])
         
         # Sliding window: select a window of total_length frames
+        if len(available_frames) == 0:
+            # No frames available - return zeros
+            return self._empty_sample(num_objects)
         if len(available_frames) >= self.total_length:
             # Random start position for training
             if self.split == 'train':
@@ -305,7 +323,7 @@ class PhysicsVideoDataset(Dataset):
             'dyn_state': dyn_tensor,
             'force_matrix': force_tensor,
             'valid_mask': valid_mask,
-            'scene_id': hash(sample_info['scene']) % 8,
+            'scene_id': int(hashlib.md5(sample_info['scene'].encode()).hexdigest()[:8], 16) % 8,
             'sample_id': int(sample_info['sample_id']) if sample_info['sample_id'].isdigit() else 0,
         }
     

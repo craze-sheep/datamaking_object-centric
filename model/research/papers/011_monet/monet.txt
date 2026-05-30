@@ -1,0 +1,1935 @@
+A geometric multigrid library for quadtree/octree AMR
+grids coupled to MPI-AMRVAC
+J. Teunissena,b,∗, R. Keppensa
+aCentre for mathematical Plasma Astrophysics, Department of Mathematics, KU
+Leuven, Celestijnenlaan 200B, 3001 Leuven, Belgium
+bCentrum Wiskunde & Informatica, PO Box 94079, 1090 GB Amsterdam, The
+Netherlands
+Abstract
+We present an eﬃcient MPI-parallel geometric multigrid library for quadtree
+(2D) or octree (3D) grids with adaptive reﬁnement. Cartesian 2D/3D and
+cylindrical 2D geometries are supported, with second-order discretizations
+for the elliptic operators. Periodic, Dirichlet, and Neumann boundary con-
+ditions can be handled, as well as free-space boundary conditions for 3D
+Poisson problems, for which we use an FFT-based solver on the coarse grid.
+Scaling results up to 1792 cores are presented. The library can be used to
+extend adaptive mesh reﬁnement frameworks with an elliptic solver, which
+we demonstrate by coupling it to MPI-AMRVAC. Several test cases are pre-
+sented in which the multigrid routines are used to control the divergence of
+the magnetic ﬁeld in magnetohydrodynamic simulations.
+Keywords:
+multigrid; elliptic solver; octree; adaptive mesh reﬁnement;
+divergence cleaning
+1. Introduction
+A typical example of an elliptic partial diﬀerential equation (PDE) is
+Poisson’s equation
+∇· (ε∇φ) = f,
+(1)
+where the right-hand side f and coeﬃcient ε are given and φ has to be
+obtained given certain boundary conditions. Equations like (1) appear in
+∗Corresponding author.
+E-mail address: jannis@teunissen.net
+Preprint submitted to Computer Physics Communications
+April 6, 2022
+arXiv:1901.11370v2  [physics.comp-ph]  2 Jul 2019
+many applications, for example when computing electrostatic or gravitational
+potentials, or when simulating incompressible ﬂows. An important property
+of elliptic equations is that they are non-local: their solution at one location
+depends on the solution and right-hand side elsewhere. Here we present a
+library for the parallel solution of elliptic PDEs on quadtree and octree grids
+with adaptive mesh reﬁnement (AMR).
+Elliptic PDEs can be solved with e.g., fast Fourier transforms (FFTs),
+cyclic reduction methods, direct sparse solvers, preconditioned iterative meth-
+ods, multipole methods and multigrid methods, see e.g. [1]. These methods
+diﬀer in their ﬂexibility, for example in terms of supported mesh types and
+boundary conditions, and in whether the coeﬃcient ε in equation (1) is al-
+lowed to have a smooth or discontinuous spatial variation. They also diﬀer in
+their eﬃciency. The fastest multigrid methods operate in time O(N), where
+N denotes the number of unknowns. FFT-based methods (with or without
+cyclic reduction) typically require time O(N log N). Most other methods are
+more expensive, although their cost is often problem-dependent. Due to the
+non-local nature of elliptic equations, there are also signiﬁcant diﬀerences in
+how well solvers can be parallelized. A comparison of the performance and
+scaling of several state-of-the-art Poisson solvers can be found in [1].
+Our motivation was to extend MPI-AMRVAC [2, 3] with an elliptic solver.
+MPI-AMRVAC is a parallel AMR framework for (magneto)hydrodynamics sim-
+ulations that it is typically used to study solar and astrophysical phenomena.
+The framework has a focus on solving conservation laws with shock-capturing
+methods and quadtree/octree AMR. Such AMR grids are ideally suited to
+geometric multigrid methods, which iteratively solve elliptic equations by
+employing a hierarchy of grids. Geometric multigrid methods can also be
+highly eﬃcient, with an ideal O(N) time complexity, and they are matrix-
+free, which means that no matrix has to be stored or pre-computed.
+There are already a number of AMR frameworks that include a multi-
+grid solver. Examples are Boxlib [4] (superseded by AMReX), Maestro [5],
+Gerris [6], RAMSES [7], NIRVANA [8] and Paramesh/FLASH [9, 10]. However,
+the included multigrid solvers are typically coupled to (and optimized for)
+the application codes, so that they cannot easily be used in other projects.
+In recent years, several highly scalable multigrid solvers have been devel-
+oped. A combination of geometric and algebraic multigrid was used in [11]
+to obtain a matrix-free method that could scale to 2.6 × 105 cores.
+Rel-
+evant is also the development of the open-source HPGMG code [12] (https:
+//hpgmg.org/), which is aimed at benchmarking HPC systems with geo-
+2
+metric multigrid methods. HPGMG has already been coupled to Boxlib, but
+as the code’s primary goal appears to be benchmarking it was not clear how
+easily it could be coupled to MPI-AMRVAC, which is written in Fortran. An-
+other relevant code is DENDRO [13], which can solve PDEs on ﬁnite element
+meshes. Dendro was written in C++ and uses the PETSc library [14]. Finally,
+we mention Hypre [15], a library of high performance multigrid solvers and
+preconditioners.
+Because there appeared to be no geometric multigrid library that we could
+easily couple to MPI-AMRVAC, we have developed such a library ourselves. The
+main features of the library are:
+• Support for solving elliptic PDEs on quadtree/octree AMR grids in
+Cartesian (2D/3D) and axisymmetric (2D) geometries.
+• Support for Dirichlet, Neumann and periodic boundary conditions, as
+well as free space boundary conditions in 3D.
+• MPI-based parallelization that can scale to 103 or more processors.
+• All source code is written in Fortran, under an open source license
+(GPLv3).
+The source code can be found at https://github.com/
+jannisteunissen/octree-mg.
+The library is relatively simple and small, with currently less than 4000 lines
+of code, but this simplicity also means that there are a number of limitations:
+• Only second-order accurate 5/7-point discretizations of elliptic opera-
+tors are supported for now.
+• Polar and spherical grids are not supported. They are not compatible
+with the point-wise smoothers used here, see section 2.2.
+• Geometric multigrid is here used as a solver. With libraries such as
+PETSc and Hypre multigrid can also be used as a preconditioner.
+• Strong scaling is here demonstrated up to about 2 × 103 processors.
+For signiﬁcantly larger runs, a more sophisticated parallel implemen-
+tation could be required, see section 2.7.
+Multigrid methods that
+are potentially more suitable for such large problems can be found
+in e.g. [1, 12, 15].
+3
+Contents of the paper: The design and implementation of the library are
+described in section 2. Afterwards, several convergence and scaling tests are
+presented in section 3.
+Finally, we use the library section for divergence
+cleaning in MHD simulations with MPI-AMRVAC in section 4.
+2. Geometric multigrid library
+2.1. Introduction to multigrid
+Below, we provide only a brief introduction to multigrid methods. For
+a more detailed introduction to multigrid, there exist a number of excellent
+textbooks and review papers, see for example [16, 17, 18, 19].
+Relaxation methods such as the Gauss-Seidel method and successive over-
+relaxation (SOR) can be used to solve elliptic PDEs. However, the conver-
+gence rate of such methods decreases for larger problem sizes, which can
+be analyzed by decomposing the error into diﬀerent wavelengths. Typically,
+only short wavelength errors are eﬀectively damped.
+One reason for this
+is that the solution is locally updated, so that it can take a large number
+of iterations for information to propagate throughout the domain. Because
+relaxation methods locally smooth the error, they are also referred to as
+smoothers. The multigrid library presented here includes a couple relaxation
+methods / smoothers, which are described in section 2.2.
+The main idea behind geometric multigrid methods is to accelerate the
+convergence of a relaxation method by applying it on a hierarchy of grids.
+With the relaxation method, short wavelength errors can eﬀectively be damped
+on any grid in the hierarchy. However, a short wavelength on a coarse grid
+corresponds to a long wavelength on a ﬁne grid.
+By combining informa-
+tion from all grid levels, it is possible to eﬃciently damp all of the error
+wavelengths. The transfer of information between grid levels is done by pro-
+longation (interpolation) and restriction, which are described in section 2.3.
+The order in which relaxation, prolongation and restriction are performed is
+determined by the multigrid cycle type. We support two popular options,
+namely V-cycles and full multigrid (FMG) cycles, see section 2.4.
+2.2. Included operators and smoothers
+When an elliptic PDE is discretized on a mesh with grid spacing h, it can
+be written in the following form
+Lhφh = f h,
+(2)
+4
+where L is an elliptic operator, φ is the solution to be obtained, f is the
+right-hand side, and the superscript h indicates that these quantities are dis-
+cretized. The multigrid library contains several predeﬁned elliptic equations,
+namely:
+• ∇· (∇φ) = f: Poisson’s equation
+• ∇· (ε∇φ) = f: Poisson’s equation with a variable coeﬃcient ε
+• ∇· (∇φ) −λφ = f: Helmholtz equation with λ ≥0
+• ∇· (ε∇φ) −λφ = f: Helmholtz equation with a variable coeﬃcient ε
+These equations are discretized with a standard 5/7-point second-order accu-
+rate discretization, in which the solution and the right-hand side are deﬁned
+at cell centers. The library supports grids with structured adaptive mesh
+reﬁnement, see section 2.5. On such grids, the discretization of Poisson’s
+equation in 2D at a cell (i, j) is for example given by
+h−2
+x (φi−1,j −2φi,j + φi+1,j) + h−2
+y (φi,j−1 −2φi,j + φi,j+1) = fi,j,
+(3)
+where hx and hy denote the grid spacing in the x and y direction, respectively.
+The generalization to 3D is straightforward (an extra term for the z-direction
+appears). With a variable coeﬃcient, we use the following discretization for
+Poisson’s equation in 2D
+h−2
+x
+
+¯εi−1/2,j(φi−1,j −φi,j) + ¯εi+1/2,j(φi+1,j −φi,j)
+
+(4)
++ h−2
+y
+
+¯εi,j−1/2(φi,j−1 −φi,j) + ¯εi,j+1/2(φi,j+1 −φi,j)
+
+= fi,j,
+(5)
+where ¯ε denotes the harmonic mean of the coeﬃcients in neighboring cells.
+For example, the coeﬃcient between cells (i −1, j) and (i, j) is deﬁned as
+¯εi−1/2,j = 2 εi,j εi−1,j
+εi,j + εi−1,j
+.
+The variation in the coeﬃcients has to be smooth enough for standard multi-
+grid methods to work, since we adopt no special treatment for discontinuous
+coeﬃcients (see for example [19]).
+Besides the equations listed above, users can also deﬁne their own elliptic
+operators. Currently, the library supports discrete operators with 5-point
+stencils in 2D and 7-point stencils in 3D. The advantage of employing such
+5
+sparse stencils (without diagonal elements) is that the amount of commu-
+nication between processors is signiﬁcantly reduced. However, the library
+could relatively easily be extended to support 9/27-point stencils in 2D/3D
+that also use diagonal elements.
+When performing multigrid, a smoother (relaxation method) has to be
+employed to smooth the error in the solution. We include point-wise smoothers
+of the Gauss-Seidel type, which solve the discretized equations for φi,j while
+keeping the values at neighbors ﬁxed. For example, for equation (3) the local
+solution φ∗
+i,j is given by
+φ∗
+i,j =
+1
+h−2
+x + h−2
+y
+
+h−2
+x (φi−1,j + φi+1,j) + h−2
+y (φi,j−1 + φi,j+1) −fi,j
+
+.
+The order in which a smoother replaces the old values φi,j by φ∗
+i,j aﬀects the
+smoothing behavior. Two orderings are provided:
+• Standard Gauss-Seidel, which linearly loops over all the (i, j) indices
+(in the order they are stored in the computer’s memory).
+• Gauss-Seidel red-black, which ﬁrst updates all points for which i + j is
+even, and then all points for which i + j is odd.
+A downside of point-wise smoothers is that they require the ‘coupling’
+between unknowns to be of similar strength in all directions, otherwise the
+convergence rate is reduced (see e.g. [18]). For a Laplace equation ∇2ψ =
+0 on a Cartesian grid, this means that hx, hy and hz have to be similar,
+e.g. within a factor two. This also restricts the geometries in which a point-
+wise smoother can be applied. For example, in 3D cylindrical coordinates
+the Laplace equation becomes
+1
+r∂r(r∂rψ) + 1
+r2∂2
+φψ + ∂2
+zψ = 0.
+The 1/r2 factor in front of the ∂2
+φ term violates the similar-coupling require-
+ment, which is why 3D cylindrical coordinates are not supported in the li-
+brary. However, a discretization for a constant-coeﬃcient Poisson equation
+in a 2D axisymmetric geometry is provided.
+So-called line smoothers or plane smoothers solve for multiple unknowns
+along a line or a plane simultaneously. They are typically more robust than
+point-wise smoothers, and they can be used to perform multigrid in po-
+lar/spherical coordinate systems [20, 21]. However, line or plane smoothers
+6
+1/4
+1/4
+1/2
+1/2
+1/4
+1/4
+coarse
+ghost cell
+Figure 1: Illustration of the prolongation procedure in 2D. Cell-centered values on the
+coarse and ﬁne grid are indicated by red and black circles, respectively. Arrows and weights
+indicate which coarse grid values are used for the interpolation. Near block boundaries,
+the interpolation makes use of coarse grid ghost cells, but note that no diagonal ghost cells
+are used. Formulas for the interpolation scheme are given in equations (6) and (7).
+are incompatible with grid reﬁnement if standard multigrid cycles are used,
+because they would have to solve for unknowns at diﬀerent reﬁnement levels.
+2.3. Prolongation and restriction
+Besides a smoother, multigrid also requires prolongation and restriction
+methods, which transfer data from coarse to ﬁne grids and vice versa. For
+prolongation we use linear interpolation based on the nearest neighbors, as is
+also included in e.g. the Boxlib [4] and Aﬁvo [22] frameworks. The procedure
+is illustrated in ﬁgure 1 for a 2D case, and can be described by the following
+equations:
+fx+h/4,y+h/4 = 1
+4 (2fx,y + fx+h,y + fx,y+h) + O(h2),
+(6)
+fx−h/4,y+h/4 = 1
+4 (2fx,y + fx−h,y + fx,y+h) + O(h2),
+with the schemes for other points following from symmetry.
+In 3D, the
+interpolation stencil becomes
+fx+h/4,y+h/4,z+h/4 = 1
+4 (fx,y,z + fx+h,y,z + fx,y+h,z + fx,y,z+h) + O(h2),
+(7)
+fx−h/4,y+h/4,z+h/4 = 1
+4 (fx,y,z + fx−h,y,z + fx,y+h,z + fx,y,z+h) + O(h2).
+7
+smoothing
+restriction
+prolongation
+down
+up
+base
+V-cycle
+FMG cycle
+h
+initial
+restriction
+(no smoothing)
+2h
+4h
+8h
+Figure 2: Schematic illustration of the V-cycle and FMG cycle for a grid with four levels.
+The FMG cycle contains several V-cycles at increasingly ﬁner grids. At the start of an
+FMG cycle, the solution and the right-hand side are restricted to the coarsest grid.
+An advantage of these schemes is that they do not require diagonal ghost cells,
+which saves signiﬁcant communication costs. A drawback is that interpola-
+tion errors can be larger than with standard bilinear or trilinear interpolation,
+somewhat reducing the multigrid convergence rate.
+For restriction, the value of four (2D) or eight (3D) ﬁne grid values is
+averaged to obtain a coarse grid value. Besides these built-in methods, users
+can also deﬁne custom prolongation and restriction operators.
+2.4. Multigrid cycles
+Two standard multigrid cycles are included in the library [19, 18, 17]: the
+V-cycle and the full multigrid (FMG) cycle, which are illustrated in ﬁgure 2.
+As the name suggests, a V-cycle goes from the ﬁnest grid to the coarsest grid
+and then back to the ﬁnest grid. To explain the procedure, we introduce some
+terminology: let v denote the approximate solution, f the right-hand side,
+L the elliptic operator, r = f −Lv the residual, P a prolongation operator,
+and R a restriction operator. Furthermore, a superscript h and H refer to
+the current and the underlying coarse grid level.
+During the downward part of the V-cycle, Ndown (default: two) smoothing
+steps are performed at a grid level. Afterwards, the residual is computed as
+rh = f h −Lh(vh).
+The current approximation vh is then restricted to the coarse grid as vH =
+R(vh), after which a copy vH
+old = vH is stored. This copy is later used to
+8
+update the ﬁne-grid solution. The coarse-grid right-hand side is then updated
+as
+f H = R(rh) + LH(vH),
+(8)
+after which the procedure repeats itself, but now starting from the underlying
+coarse grid.
+On the coarsest grid, up to Nmax (default: 1000) smoothing steps are
+performed until the residual is either below a user-deﬁned absolute threshold
+(default: 10−8), or until it is reduced by a user-deﬁned factor (default: 10−8).
+When the coarsest grid contains a large number of unknowns, it can be
+beneﬁcial to use a direct solver to solve the coarse grid equations, but we
+have not yet implemented this.
+In the prolongation steps, the solution is updated with a correction from
+the coarse grid as
+vh = vh + P(vH −vH
+old),
+(9)
+and afterwards Nup (default: two) smoothing steps are performed.
+The FMG cycle consists of a number of V-cycles, as illustrated in ﬁgure 2.
+Compared to V-cycles, FMG cycles perform additional smoothing at coarse
+grid levels. This makes them a bit more expensive, but the advantage of
+FMG cycles is that they can achieve convergence up to the discretization
+error in one or two iterations.
+If no initial guess for the solution is given, an initial guess of zero is used.
+We use the restriction and prolongation operators described in section 2.3
+for both V-cycles and FMG cycles. Whenever necessary, for example after
+restriction/prolongation or after a smoothing step, ghost cells are updated,
+see section 2.6.
+2.5. Grid structure
+The library supports quadtree/octree grids with Cartesian 2D/3D or
+cylindrical 2D (r, z) geometries, see e.g. [23]. Quadtree grids consist of blocks
+of Nx × Ny cells, which can be reﬁned by covering them with four reﬁned
+blocks (their ‘children’), which each also contain Nx × Ny cells but have half
+the grid spacing. An example of a quadtree grid is shown in ﬁgure 3. Octrees
+are the 3D equivalent of quadtrees, so that the reﬁnement of a block creates
+eight ‘children’. The multigrid library requires that the diﬀerence in reﬁne-
+ment between adjacent blocks is at most one level; such quadtree/octree grids
+are called 2:1 balanced.
+9
+Figure 3: Example of a quadtree grid. Each black square represents a grid block containing
+4 × 4 cells. From left to right, the grid is reﬁned in the upper right corner.
+When the multigrid library is coupled to an application code, it con-
+structs a copy of the full AMR hierarchy of the application code together
+with additional coarse grid levels. Applications codes therefore only need to
+contain ﬁne grid data, and not the underlying coarse grid data. The library
+also contains its own routines for parallel communication and the ﬁlling of
+ghost cells, as described in sections 2.6 and 2.7.
+The grid construction is performed in several steps. First, a user indicates
+the quadtree/octree block size and the size of the unreﬁned computational
+domain in the application code (in number of cells). The library will then
+internally construct additional coarse grid levels, as illustrated below. After-
+wards, the reﬁnement levels present in the application code are copied to the
+multigrid library.
+2.5.1. Construction of additional coarse grids
+Suppose that a 2D application uses blocks of 82 cells and that its level
+one grid contains 192 × 96 cells, see ﬁgure 4.
+The library will then ﬁrst
+construct the additional coarse grids given in table 1. The block size is kept
+at 8 × 8 down to level −1. For levels −2 to −4, the block size is reduced all
+the way down to 1 × 1 blocks. These extra grids are constructed to obtain a
+coarsest grid with a small number of unknowns. On such a grid, a solution
+can directly be obtained with a modest number of iterations of the smoother.
+A coarsest grid with few unknowns can be obtained when the level one grid
+size is a small number (e.g., 1, 3 or 5) times a power of two.
+2.5.2. Copying the application’s grid reﬁnement
+After the unreﬁned (level one) grid has been constructed in the multigrid
+library, it can be linked to the application’s unreﬁned grid. In the application
+code, each grid block has to store an integer indicating the index of that grid
+block in the multigrid library. Similarly, grid blocks in the multigrid library
+store pointers to the application’s code grid blocks.
+10
+Figure 4: Example of a 2D grid with two levels of reﬁnement, to help explain the con-
+struction of grids in the multigrid library. The base grid contains 192 × 96 cells, which
+corresponds to 24 × 12 blocks (shown in red) of 8 × 8 cells. Table 1 lists the additional
+coarse grids that the multigrid library would construct.
+grid level
+mg
+application
+grid size
+block size
+Nblocks
+3
+✓
+✓
+irregular
+8 × 8
+80
+2
+✓
+✓
+irregular
+8 × 8
+144
+1
+✓
+✓
+192 × 96
+8 × 8
+24 × 12
+0
+✓
+96 × 48
+8 × 8
+12 × 6
+-1
+✓
+48 × 24
+8 × 8
+6 × 3
+-2
+✓
+24 × 12
+4 × 4
+6 × 3
+-3
+✓
+12 × 6
+2 × 2
+6 × 3
+-4
+✓
+6 × 3
+1 × 1
+6 × 3
+Table 1: Example of the additional coarse grids that would be constructed for an unreﬁned
+domain of 192 × 96 cells with blocks of size 82, see ﬁgure 4. The check marks indicate
+whether the grid level is present in the multigrid library and in the calling application.
+Nblocks denotes the number of blocks per level in the multigrid hierarchy, so including
+blocks covered by reﬁnement.
+After the unreﬁned grids have been linked, the AMR structure can be
+copied from the application code by looping over its grid blocks, starting at
+level one. Reﬁned blocks can be added to the multigrid library by calling
+built-in reﬁnement procedures, after which these reﬁned blocks again have
+to be linked between the two codes. An example of the coupling procedure
+can be found in the coupling module provided for MPI-AMRVAC.
+2.5.3. Adapting the grid structure
+When the mesh in the calling application changes, the mesh in the multi-
+grid library can be adapted in the same way, or it can be constructed again
+11
+block size
+1 ghost cell
+2 ghost cells
+3 ghost cells
+82
+1.56
+2.25
+3.06
+162
+1.27
+1.56
+1.89
+322
+1.13
+1.27
+1.41
+83
+1.95
+3.38
+5.36
+163
+1.42
+1.95
+2.60
+323
+1.20
+1.42
+1.67
+Table 2: Memory cost of using grid blocks of given size with ghost cells, relative to the
+cost without ghost cells. The values are computed as (N + 2Ngc)D/N D, where N is the
+block size, Ngc the number of ghost cells, and D the problem dimension.
+from scratch. To adapt an existing mesh the calling application should inform
+the library about all blocks that were added, removed or transfered between
+processors (for load balancing, see section 2.7). The computational cost of
+constructing a new mesh is relatively modest: for the uniform-grid scaling
+tests in section 3.3, it took about 0.3 s to construct a 10243 grid consisting
+of octree blocks with 163 cells.
+2.6. Ghost cells and boundary conditions
+In the multigrid library all grid blocks have a layer of ghost cells around
+them, which can contain data from neighboring blocks (potentially at a dif-
+ferent reﬁnement level) or special values for boundary conditions. The usage
+of ghost cells simpliﬁes the implementation of numerical methods, since they
+do not need to take block boundaries into account. For simplicity and eﬃ-
+ciency, the library currently uses only a single layer of ghost cells, without
+diagonal and/or edge (in 3D) cells. Since the multigrid library uses its own
+ghost cell routines, these restrictions do not apply to application codes, which
+can use any number of ghost cells.
+The downside of ghost cells is that additional memory is required, as
+illustrated in table 2. Some AMR codes, such as Paramesh [24], therefore
+provide the possibility to to compute ghost values when they are required
+instead of permanently storing them. However, this adds some complexity
+in the implementation of algorithms, for example because ghost cells cannot
+be reused in two separate steps.
+Ghost cells can be ﬁlled in three diﬀerent ways. If there is a neighboring
+block (at the same reﬁnement level), ghost cells are simply copied from the
+corresponding region. This is also performed at periodic boundaries.
+12
+ 
+ 
+c'
+A
+c
+d
+g
+B'
+a
+b
+B
+C
+B' = B + (C-A)/8
+g = (B' + c')/2
+c' = c +(c-d)/2
+h
+D
+B
+C
+A
+F
+G
+B'
+B' = B + (C+F-A-G)/8
+a)
+b)
+Figure 5: a) Illustration of the ghost cell scheme near a reﬁnement boundary in 2D. Fine-
+grid values are indicated by a to d. The ghost cell next to c is located at g, and the
+nearest coarse-grid value is indicated by B. The quantities at B’ and c’ are shown to help
+explain how a value for g is obtained. Note that the coarse values A or C can be inside
+ghost cells of the block containing B; values at such ghost cells are always available in our
+implementation. b) In 3D, the procedure is almost identical. The only diﬀerence is how
+the equivalent of B’ is determined, which is illustrated here.
+Ghost cells near physical boundaries. If there is a physical boundary, ghost
+cells are set so that the boundary condition is satisﬁed at boundary cell
+faces. If the interior cell-centered value is φi and the ghost value is φg, then
+a Dirichlet boundary condition φ = a at the cell face is set as φg = 2a −φi.
+A Neumann boundary condition ∂xφ = b is set as φg = φi ± hx b, where hx
+is the grid spacing and the sign depends on the direction the boundary is
+facing. For free space boundary conditions (φ →0 for r →∞), we make use
+of a FFT-based solver to set boundary conditions, see section 2.8.
+Ghost cells near reﬁnement boundaries. Near reﬁnement boundaries, we em-
+ploy the scheme illustrated in ﬁgure 5a to ﬁll ghost cells. The value B’ is
+obtained by using the central-diﬀerence slope in the coarse grid cell. The
+value at the cell face c’ is obtained by local extrapolation using two points,
+and ﬁnally the ghost cell value g is the average of B’ and c’. For the other
+ghost value h the procedure is geometrically identical. The approach extends
+naturally to 3D, in which two central-diﬀerence slopes are used in the coarse
+cells to obtain the equivalent of B’, as illustrated in ﬁgure 5b. An important
+property of this ghost cell scheme, which is similar to the scheme presented
+in [22], is that it gives the same coarse and (average) ﬁne gradient across the
+13
+reﬁnement boundary. In other words, we have that
+D −B = (c −g)/2 + (a −h)/2,
+(10)
+where D = (a+b+c+d)/4 is the restriction of the ﬁne cells. For a constant-
+coeﬃcient Poisson equation such as (1), the divergence theorem
+Z
+f dV =
+{
+ε∇φ · ⃗dS.
+(11)
+then shows that the integrated right-hand side is equal on the reﬁned patch
+and on the underlying coarse grid approximation.
+Near reﬁnement boundaries, ghost cell values depend on the interior val-
+ues of the reﬁned block, as illustrated in ﬁgure 5. Since ghost cells are up-
+dated after (and not during) a smoothing step, a somewhat slower damping
+of errors is to be expected near reﬁnement boundaries.
+2.7. Parallelization
+We have made a number of choices to keep the parallel implementation
+of the multigrid library relatively simple.
+First, the full mesh geometry is stored on every processor. Of course, each
+processor only allocates storage for the mesh data that it ‘owns’. A more
+sophisticated approach would be to only store information about the local
+mesh neighborhood for each processor. That would save memory, but also
+signiﬁcantly complicate e.g. mesh construction, mesh adaptation and load
+balancing.
+Second, the multigrid library copies the mesh structure from the calling
+AMR application, and it is assumed that 2:1 balance is already satisﬁed.
+Third, the load balancing is also copied from the calling AMR application,
+which means that all leaves (i.e., blocks with no further reﬁnement) are on
+the same processors in the library as in the calling application. Copying data
+between the calling application and the library on the leaf blocks therefore
+involves no communication. This also means that the library only needs to
+perform load balancing for parent blocks. Our implementation assigns each
+parent block to the processor that contains most of its children, which is
+applied recursively by going from ﬁner to coarser grids. In case of ties, the
+processor which has the fewest blocks at a reﬁnement level is selected. This
+type of load balancing minimizes the communication between children and
+parent blocks.
+14
+On the coarsest grids in a multigrid hierarchy, there are too few unknowns
+to keep all processors busy. Furthermore, the cost of communication on such
+grids is often higher than computational costs. We therefore store the coars-
+est grids on a single processor, more precisely those for which the number of
+cells is not divisible by the block size. For the example of table 1, these are
+the grids with block size 4 × 4 and smaller.
+Parallel communication. As illustrated in ﬁgure 2, performing a multigrid
+cycle involves quite a lot of communication between processors. After per-
+forming a smoothing step, ghost cells have to be updated. Prolongation and
+restriction also require data to be transferred between grid levels, as well as
+an update of the ghost cells. For this reason, the multigrid library comes
+with eﬃcient routines for ﬁlling ghost cells and communicating data.
+The following data is communicated for the ghost cell, prolongation and
+restriction routines:
+• For ghost cell exchanges at the same reﬁnement level, the corresponding
+interior cell region is sent from both sides.
+• For ghost cells near a reﬁnement boundary, the coarse-side processor
+interpolates values ‘in front of’ the cells of its ﬁne grid neighbor, see
+ﬁgure 5. These values are then sent from coarse to ﬁne; there is no
+communication from ﬁne to coarse.
+• For prolongation, the coarse grid data is ﬁrst interpolated and then
+sends it to its children1.
+• For restriction, the ﬁne grid data is ﬁrst restricted and then sent to the
+underlying coarse grid.
+For each of the above cases, the size of the data transferred depends only
+on the block size and the problem dimension. We avoid communication on
+the coarsest grids, for which the block size is reduced, since these grids are
+stored on a single processor.
+The actual data transfer is performed using buﬀers, so that only a single
+send and/or receive is performed between communicating processors. The
+1It is more eﬃcient to send coarse data and to perform interpolation afterwards, but
+this approach is less ﬂexible; for a variable coeﬃcient problem, it can for example be
+beneﬁcial to change the interpolation scheme depending on the local coeﬃcients.
+15
+size of these buﬀers is computed after constructing the AMR grid; then it is
+known how much data is sent and received between processors in the various
+operations. Furthermore, the data in the send buﬀers is sorted so that it is
+in ‘natural’ order for the receiving processor. This sorting is possible because
+each grid block is identiﬁed by a global index, which determines the order in
+which processors loop over the blocks.
+After the sorted data has been received, operations such as the ﬁlling
+of ghost cells, prolongation or restriction can be performed. Whenever data
+from another processor is required, it is unpacked from the buﬀer correspond-
+ing to that processor. If data from the same processor is required, it is locally
+prepared as described above. The advantage of this buﬀered approach for
+exchanging data is that it limits the number of MPI calls, which could other-
+wise lead to signiﬁcant overhead. In section 3.3, we demonstrate the parallel
+scaling of our approach.
+2.8. Free space boundary conditions in 3D
+Poisson’s equation sometimes has to be solved with free space boundary
+conditions, i.e., φ →0 at inﬁnity, for example when computing the grav-
+itational potential of an isolated system. Because of the 1/r decay of the
+free-space Green’s function, enlarging the computational domain (and ap-
+plying a Dirichlet zero boundary condition) gives a poor approximation of
+the free-space solution.
+A number of techniques exist to directly compute free-space solutions, see
+e.g. [25, 26]. The most eﬃcient techniques rely on the fast Fourier transform
+(FFT), so they can only be applied to uniform grids. To incorporate free
+boundary conditions into our AMR-capable multigrid solver, we therefore
+employ the following strategy. First, a free-space solution is computed on
+a uniform grid, which can have a signiﬁcantly lower resolution than the full
+AMR grid. Then standard multigrid is performed, using Dirichlet boundary
+conditions interpolated from the uniform grid solution.
+We use the 3D uniform-grid solver described in [25, 27], which employs
+interpolating scaling functions and FFTs to obtain high-order solutions of
+free-space problems. The solver is written in Fortran, licensed under a GPL
+license, and it uses MPI-parallelism, which simpliﬁed its integration with our
+multigrid library.
+In our implementation the uniform grid always corresponds to one of
+the fully reﬁned grid levels (so excluding partially reﬁned levels). Users can
+control the cost of the uniform grid solver with a parameter c, which should
+16
+lie between zero and one. The uniform grid then corresponds to AMR level
+l for which N(l) ≤c Ntotal, where N(l) denotes the number of unknowns at
+AMR level l, and Ntotal denotes the total number of unknowns.
+After constructing the uniform grid, including a layer of ghost cells, the
+right-hand side of the problem is restricted to it.
+The direct solver then
+computes the free-space solution in parallel, using eight-order accurate in-
+terpolating scaling functions. We extract the boundary planes, and linearly
+interpolate them to obtain Dirichlet boundary conditions for the multigrid
+solver at all grid levels. Afterwards, one or more FMG or V-cycles can be
+performed to obtain a solution on the full AMR grid, using the uniform grid
+solution as an initial guess.
+The coupled approach described above has two advantages: it can handle
+AMR grids, it can be more eﬃcient and scale better than a direct solver, and
+it requires no modiﬁcation of the multigrid routines. Potential drawbacks
+are that the multigrid solution is only second order accurate, and that the
+accuracy near boundaries is reduced when a too coarse grid is used for the
+direct solver. How ﬁne the uniform grid needs to be compared to the full
+AMR grid depends on the application, e.g., on the distance between sources
+and the domain boundary, and on the required accuracy near the boundary.
+3. Testing the library
+3.1. Convergence test
+To study the convergence behavior of the multigrid solver, we solve the
+following 3D test problem on a unit cube centered at the origin:
+∇2φ = f,
+f = ∇2φsol,
+(12)
+φsol = cos(π⃗n · ⃗x) + 10 exp(−100|⃗x|2),
+with ⃗n = (1, 2, 3).
+The right-hand side f is computed analytically, and
+Dirichlet boundary conditions are imposed using the solution values at the
+boundary. We consider three types of numerical grid. The base case has
+uniform reﬁnement using 643 cells. To test the eﬀect of reﬁnement boundaries
+on the convergence behavior, we add two extra levels of reﬁnement covering
+a volume of 0.53 and 0.253, respectively (so that each level again contains
+643 cells). These reﬁnements are either placed at the center of the domain,
+or around (−0.25, −0.25, −0.25). In the latter case, the reﬁnement is in the
+17
+‘wrong’ place, as it leads to a reﬁnement corner at the center of the domain,
+where the solution has a sharp peak.
+Figure 6 shows the residual r = f −∇2φ versus FMG iteration. Two
+downward and two upward smoothing steps were taken per iteration. The
+residual reduction factor per iteration is reduced when reﬁnement is present.
+This is a result of our ghost cell procedure near reﬁnement boundaries, see
+section 2.6, which reduces the convergence rate.
+The residual is reduced
+up to machine precision after about 10 iterations. Due to the algorithmic
+steps involved, such as evaluating expressions like equation (3), the minimum
+residual that can be obtained is proportional to ϵmachh−2|φ|, where ϵmach ≈
+10−16 is the machine’s precision, h is the mesh spacing and |φ| is the local
+amplitude of the computed solution.
+Regardless of the lower reduction factor with reﬁnement boundaries, ﬁg-
+ure 6 shows that the discretization error is reached in one or two FMG iter-
+ations. The test problem has a steep Gaussian at the center, which is where
+the largest discretization errors occur for the uniform grid case. With the
+centered reﬁnement errors are indeed signiﬁcantly reduced. In the L∞norm,
+the error is reduced by a factor 20, slightly more than the factor 16 expected
+from a second-order discretization with two levels of reﬁnement. With the
+corner reﬁnement, the errors hardly change, showing that ‘wrongly’ placed
+reﬁnements are handled well by our approach.
+3.2. Free space solutions in 3D
+To test our method with free space boundary conditions in 3D, see section
+2.8, we solve a free space Poisson problem with a Gaussian right-hand side
+∇2φ = f,
+(13)
+f(⃗r) =
+−1
+σ3π3/2 exp(−|⃗r −⃗r0|2/σ2),
+where ⃗r0 is the center of the Gaussian and σ controls its width. The solution
+is then given by
+φ(⃗r) = 1
+4π erf(|⃗r −⃗r0|/σ)/|⃗r −⃗r0|,
+(14)
+where erf denotes the error function. The computational domain is again a
+unit cube centered at the origin, and the Gaussian is located at the origin with
+σ = 0.1. Figure 7 shows the L2-norm of the error after two FMG cycles versus
+the grid resolution. Two curves are shown, for which the direct solver is called
+18
+1e-12
+1e-10
+1e-08
+1e-06
+1e-04
+1e-02
+1e+00
+1e+02
+2
+4
+6
+8
+10
+residual (L2)
+FMG iteration
+uniform
+center
+corner
+1e-12
+1e-10
+1e-08
+1e-06
+1e-04
+1e-02
+1e+00
+1e+02
+2
+4
+6
+8
+10
+12
+residual (L∞)
+FMG iteration
+uniform
+center
+corner
+0.001
+0.01
+1
+2
+3
+4
+error (L2)
+FMG iteration
+uniform
+center
+corner
+0.001
+0.01
+0.1
+1
+2
+3
+4
+error (L∞)
+FMG iteration
+uniform
+center
+corner
+Figure 6: Convergence test results for the test problem of equation (12) with a sharp
+Gaussian peak. Top row: the residual in L2 norm (left) and L∞norm (right) versus FMG
+iteration. After about 10 iterations the residual is reduced up to machine precision, see
+the text for details. Bottom row: the L2 norm and L∞norm of the solution error. After
+two FMG iterations, the error has converged to the discretization error, which is why it
+is no longer decreasing. The uniform case contains 643 cells, and the ‘center’ and ‘corner’
+case contain two additional levels of reﬁnement, which if placed properly (the ‘center’ case)
+indeed decreases the error.
+19
+1e-07
+1e-06
+1e-05
+1e-04
+1e-03
+1e-02
+1e-01
+1e+00
+10
+100
+1000
+error
+Nx
+lmax −1, L∞
+lmax −1, L2
+lmax −2, L∞
+lmax −2, L2
+Figure 7: L2 and L∞norm of the error for the 3D free-space test problem given by
+equation (13). The error is shown versus the number of grid points per dimension. The
+labels lmax −1 and lmax −2 indicate at which grid level the direct free-space solver was
+called to obtain boundary conditions for the multigrid procedure, where lmax denotes the
+highest grid level.
+on levels lmax−1 and lmax−2 respectively, where lmax denotes the highest grid
+level. For grids larger than 643, there is hardly any diﬀerence between the two
+curves, and they show second order convergence. For simplicity, uniformly
+reﬁned grids are used, but the multigrid solver also works for AMR meshes.
+The cost of the direct solver is relatively small, because it is only called
+once per right-hand side on a coarser grid, and because the direct solver itself
+is quite eﬃcient [25].
+3.3. Strong scaling tests
+We now look at the performance and scaling of the geometric multigrid
+library, by solving Poisson’s equation with unit right-hand side
+∇2φ = 1,
+(15)
+on a unit cube, with φ set to zero at the boundaries. We measure the time
+per multigrid cycle for both FMG and V-cycles by averaging over 100 cycles.
+For both types of cycles two upward and two downward smoothing steps
+with a Jacobi smoother were performed, and octree blocks of size 163 were
+used. The scaling results presented below were obtained on nodes with two
+14-core Intel Xeon E5-2680v4 processors, for a total of 28 cores per node.
+In all tests, one MPI process per core was used. We present strong scaling
+20
+0.01
+0.1
+1
+10
+10
+100
+1000
+time/cycle (s)
+CPU cores
+uniform grid
+5123 FMG
+V-cycle
+10243 FMG
+V-cycle
+0
+10
+20
+30
+40
+50
+60
+100
+1000
+relative cost (%)
+CPU cores
+coarsen
+smoother
+smoother g.c.
+prolong
+Figure 8: Left: strong scaling results for a problem size of 5123 and 10243, showing the
+time per FMG cycle and per V-cycle. Right: breakdown of the computational cost of an
+FMG cycle for a 10243 grid versus the number of CPU cores used.
+results, which means that the problem size is kept ﬁxed but the number of
+processors is increased.
+Normally, the library copies its load balancing from another application,
+as discussed in section 2.7. For the tests presented below, the library was
+used by itself, in which case it performs a division of blocks over processors
+similar to a Morton order, which is also used in MPI-AMRVAC [28, 23].
+Figure 8 shows strong scaling results for a uniform grid containing either
+5123 or 10243 cells. For the 5123 case, scaling results look good up to 448
+cores, but with 1792 cores the performance is worse than with 896 cores.
+This makes sense: even on the ﬁnest grid, the number of unknowns is only
+about 423 using 1792 cores. For the 10243 test case, scaling is closer to ideal
+(i.e., closer to a straight line in the ﬁgure), even using 1792 cores. The ﬁgure
+also shows that the cost of a V-cycle is lower than that of an FMG cycle.
+The diﬀerence increases with the number of cores, due to the extra work on
+coarse grids with FMG cycles, see ﬁgure 2.
+A breakdown of the relative cost of an FMG cycle for the 10243 case is
+also shown in ﬁgure 8. Shown is the percentage of time spent on the trans-
+fer to coarse grids, the smoother (excluding communication), the ghost cell
+exchange during smoothing steps (labeled smoother g.c.), and the prolonga-
+tion to ﬁner grids. With an increasing number of cores, less time is spent on
+computation compared to communication.
+Figure 9 shows strong scaling results on a reﬁned grid with a total of ﬁve
+levels. Each grid level contains either 5123 or 10243 cells, and the reﬁnements
+21
+0.01
+0.1
+1
+10
+100
+10
+100
+1000
+time/cycle (s)
+CPU cores
+AMR grid (5 levels)
+512 FMG
+V-cycle
+1024 FMG
+V-cycle
+Figure 9: Strong scaling results on an AMR grid with 5 levels, with each level containing
+5123 or 10243 cells. The grid structure is illustrated on the right.
+are placed at the center of the domain, as illustrated in the ﬁgure. Compared
+to the uniform grid cases, there are about ﬁve times as many unknowns.
+The duration of V-cycles is indeed about ﬁve times longer, although the
+parallel scaling is improved due to the larger total number of unknowns. The
+diﬀerence in cost between V-cycles and FMG cycles is larger than for the
+uniform grid case, due to the extra work the FMG cycles perform on coarse
+grids, which now contain a signiﬁcant number of unknowns.
+4. Divergence cleaning
+This section is speciﬁcally about divergence cleaning in magnetohydro-
+dynamic (MHD) simulations. For readers not interested in this particular
+application, we provide a short summary of the main results below:
+• We compare elliptic, hyperbolic, and parabolic divergence cleaning for
+several test cases in 2D/3D Cartesian and 2.5D cylindrical geometries,
+with AMR.
+• With the multigrid library, divergence cleaning up to machine precision
+requires the magnetic ﬁeld to be deﬁned at cell faces.
+However, in
+MPI-AMRVAC the ﬁeld is deﬁned at cell centers, and we show that elliptic
+divergence cleaning can then still be applied successfully.
+• We show that a fourth-order discretization of the right-hand side (∇· ⃗B)
+can be beneﬁcial for elliptic divergence cleaning.
+22
+• The tests demonstrate the coupling of the multigrid solver to MPI-AMRVAC.
+The cost of runs was not signiﬁcantly increased (by less than 10%) when
+elliptic divergence cleaning was performed once per time step.
+• The tests show that for typical problems, divergence cleaning methods
+play a similar role as the slope limiters: diﬀerent methods give slightly
+diﬀerent results and there is no single best method.
+Maxwell’s equations state that ∇· ⃗B = 0, but this constraint does not
+automatically hold in numerical MHD computations [29]. If no special care
+is taken, ∇· ⃗B can grow at each step through discretization errors, leading to
+unphysical results. Therefore, a number of methods has been developed to
+ensure ∇· ⃗B remains small compared to discretization and truncation errors.
+With the Hodge-Helmholtz projection method [29, 30], the divergence is
+cleaned by solving Poisson’s equation:
+∇· ∇φ = ∇· ⃗Bold,
+(16)
+⃗Bnew = ⃗Bold −∇φ.
+(17)
+Below, we call this approach elliptic divergence cleaning, and we will use
+multigrid to solve Poisson’s equation. Another approach is to add source
+terms to the MHD equations to control ∇· ⃗B errors, as is done in the eight-
+wave formulation of Powell [31], or its variants which only aﬀect the induction
+equation [32, 33]. The MHD equations can also be modiﬁed to ensure trans-
+port and/or damping of ∇· ⃗B errors. The extra terms can have a parabolic
+(diﬀusive) character, as in the ‘diﬀusive’ method described in [34] which only
+adds a diﬀusion term to the induction equation. When using an extended
+version of the MHD equations with a variable that links to ∇· ⃗B error damp-
+ing and transport, the method can also have a hyperbolic character, as in the
+Generalized Lagrange multiplier (GLM) method described in [35] and the
+recently derived ideal GLM-MHD scheme presented in [36].
+Constrained transport (CT) methods [37, 38, 39] were designed to pre-
+serve ∇· ⃗B = 0 up to machine precision, typically by deﬁning the mag-
+netic ﬁeld at cell faces and the electric ﬁeld at cell corners. Variants that
+do not rely on a staggered representation of the magnetic ﬁeld have been
+discussed in [40] .
+CT methods have been made compatible with adap-
+tive mesh reﬁnement [41, 42, 43, 44, 45], but their implementation is non-
+trivial. Moreover, while CT methods ensure one particular discretization of
+23
+the monopole constraint in machine precision, any other discretization will
+show truncation errors in places of large gradients, and especially at dis-
+continuities. For mesh-free computations, [46] recently advocated the use
+of a constrained-gradient method, which in essence uses an iterative least-
+square minimization involving the magnetic ﬁeld gradient tensor. Mesh-free
+smoothed-particle MHD implementations have also successfully devised con-
+strained hyperbolic/parabolic divergence cleaning methods, where the wave
+cleaning speeds become space and time dependent [47].
+An extensive comparison of ∇· ⃗B cleaning techniques was performed
+in [40], where a suite of rigorous test problems on uniform Cartesian grids
+showed that a projection scheme could rival central diﬀerence and constrained
+transport schemes in accuracy and reliability. Further comparisons have been
+performed in e.g. [48, 4], where especially [48] demonstrates some deﬁciencies
+in using divergence cleaning steps versus CT, when applied to supernova-
+induced MHD turbulence.
+In the tests below, we compare elliptic, parabolic and hyperbolic diver-
+gence cleaning. ‘Elliptic’ refers to the multigrid-based projection method de-
+scribed in the next section, ‘parabolic’ to the diﬀusive approach of [34], and
+‘hyperbolic’ to the EGLM-MHD method described in [35]. For the EGLM-
+MHD approach, we set the parameter ch to the globally fastest wave speed,
+and we use c2
+p/ch = 2h to balance decay and transport of the ψ variable,
+where h is the ﬁnest grid spacing.
+Below, a suﬃx 4th indicates that ∇· ⃗B terms have been computed with a
+fourth-order accurate scheme, which is relevant for the elliptic and parabolic
+methods.
+4.1. Elliptic divergence cleaning
+In MPI-AMRVAC, the magnetic ﬁeld is deﬁned at cell centers. To compute
+its divergence in a Cartesian geometry, we consider two discretizations for
+∇· ⃗B = ∂xBx + ∂yBy + ∂zBz. Each derivative can either be approximated
+with second order central diﬀerences
+∂xBx ≈Bx,i+1 −Bx,i−1
+2∆x
+,
+(18)
+or with a fourth-order diﬀerencing scheme
+∂xBx ≈−Bx,i+2 + 8Bx,i+1 −8Bx,i−1 + Bx,i−2
+12∆x
+.
+(19)
+24
+Afterwards, we update the magnetic ﬁeld according to equation (17), and
+update the energy density as
+enew = eold + 1
+2
+ B2
+new −B2
+old
+
+,
+(20)
+which keeps the thermal pressure constant [40], which can be important to
+avoid negative pressures. A downside is that equation (20) does not conserve
+total energy.
+For the correction step, we evaluate ∇φ with second-order
+central diﬀerences.
+The multigrid solver described in this paper is cell-centered, and with its
+standard 5/7-point stencil the divergence ∇· ∇φ is computed from a face-
+centered quantity (∇φ). Since in MPI-AMRVAC ∇· ⃗B is the divergence of a cell-
+centered quantity, the two divergences do not exactly match2. This means
+that after the projection step, ∇· ⃗B will be non-zero in both the second and
+fourth order scheme, although diﬀerences will be small for smooth proﬁles.
+Based on the results presented here and those of [40], we think this is not
+necessarily a problem.
+With a staggered discretization, in which the magnetic ﬁeld is deﬁned at
+cell faces, the two divergences in equation (16) exactly match. Divergence
+cleaning can then be performed up to machine precision.
+The multigrid
+library is currently used in the BHAC code [45], which employs such a staggered
+discretization, to ensure that initial magnetic ﬁelds are divergence-free up to
+machine precision.
+4.2. Field loop advection
+We ﬁrst consider the 2D ﬁeld loop advection test described in [49], which
+was also used more recently in e.g. [46]. A weak magnetic ﬁeld loop is ad-
+vected through a periodic domain given by x ∈[−1, 1] and y ∈[−1/2, 1/2].
+The initial conditions are ρ = 1, p = 1, (vx, vy) = (2, 1), and the magnetic
+ﬁeld is computed from a vector potential whose only non-zero component is
+Az =
+(
+A0(R0 −
+p
+x2 + y2)
+for x2 + y2 ≤R2
+0
+0
+for x2 + y2 > R2
+0
+,
+2In principle, it is possible to use an operator with a wider stencil to ensure ∇· ⃗B = 0
+up to machine precision. However, this would make the solver more costly and also lead
+to a decoupling of unknowns, as discussed in e.g. [48].
+25
+t = 0
+t = 2
+t = 4
+t = 6
+t = 8
+t = 10
+Figure 10: Example of the evolution of the magnetic ﬁeld strength for the advected ﬁeld
+loop test with parabolic divergence cleaning and the ˇCada slope limiter. At t = 10, the
+loop has translated 10 times (horizontally and vertically). The ﬁgures show half of the
+computational domain, namely x ∈[−1/2, 1/2] and y ∈[−1/2, 1/2].
+where A0 = 10−3 and R0 = 0.3. We numerically evaluate Bx = ∂yAz and
+By = −∂xAz using second-order central diﬀerencing. Inside the magnetized
+ﬁeld loop the plasma beta is β = 2p/B2 = 2 · 106, so that this is eﬀectively
+a hydrodynamics problem in which the magnetic ﬁeld is a passive scalar.
+Nevertheless, its solution can be sensitive to the divergence cleaning method
+used [49, 46].
+We simulate this system up to t = 10 on a uniform 256 × 128 grid (AMR
+tests follow in the next subsection), with a grid spacing h = 1/128.
+An
+example of the evolution is shown in ﬁgure 10, which was obtained using the
+parabolic approach. Fluxes were computed with the HLL scheme, using a
+CFL number of 0.5. For ﬁgure 10, a ˇCada limiter [50] was used to reconstruct
+cell face values for ﬂux computations. At t = 10, the ﬁeld loop has moved
+through the system 10 times. We run simulations with several combinations
+of slope limiters and ∇· ⃗B methods, always employing the same HLL scheme.
+These slope limiters are used in MPI-AMRVAC to reconstruct cell-face values
+from cell-centered ones for the ﬂux computation [23]. Figure 11 shows the
+magnetic ﬁeld strength | ⃗B| at t = 10 for three types of limiters, described
+in [50] (‘ˇCada’), [51] (‘Koren’), and [52] (‘van Leer’), for ﬁve diﬀerent cleaning
+approaches.
+The computational cost of the MPI-AMRVAC runs hardly depended on the
+divergence cleaning method that was used, with run times diﬀering by less
+than 10%. The choice of limiter had a greater impact. Runs with the more
+complex ‘ˇCada’ limiter took up to 40% longer than those with the simple
+van Leer limiter (which is symmetric), and runs with the Koren limiter were
+in between.
+With a second-order evaluation of ∇· ⃗B, elliptic and hyperbolic diver-
+gence cleaning give similar results, somewhat worse than those obtained with
+26
+elliptic
+elliptic-4th
+parabolic
+parabolic-4th
+hyperbolic
+ˇCada
+Koren
+van Leer
+Figure 11: Magnetic ﬁeld strength at t = 10 for the advected ﬁeld loop test. The columns
+correspond to diﬀerent divergence-cleaning methods, and a suﬃx 4th indicates a fourth-
+order scheme is used to evaluate ∇· ⃗B terms. The rows correspond to diﬀerent slope
+limiters. The ﬁgures show half of the computational domain, namely x ∈[−1/2, 1/2] and
+y ∈[−1/2, 1/2].
+hyperbolic cleaning. With a fourth-order evaluation of ∇· ⃗B, elliptic cleaning
+gives the best results, which also appear to be less sensitive to the limiter
+used. It is to be noted that more structure is visible in Fig. 11 outside the
+loop than shown in e.g. [46], but this is due to the combination of using a dif-
+ferent color scheme (our color legend is indicated in the ﬁgure), and because
+we show | ⃗B| instead of B2.
+Figure 12 shows the L2-norm of ∇· ⃗B, deﬁned as
+|∇· ⃗B|2 =
+s
+1
+V
+Z
+|∇· ⃗B|2dV ,
+(21)
+using a second-order and a fourth-order cell-centered evaluation. The ellip-
+tic schemes gives the smallest |∇· ⃗B|2 when the same second/fourth-order
+discretization is used to evaluate |∇· ⃗B|2 and the right-hand side of eq. (16).
+However, ∇· ⃗B being small in one discretization does not mean it is small in
+another one, as was as observed in [40].
+The L2-norm of | ⃗B −⃗Bsol| is shown in ﬁgure 13, where ⃗Bsol is the approxi-
+mate solution to the problem, only taking into account advection of the initial
+condition. From this comparison, the elliptic-4th and parabolic-4th schemes
+27
+1e-07
+1e-06
+1e-05
+1e-04
+1e-03
+0
+2
+4
+6
+8
+10
+time
+|∇· ⃗B|2 (second order)
+1e-07
+1e-06
+1e-05
+1e-04
+1e-03
+0
+2
+4
+6
+8
+10
+time
+|∇· ⃗B|2 (fourth order)
+elliptic
+elliptic-4th
+parabolic
+parabolic-4th
+hyperbolic
+Figure 12: The L2-norm of ∇· ⃗B versus time for the advected ﬁeld loop test on a uniform
+256 ×128 grid. We only show the results for the ˇCada limiter. On the left, the L2-norm is
+computed using a second order scheme for ∇· ⃗B, on the right using a fourth order scheme.
+give the best results, whereas the standard elliptic and parabolic schemes
+perform a bit worse than other methods. Since the cost of a fourth-order
+evaluation of ∇· ⃗B is negligible, the results suggest that such an evaluation
+can be recommended. In conclusion, we ﬁnd that elliptic divergence cleaning
+works well to control monopole errors for this test case.
+4.3. Advecting a current-carrying cylinder (mach 0.5)
+Although the previous setup became a popular test for magnetic diver-
+gence control, it is not a realistic test case for MHD applications since it
+only probes the very high plasma beta (order one million to inﬁnity) regime.
+Moreover, the initial condition is not a true MHD equilibrium, has an inﬁnite
+current at r = 0 together with a current sheet at its boundary R0, and the
+radially inward Lorentz force must actually set up sausage type compressions
+of the loop, which could well be responsible for the ﬂuctuations seen in the
+environment of the advected loop in Fig. 10.
+Below, we introduce a more realistic advection test, which can be used to
+demonstrate a number of typical computational challenges in MHD applica-
+tions: (1) combining high and low plasma beta regimes, (2) ensuring force
+balance, and (3) handling surface current contributions in AMR evolutions.
+4.3.1. Description of the general test case
+We set up a current-carrying magnetic ﬂux tube embedded in a uniform,
+magnetized external medium, ensuring that a true MHD equilibrium is real-
+28
+0
+0.02
+0.04
+0.06
+0.08
+0.1
+0.12
+0
+2
+4
+6
+8
+10
+|∆⃗B|2/A0
+time
+elliptic
+elliptic-4th
+parabolic
+parabolic-4th
+hyperbolic
+Figure 13: The L2-norm of the error in the magnetic ﬁeld | ⃗B −⃗Bsol| divided by the initial
+amplitude A0 = 10−3, shown for the advected ﬁeld loop test with the ˇCada limiter.
+ized. This is then further combined with a uniform ﬂow ﬁeld, that addresses
+whether Galilean invariance is obtained.
+Using the scale invariance of the MHD equations [53], we exploit units
+where the radius of the ﬂux tube is equal to unity, where the density external
+to the loop is ﬁxed at ρext = 1, while the external plasma pressure is pext =
+1/γ. This makes the external sound speed and its unit length crossing time
+the reference speed and time unit, respectively. The initial ﬂow ﬁeld is then
+controlled fully by its Mach number M0 and orientation angles ϕ0 and θ0,
+such that the constant speed components are found from
+vx(t = 0)
+=
+M0 sin θ0 cos ϕ0 ,
+(22)
+vy(t = 0)
+=
+M0 sin θ0 sin ϕ0 ,
+(23)
+vz(t = 0)
+=
+M0 cos θ0 .
+(24)
+We align the ﬂux tube with the z-direction, and use a [−L, L]2 fully periodic
+domain, where we resort to a 2.5D (invariance in z) computation, although
+the problem can also be simulated in full 3D. The external medium has a
+uniform magnetization, which is determined by the corresponding inverse
+plasma beta parameter β−1
+ext as Bz,ext =
+p
+2β−1
+ext/γ.
+The ﬂux tube itself has internal variation, and is a force-free cylindrical
+equilibrium introduced in [54], where the physics of solar ﬂares was discussed.
+For solar coronal applications, ensuring a force-free equilibrium, which guar-
+antees ⃗J × ⃗B = ⃗0 without enforcing a vanishing current ⃗J = ∇× ⃗B, is a
+29
+typical computational challenge. The internal variation for r =
+p
+x2 + y2 ≤1
+is given by
+ρint(r)
+=
+ρ0(1 −(1 −d)r2) ,
+(25)
+Bz,int(r)
+=
+B0
+1 + c2r2 ,
+(26)
+Bθ,int(r)
+=
+crB0
+1 + c2r2 .
+(27)
+The parameters ρ0, B0 and c are best controlled by dimensionless numbers
+which quantify the pitch and strength of the magnetic ﬁeld variation. The d
+parameter quantiﬁes the internal density contrast d = ρ(1)/ρ(0). Introducing
+the q-factor at the tube radius
+q(1) = πBz(1)
+LBθ(1),
+along with the plasma beta at the ﬂux tube radius β(1), as well as the ratio
+R of the Alfv´en speed at r = 0 to the external sound speed, we can deduce
+that
+c
+=
+π
+Lq(1) ,
+(28)
+pint
+=
+β(1)(1 + β−1
+ext)
+γ(β(1) + 1) ,
+(29)
+B0
+=
+s
+2pint(1 + c2)
+β(1)
+,
+(30)
+ρ0
+=
+B2
+0
+R2 .
+(31)
+The ﬂux tube is internally force-free and represents a nonlinear force-free
+ﬁeld conﬁguration where ⃗J = [2c/(1 + c2r2)] ⃗B, while there is a constant
+pitch q(r) = q(1). The embedded conﬁguration is fully force-balanced since
+the above relations enforce the total pressure balance across the loop radius.
+Any combination of input parameters M0, θ0, ϕ0, β−1
+ext, q(1), β(1), d, and
+R represents a meaningful test for which the exact solution is known: the
+ﬂux tube will be advected at the prescribed constant speed. These param-
+eters could explore regimes that are particularly challenging for numerical
+treatments, like taking the pitch such that the ﬂux tube is liable to kink in-
+stability, or advecting at highly supersonic speeds, or verifying very low beta
+30
+behavior, etc. The edge of the ﬂux tube carries a surface current, where den-
+sity, pressure and magnetic ﬁeld components change discontinuously. This is
+typical for many solar, astrophysical or laboratory plasma conﬁgurations.
+4.3.2. Results for a particular sets of parameters
+We here focus on the particular case where L = 2, d = 0.05, M0 = 0.5
+(i.e. Mach 0.5 advection), φ0 = 45◦, θ0 = 70◦, β(1) = 0.05 (i.e. a truly low
+beta ﬂux tube), q(1) = 1.2 (such that it is stable to external kink modes
+through the Kruskal-Shafranov limit), R = 1, and taking β−1
+ext = 0.05 (i.e. a
+high beta surrounding medium). We perform 2.5D simulations using a three-
+step Runge-Kutta integrator with the HLL scheme combined with a Koren
+limiter, and a Courant parameter of 0.8. Parabolic and elliptic divergence
+cleaning is applied, using a fourth order discretization of ∇· ⃗B terms. We use
+a base resolution per direction of 128 with four grid levels, which eﬀectively
+gives a 10242 resolution. We run until normalized time t = 10, at which time
+the ﬂux tube is almost advected back to its original position. Grid reﬁnement
+is handled as follows: we enforce the maximal reﬁnement level to resolve the
+region that is initially between 0.9 < r < 1.1, to accurately treat the surface
+discontinuities during the entire evolution.
+Figure 14 shows the error in the magnetic ﬁeld strength at t = 10 using
+elliptic divergence cleaning. The error is concentrated at the boundary of the
+ﬂux rope, where there is a surface current and a jump in density. The grid
+structure at t = 10 is also shown in ﬁgure. With the parabolic approach, the
+results are nearly identical.
+Figure 15 shows the average magnitude of ⃗J × ⃗B in the region inside,
+outside and at the boundary of the ﬂux rope. Results are shown for both the
+elliptic and parabolic approach, but only small diﬀerences between the two
+methods can be observed. Note that the simulation is nearly force-free inside
+and outside the ﬂux rope. At the edge of the ﬂux rope ⃗J × ⃗B is signiﬁcantly
+larger, due to the numerical discretization errors at the ﬂux rope boundary.
+We remark that with hyperbolic divergence cleaning, we obtain nearly
+identical results. In conclusion, this test case shows that for a physically
+realistic test case, the type of divergence cleaning has less eﬀect than for
+the test problem of section 4.2. It also demonstrates that our divergence
+cleaning methods, and more speciﬁcally the elliptic approach, can handle
+adaptive mesh reﬁnement.
+31
+B - Bsol
+1
+2
+3
+4
+refinement level
+0.5
+0.25
+0
+-0.25
+-0.5
+Figure 14: The error in the magnetic ﬁeld magnitude at t = 10 for the Gold-Hoyle force-
+free ﬂux rope advection test, shown in the full [−2, 2]2 domain. The errors are localized
+at the surface of the ﬂux rope, where there is a surface current and a jump in density.
+The ﬁgure shows results for the multigrid approach (elliptic-4th). The four reﬁnement
+levels are indicated by gray-to-white colors, with the ﬁnest (white) grid having a spacing
+of about 4 × 10−3.
+0.00001
+0.00010
+0.00100
+0.01000
+0.10000
+1.00000
+10.00000
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+edge
+inside
+outside
+|JxB|/V
+time
+parabolic-4th
+elliptic-4th
+Figure 15: The average magnitude of ⃗J × ⃗B in three regions: the region outside the
+ﬂux rope (r > 1.1), the region inside the ﬂux rope (r < 0.9) and the region in between
+(0.9 < r < 1.1), where r = 0 corresponds to the center of the ﬂux rope.
+32
+4.4. Modeling magnetized jets (2.5D and 3D)
+A ﬁnal demonstration of the multigrid-based divergence cleaning method-
+ology focuses on a typical astrophysical application: the propagation of a
+strongly magnetized, supersonic and super-Alfv´enic jet. We perform both
+2.5D axisymmetric and 3D Cartesian simulations. The conﬁguration is bor-
+rowed from [55], where relativistic jets with helical ﬁeld topologies were stud-
+ied in axisymmetry. We here use the same magnetic ﬁeld topology in the
+initial conditions, and evolve purely Newtonian cases, so we take parameters
+similar to the non-relativistic jet case from [55].
+4.4.1. Description of the test case
+At t = 0, the jet occupies a ﬁnite region R < Rj and Z < Zj where the
+(normalized) density is ρj = 1, while the surrounding medium has a higher
+density ρc = 10: the under-dense jet is entering a denser ‘cloud’ region. We
+take the domain size as follows: R ∈[0, 30] and Z ∈[0, 90], while Rj = 1.5
+and Zj = 3.0. The jet itself has a twisted ﬁeld topology with an azimuthal
+ﬁeld component in the jet region given by
+Bϕ = tanh R
+5 ,
+(32)
+while this azimuthal ﬁeld vanishes in the surroundings. Note again how this
+setup thereby necessarily involves surface current distributions (located at
+the edge of the jet region). The other magnetic ﬁeld components are
+BR
+=
+2Rj
+Zj
+
+Z
+Zj
+3
+tanh
+
+Z
+Zj
+4
+tanh
+
+R
+Rj
+2
+R
+Rj cosh
+
+Z
+Zj
+4
+,
+(33)
+BZ
+=
+Bc +
+1
+
+cosh
+
+R
+Rj
+22
+cosh
+
+Z
+Zj
+4 .
+(34)
+This magnetic ﬁeld setup is analytically divergence-free (as it should), and
+ensures that the jet is entering an almost uniformly magnetized cloud region
+where the initial ﬁeld strength has the ‘cloud’ value Bc = 0.01. The initial
+pressure distribution follows from
+p = pj + 1
+2 −1
+2
+ B2
+ϕ(R, Z) + B2
+Z(R, Z)
+
+,
+(35)
+33
+where we take the jet pressure parameter pj = 2: this makes the internal
+jet region slightly under-pressured with respect to the external medium, and
+an order of magnitude hotter than its surroundings. Finally, the ﬂow ﬁeld ⃗v
+vanishes at t = 0 outside the jet region, but within the jet follows from
+vR
+=
+0 ,
+(36)
+vZ
+=
+α
+Bϕ
+(R/5)√ρj
+,
+(37)
+vϕ
+=
+Bϕ
+√ρj
+.
+(38)
+The parameter α = 6.0. These choices turn the jet Mach number vZ/cs ≈3
+while its Alfv´en Mach number vZ/vA ≈6 (both of these quantities vary with
+radius and relate to the local sound speed cs =
+p
+γp/ρ and Alfv´en speed
+vA = B/√ρ). The ratio of speciﬁc heats is ﬁxed at γ = 5/3. In accord
+with the frequently invoked equipartition argument for astrophysical jets,
+the plasma beta internal to the jet is of order β = 2p/B2 ≈4, while it is
+about 50000 in the cloud region.
+4.4.2. Computational domain and reﬁnement
+In 2.5D, the resolution uses a coarse 32 × 64 base grid, allowing a total
+of 6 AMR levels (i.e. an eﬀective resolution of 1024 × 2048). Reﬁnement
+uses the Lohner estimator, this time taking in weighted information from
+ρ, mR = ρvR and Bϕ in a 0.5 −0.25 −0.25 ratio. Maximal resolution is
+enforced within the region R < 3Rj and Z < 3Zj. Boundary conditions use
+the usual (a)symmetric combinations to handle the R = 0 symmetry axis
+and extrapolate all variables at side and top in a zero-gradient fashion. The
+bottom boundary uses the analytic initial conditions within R < Rj, and
+adopts a reﬂective boundary beyond.
+In 3D, our setup adopts the same physical parameters, but this time in
+a 3D Cartesian (x, y, z) box of size [−30, 30] × [−30, 30] × [0, 90], where the
+z axis coincides with the symmetry axis employed in the 2.5D runs (making
+R =
+p
+x2 + y2). To avoid an artiﬁcial m = 2 selection eﬀect in the way non-
+axisymmetric modes with azimuthal mode number m ̸= 0 develop from the
+noise (inherent to doing cylindrical problems on a Cartesian grid), we used
+a deterministic incompressible velocity perturbation consisting of 7 mode
+numbers m = 1, . . . , 7 derived from ψ = P
+m Am cos(mϕ + φm) exp(−[(R −
+0.75Rj)/Rj]2) such that δ⃗v = ∇×ψ(x, y)ˆez. This is applied in the ghost cells
+34
+at the bottom (z = 0) boundary only, where we add it to the ﬁxed velocity
+ﬁeld providing the jet conditions. The 7 amplitudes are chosen such that a
+maximal amplitude for each mode is Am ≤0.05. In 3D, our base resolution is
+64×64×96, with 5 reﬁnement levels to get to 1024×1024×1536 eﬀectively.
+Reﬁnement in 3D is based on density only, augmented with user-enforced ge-
+ometric criteria, where e.g. the maximal resolution is always attained within
+the region R < 3Rj and Z < 3Zj. Boundary conditions at all sides and top
+extrapolate primitive variables using Neumann zero-gradient prescriptions.
+The bottom boundary ﬁxes the entire initial condition, augmented with the
+δ⃗v addition, within the jet zone, while reﬂective boundaries are used beyond
+R > Rj.
+4.4.3. Results
+We run till time t = 60, such that the jet progressed up to about z ≈60.
+We use a strong-stability preserving Runge-Kutta scheme (its implementa-
+tion in MPI-AMRVAC is demonstrated in [3]), an HLLC discretization, and
+Piecewise Parabolic (PPM) reconstruction. Runs diﬀer only in their diver-
+gence cleaning approach. We anticipate many turbulent features related to
+ﬂuid instabilities, waves, rarefactions and shocks, as typical for under-dense
+supersonic jets, but all diﬀerences in the jet morphology here entirely relate
+to the error control on magnetic monopoles.
+In Fig. 16(a), we show the density distribution for the axisymmetric sim-
+ulations at t = 60, comparing the hyperbolic with the elliptic method for
+divergence control.
+Naturally, many details diﬀer between the two cases,
+although both recover the richness in internal jet beam shocks, ﬂuid insta-
+bilities developing at the leading contact interface between jet and surround-
+ings, and the turbulent backﬂows where many vortical structures exist. The
+shocked cloud matter is riddled with shocks. Repeated deformations of the
+contact interface shed plasma into the backﬂow surrounding the jet spine.
+A direct comparison of the monopole errors at t = 60 is given in Fig. 16(b).
+We here show a second order central diﬀerence evaluation of ∇· ⃗B (we also
+used the second order evaluation of the source term in the cleaning methods).
+With the elliptic cleaning there are fewer cells with signiﬁcant ∇· ⃗B values.
+All monopole errors concentrate near the many discontinuities, as expected.
+Overall, the jet progressed to about the same distance.
+The same simulation in full 3D allows for non-axisymmetric deformations,
+which can come about from current-driven kink instabilities mediated by the
+helical magnetic ﬁeld of the jet, or by the many shear-ﬂow driven events.
+35
+elliptic
+hyperbolic
+r
+0
+10
+20
+-10
+-20
+z
+10
+20
+30
+40
+50
+60
+70
+80
+10log(ρ)
+1.3
+-1.1
+-0.5
+0.7
+0.1
+0.1
+0.0
+-0.1 -0.05
+0.05
+div B
+elliptic
+hyperbolic
+r
+0
+10
+-10
+(a)
+(b)
+Figure 16: (a) The logarithm of the density at t = 60 for the helically magnetized jet
+in axisymmetric conditions, using the hyperbolic (left) versus the multigrid-based elliptic
+(right) treatment for monopole control. (b) The numerical value of ∇· ⃗B, evaluated with a
+second order central diﬀerence formula, at t = 60 for the hyperbolic and elliptic approach.
+elliptic
+elliptic
+elliptic
+parabolic
+parabolic
+parabolic
+Figure 17: Several views on the 3D jet simulation at t = 60, where we used the parabolic
+and elliptic approach for divergence control. We show a cross-section of the temperature
+(left), a line-integrated side view of the density (middle) and a line-integrated top view of
+the pressure (right).
+36
+The state at t = 60 is shown in Fig. 17, where we now compare the elliptic
+approach to the parabolic one. The cross-sectional temperature view (left),
+and the line-of-sight integrated density views (middle) cover the full extent
+in z ∈[0, 90], while the integrated pressure view shows the entire x−y cross-
+section [−30, 30]2. The turbulent cocoon that develops around the jet spine
+aids in retaining a coherent jet over the distance simulated: the turbulence
+in the backﬂow region seems to prevent large deformations of the jet. The
+overall morphology of the 3D helical jet is very similar with both monopole
+corrections.
+A more in-depth discussion of the physics in the context of
+astrophysical jet propagation is deferred to future work. Fig. 17 shows that
+the temperature, density, and pressure variations are all very well recovered
+with either method for monopole control.
+5. Conclusions
+We have presented an MPI-parallel geometric multigrid library. The li-
+brary can be used to extend octree-based adaptive mesh reﬁnement frame-
+works with an elliptic solver. The library supports multigrid V-cycles and
+FMG cycles, and employs standard second-order discretizations. Cartesian
+2D/3D and cylindrical 2D grid geometries can be used, with periodic, Dirich-
+let, or Neumann boundary conditions. For 3D Poisson problems free-space
+boundary conditions are also supported, by using an FFT-based solver on
+the coarse grid. The convergence and scaling of the library has been demon-
+strated with multiple test problems.
+We have demonstrated the coupling of the library to MPI-AMRVAC, an
+existing AMR code, by using the multigrid routines for divergence cleaning in
+MHD simulations. We have compared three approaches: elliptic, hyperbolic
+and parabolic divergence cleaning. Several test cases were presented, in 2D
+and 3D Cartesian as well as axisymmetric geometries. Elliptic divergence
+cleaning (i.e., using a projection method) was found to work satisfactorily in
+all cases, although the other methods generally performed similarly well.
+Acknowledgments. JT is supported by postdoctoral fellowship 12Q6117N
+from Research Foundation – Flanders (FWO). RK acknowledges support
+by FWO-NSFC grant G0E9619N.
+The computational resources and services used in this work were pro-
+vided by the VSC (Flemish Supercomputer Center), funded by the Research
+Foundation – Flanders (FWO) and the Flemish Government – department
+EWI.
+37
+References
+[1] A. Gholami, D. Malhotra, H. Sundar, G. Biros, FFT, FMM, or multi-
+grid? A comparative study of state-of-the-art Poisson solvers for uniform
+and nonuniform grids in the unit cube, SIAM Journal on Scientiﬁc Com-
+puting 38 (3) (2016) C280–C306. doi:10.1137/15m1010798.
+URL http://dx.doi.org/10.1137/15M1010798
+[2] C. Xia, J. Teunissen, I. E. Mellah, E. Chan´e, R. Keppens, MPI-
+AMRVAC 2.0 for solar and astrophysical applications, The Astro-
+physical Journal Supplement Series 234 (2) (2018) 30. doi:10.3847/
+1538-4365/aaa6c8.
+URL http://dx.doi.org/10.3847/1538-4365/aaa6c8
+[3] O. Porth, C. Xia, T. Hendrix, S. P. Moschou, R. Keppens, MPI-
+AMRVAC for solar and astrophysics, The Astrophysical Journal Sup-
+plement Series 214 (1) (2014) 4. doi:10.1088/0067-0049/214/1/4.
+URL http://dx.doi.org/10.1088/0067-0049/214/1/4
+[4] W. Zhang, A. Almgren, M. Day, T. Nguyen, J. Shalf, D. Unat, Boxlib
+with tiling: An adaptive mesh reﬁnement software framework, SIAM
+Journal on Scientiﬁc Computing 38 (5) (2016) S156–S172.
+doi:10.
+1137/15m102616x.
+URL http://dx.doi.org/10.1137/15M102616X
+[5] A. S. Almgren, J. B. Bell, A. Nonaka, M. Zingale, A new low Mach
+number approach in astrophysics, Computing in Science & Engineering
+11 (2) (2009) 24–33. doi:10.1109/mcse.2009.21.
+URL http://dx.doi.org/10.1109/MCSE.2009.21
+[6] S. Popinet, Gerris: a tree-based adaptive solver for the incompress-
+ible Euler equations in complex geometries, Journal of Computa-
+tional Physics 190 (2) (2003) 572–600. doi:10.1016/s0021-9991(03)
+00298-5.
+URL http://dx.doi.org/10.1016/S0021-9991(03)00298-5
+[7] R. Teyssier, Cosmological hydrodynamics with adaptive mesh re-
+ﬁnement, A&A 385 (1) (2002) 337–364.
+doi:10.1051/0004-6361:
+20011817.
+URL http://dx.doi.org/10.1051/0004-6361:20011817
+38
+[8] U. Ziegler, The NIRVANA code: Parallel computational MHD with
+adaptive mesh reﬁnement, Computer Physics Communications 179 (4)
+(2008) 227–244. doi:10.1016/j.cpc.2008.02.017.
+URL http://dx.doi.org/10.1016/j.cpc.2008.02.017
+[9] B. Fryxell, K. Olson, P. Ricker, F. X. Timmes, M. Zingale, D. Q. Lamb,
+P. MacNeice, R. Rosner, J. W. Truran, H. Tufo, Flash: An adaptive
+mesh hydrodynamics code for modeling astrophysical thermonuclear
+ﬂashes, The Astrophysical Journal Supplement Series 131 (1) (2000)
+273–334. doi:10.1086/317361.
+URL http://dx.doi.org/10.1086/317361
+[10] P. M. Ricker, A direct multigrid Poisson solver for oct-tree adaptive
+meshes, Astrophys J. Suppl. S. 176 (1) (2008) 293–300. doi:10.1086/
+526425.
+URL http://dx.doi.org/10.1086/526425
+[11] H. Sundar, G. Biros, C. Burstedde, J. Rudi, O. Ghattas, G. Stadler,
+Parallel geometric-algebraic multigrid on unstructured forests of octrees,
+2012 International Conference for High Performance Computing, Net-
+working, Storage and Analysisdoi:10.1109/sc.2012.91.
+URL http://dx.doi.org/10.1109/SC.2012.91
+[12] M. Adams, HPGMG 1.0: A benchmark for ranking high performance
+computing systems, Lawrence Berkeley National Laboratory (2014)
+LBNL–6630E.
+URL https://escholarship.org/uc/item/00r9w79m
+[13] R. S. Sampath, S. S. Adavani, H. Sundar, I. Lashuk, G. Biros, Dendro:
+Parallel algorithms for multigrid and AMR methods on 2:1 balanced oc-
+trees, 2008 SC - International Conference for High Performance Comput-
+ing, Networking, Storage and Analysisdoi:10.1109/sc.2008.5218558.
+URL http://dx.doi.org/10.1109/SC.2008.5218558
+[14] S. Balay, S. Abhyankar, M. F. Adams, J. Brown, P. Brune, K. Buschel-
+man, L. Dalcin, A. Dener, V. Eijkhout, W. D. Gropp, D. Kaushik, M. G.
+Knepley, D. A. May, L. C. McInnes, R. T. Mills, T. Munson, K. Rupp,
+P. Sanan, B. F. Smith, S. Zampini, H. Zhang, H. Zhang, PETSc Web
+page, http://www.mcs.anl.gov/petsc (2018).
+URL http://www.mcs.anl.gov/petsc
+39
+[15] R. D. Falgout, U. M. Yang, Hypre: A library of high performance pre-
+conditioners, in: Proceedings of the International Conference on Com-
+putational Science-Part III, ICCS ’02, Springer-Verlag, London, UK,
+UK, 2002, pp. 632–641.
+URL http://dl.acm.org/citation.cfm?id=645459.653635
+[16] W. Hackbusch, Multi-grid methods and applications, Springer Series in
+Computational Mathematicsdoi:10.1007/978-3-662-02427-0.
+URL http://dx.doi.org/10.1007/978-3-662-02427-0
+[17] U. Trottenberg, C. Oosterlee, A. Schuller, Multigrid, Elsevier Science,
+2000.
+[18] W. L. Briggs, V. E. Henson, S. F. McCormick, A Multigrid Tutorial (2nd
+Ed.), Society for Industrial & Applied Mathematics, Philadelphia, PA,
+USA, 2000.
+[19] A. Brandt, O. E. Livne, Multigrid Techniques, Society for Industrial &
+Applied Mathematics (SIAM), 2011. doi:10.1137/1.9781611970753.
+URL http://dx.doi.org/10.1137/1.9781611970753
+[20] S. R. Barros, The Poisson equation on the unit disk: a multigrid solver
+using polar coordinates, Applied Mathematics and Computation 25 (2)
+(1988) 123–135. doi:10.1016/0096-3003(88)90110-5.
+URL http://dx.doi.org/10.1016/0096-3003(88)90110-5
+[21] S. R. Barros, Multigrid methods for two- and three-dimensional Poisson-
+type equations on the sphere, Journal of Computational Physics 92 (2)
+(1991) 313–348. doi:10.1016/0021-9991(91)90213-5.
+URL http://dx.doi.org/10.1016/0021-9991(91)90213-5
+[22] J. Teunissen, U. Ebert, Aﬁvo: A framework for quadtree/octree AMR
+with shared-memory parallelization and geometric multigrid methods,
+Computer Physics Communications 233 (2018) 156–166. doi:10.1016/
+j.cpc.2018.06.018.
+URL http://dx.doi.org/10.1016/j.cpc.2018.06.018
+[23] R. Keppens, Z. Meliani, A. van Marle, P. Delmont, A. Vlasis, B. van der
+Holst, Parallel, grid-adaptive approaches for relativistic hydro and mag-
+netohydrodynamics, Journal of Computational Physics 231 (3) (2012)
+40
+718–744. doi:10.1016/j.jcp.2011.01.020.
+URL http://dx.doi.org/10.1016/j.jcp.2011.01.020
+[24] P. MacNeice, K. M. Olson, C. Mobarry, R. de Fainchtein, C. Packer,
+Paramesh:
+A parallel adaptive mesh reﬁnement community toolkit,
+Computer Physics Communications 126 (3) (2000) 330–354.
+doi:
+10.1016/s0010-4655(99)00501-9.
+URL http://dx.doi.org/10.1016/S0010-4655(99)00501-9
+[25] L. Genovese, T. Deutsch, A. Neelov, S. Goedecker, G. Beylkin, Eﬃ-
+cient solution of Poisson’s equation with free boundary conditions, The
+Journal of Chemical Physics 125 (7) (2006) 074105. doi:10.1063/1.
+2335442.
+URL http://dx.doi.org/10.1063/1.2335442
+[26] M. M. Hejlesen, J. T. Rasmussen, P. Chatelain, J. H. Walther, A high
+order solver for the unbounded Poisson equation, Journal of Computa-
+tional Physics 252 (2013) 458–467. doi:10.1016/j.jcp.2013.05.050.
+URL http://dx.doi.org/10.1016/j.jcp.2013.05.050
+[27] L. Genovese, T. Deutsch, S. Goedecker, Eﬃcient and accurate three-
+dimensional Poisson solver for surface problems, The Journal of Chem-
+ical Physics 127 (5) (2007) 054704. doi:10.1063/1.2754685.
+URL http://dx.doi.org/10.1063/1.2754685
+[28] G. Morton, A computer oriented geodetic data base; and a new tech-
+nique in ﬁle sequencing, IBM Research Report.
+[29] J. Brackbill, D. Barnes, The eﬀect of nonzero ∇·B on the numerical solu-
+tion of the magnetohydrodynamic equations, Journal of Computational
+Physics 35 (3) (1980) 426–430. doi:10.1016/0021-9991(80)90079-0.
+URL http://dx.doi.org/10.1016/0021-9991(80)90079-0
+[30] B. Marder, A method for incorporating Gauss law into electromagnetic
+PIC codes, Journal of Computational Physics 68 (1) (1987) 48–55. doi:
+10.1016/0021-9991(87)90043-x.
+URL http://dx.doi.org/10.1016/0021-9991(87)90043-X
+[31] K. G. Powell, P. L. Roe, T. J. Linde, T. I. Gombosi, D. L. De Zeeuw,
+A solution-adaptive upwind scheme for ideal magnetohydrodynamics,
+41
+Journal of Computational Physics 154 (2) (1999) 284–309.
+doi:10.
+1006/jcph.1999.6299.
+URL http://dx.doi.org/10.1006/jcph.1999.6299
+[32] P. Janhunen, A Positive Conservative Method for Magnetohydrodynam-
+ics Based on HLL and Roe Methods, Journal of Computational Physics
+160 (2000) 649–661. doi:10.1006/jcph.2000.6479.
+[33] P. J. Dellar, A Note on Magnetic Monopoles and the One-Dimensional
+MHD Riemann Problem, Journal of Computational Physics 172 (2001)
+392–398. doi:10.1006/jcph.2001.6815.
+[34] R. Keppens, M. Nool, G. T´oth, J. Goedbloed, Adaptive mesh re-
+ﬁnement for conservative systems: multi-dimensional eﬃciency eval-
+uation, Computer Physics Communications 153 (3) (2003) 317–339.
+doi:10.1016/s0010-4655(03)00139-5.
+URL http://dx.doi.org/10.1016/S0010-4655(03)00139-5
+[35] A. Dedner, F. Kemm, D. Kr¨oner, C.-D. Munz, T. Schnitzer, M. Wesen-
+berg, Hyperbolic divergence cleaning for the MHD equations, Journal
+of Computational Physics 175 (2) (2002) 645–673. doi:10.1006/jcph.
+2001.6961.
+URL http://dx.doi.org/10.1006/jcph.2001.6961
+[36] D. Derigs, A. R. Winters, G. J. Gassner, S. Walch, M. Bohm, Ideal
+GLM-MHD: About the entropy consistent nine-wave magnetic ﬁeld di-
+vergence diminishing ideal magnetohydrodynamics equations, Journal
+of Computational Physics 364 (2018) 420–467. doi:10.1016/j.jcp.
+2018.03.002.
+URL http://dx.doi.org/10.1016/j.jcp.2018.03.002
+[37] C. R. Evans, J. F. Hawley, Simulation of magnetohydrodynamic ﬂows -
+a constrained transport method, The Astrophysical Journal 332 (1988)
+659. doi:10.1086/166684.
+URL http://dx.doi.org/10.1086/166684
+[38] D. S. Balsara, D. S. Spicer, A staggered mesh algorithm using high order
+Godunov ﬂuxes to ensure solenoidal magnetic ﬁelds in magnetohydro-
+dynamic simulations, Journal of Computational Physics 149 (2) (1999)
+42
+270–292. doi:10.1006/jcph.1998.6153.
+URL http://dx.doi.org/10.1006/jcph.1998.6153
+[39] D. Ryu, F. Miniati, T. W. Jones, A. Frank, A divergence-free upwind
+code for multidimensional magnetohydrodynamic ﬂows, The Astrophys-
+ical Journal 509 (1) (1998) 244–255. doi:10.1086/306481.
+URL http://dx.doi.org/10.1086/306481
+[40] G. T´oth, The ∇·B constraint in shock-capturing magnetohydrodynam-
+ics codes, Journal of Computational Physics 161 (2) (2000) 605–652.
+doi:10.1006/jcph.2000.6519.
+URL http://dx.doi.org/10.1006/jcph.2000.6519
+[41] D. S. Balsara, Divergence-Free Adaptive Mesh Reﬁnement for Magneto-
+hydrodynamics, Journal of Computational Physics 174 (2001) 614–648.
+doi:10.1006/jcph.2001.6917.
+[42] S. Fromang, P. Hennebelle, R. Teyssier, A high order Godunov scheme
+with constrained transport andadaptive mesh reﬁnement for astrophys-
+ical magnetohydrodynamics, Astronomy & Astrophysics 457 (2) (2006)
+371–384. doi:10.1051/0004-6361:20065371.
+URL http://dx.doi.org/10.1051/0004-6361:20065371
+[43] A. J. Cunningham, A. Frank, P. Varni`ere, S. Mitran, T. W. Jones, Sim-
+ulating Magnetohydrodynamical Flow with Constrained Transport and
+Adaptive Mesh Reﬁnement: Algorithms and Tests of the AstroBEAR
+Code, Astrophysical Journal Supplement Series 182 (2009) 519–542.
+arXiv:0710.0424, doi:10.1088/0067-0049/182/2/519.
+[44] F. Miniati, D. F. Martin, Constrained-transport magnetohydrodynamics
+with adaptive mesh reﬁnement in Charm, The Astrophysical Journal
+Supplement Series 195 (1) (2011) 5. doi:10.1088/0067-0049/195/1/5.
+URL http://dx.doi.org/10.1088/0067-0049/195/1/5
+[45] H. Olivares,
+O. Porth,
+Y. Mizuno,
+The Black Hole Accretion
+Code: adaptive mesh reﬁnement and constrained transport, arXiv e-
+printsarXiv:1802.00860.
+[46] P. F. Hopkins, A constrained-gradient method to control divergence
+errors in numerical MHD, Monthly Notices of the Royal Astronomical
+43
+Society 462 (1) (2016) 576–587. doi:10.1093/mnras/stw1578.
+URL http://dx.doi.org/10.1093/mnras/stw1578
+[47] T. S. Tricco, D. J. Price, M. R. Bate, Constrained hyperbolic diver-
+gence cleaning in smoothed particle magnetohydrodynamics with vari-
+able cleaning speeds, Journal of Computational Physics 322 (2016) 326–
+344. arXiv:1607.02394, doi:10.1016/j.jcp.2016.06.053.
+[48] D. S. Balsara, J. Kim, A comparison between divergence-cleaning and
+staggered-mesh formulations for numerical magnetohydrodynamics, The
+Astrophysical Journal 602 (2) (2004) 1079–1090. doi:10.1086/381051.
+URL http://dx.doi.org/10.1086/381051
+[49] T. A. Gardiner, J. M. Stone, An unsplit Godunov method for ideal MHD
+via constrained transport, Journal of Computational Physics 205 (2)
+(2005) 509–539. doi:10.1016/j.jcp.2004.11.016.
+URL http://dx.doi.org/10.1016/j.jcp.2004.11.016
+[50] M. ˇCada, M. Torrilhon, Compact third-order limiter functions for ﬁ-
+nite volume methods, Journal of Computational Physics 228 (11) (2009)
+4118–4145. doi:10.1016/j.jcp.2009.02.020.
+URL http://dx.doi.org/10.1016/j.jcp.2009.02.020
+[51] B. Koren, A robust upwind discretization method for advection, diﬀu-
+sion and source terms, in: C. Vreugdenhil, B. Koren (Eds.), Numerical
+Methods for Advection-Diﬀusion Problems, Braunschweig/Wiesbaden:
+Vieweg, 1993, pp. 117–138.
+[52] B. Van Leer, Towards the ultimate conservative diﬀerence scheme III.
+upstream-centered ﬁnite-diﬀerence schemes for ideal compressible ﬂow,
+Journal of Computational Physics 23 (3) (1977) 263–275. doi:10.1016/
+0021-9991(77)90094-8.
+URL http://dx.doi.org/10.1016/0021-9991(77)90094-8
+[53] J. P. H. Goedbloed, S. Poedts, Principles of Magnetohydrodynamics,
+Cambridge University Press, 2004.
+[54] T. Gold, F. Hoyle, On the origin of solar ﬂares, Monthly Notices of
+the Royal Astronomical Society 120 (2) (1960) 89–105. doi:10.1093/
+mnras/120.2.89.
+URL http://dx.doi.org/10.1093/mnras/120.2.89
+44
+[55] R. Keppens, Z. Meliani, B. van der Holst, F. Casse, Extragalactic jets
+with helical magnetic ﬁelds: relativistic MHD simulations, Astronomy
+& Astrophysics 486 (2008) 663–678. arXiv:0802.2034, doi:10.1051/
+0004-6361:20079174.
+45

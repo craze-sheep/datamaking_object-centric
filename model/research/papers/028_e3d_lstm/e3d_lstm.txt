@@ -1,0 +1,1299 @@
+Magnetoelectric eﬀects in superconductor/ferromagnet bilayers
+D. S. Rabinovich,1, 2, 3 I. V. Bobkova,3, 2 A. M. Bobkov,3 and M.A. Silaev4
+1Skolkovo Institute of Science and Technology, Skolkovo 143026, Russia
+2Moscow Institute of Physics and Technology, Dolgoprudny, 141700 Russia
+3Institute of Solid State Physics, Chernogolovka, Moscow reg., 142432 Russia
+4Department of Physics and Nanoscience Center, University of Jyv¨askyl¨a,
+P.O. Box 35 (YFL), FI-40014 University of Jyv¨askyl¨a, Finland
+(Dated: May 13, 2022)
+We demonstrate that the hybrid structures consisting of a superconducting layer with an adjacent
+spin-textured ferromagnet demonstrate the variety of equilibrium magnetoelectric eﬀects originating
+from coupling between conduction electron spin and superconducting current.
+By deriving and
+solving the generalized Usadel equation which takes into account the spin-ﬁltering eﬀect we ﬁnd
+that a supercurrent generates spin polarization in the superconducting ﬁlm which is non-coplanar
+with the local ferromagnetic moment. The inverse magnetoelectric eﬀect in such structures is shown
+to result in the spontaneous phase diﬀerence across the magnetic topological defects such as a domain
+wall and helical spin texture. The possibility to obtain dissipationless spin torques and detect domain
+wall motion through the superconducting phase diﬀerence are discussed.
+I.
+INTRODUCTION
+Magnetoelectric eﬀects resulting from the intrinsic
+spin-orbital coupling (SOC) have been studied quite in-
+tensively in diﬀerent conducting materials with inversion
+asymmetry1–9. The direct magnetoelectric eﬀect which
+is the generation of spin polarization by local electric
+ﬁelds1–4 has been experimentally observed by the optical
+probes5–7,10, electronic resonance techniques11 and direct
+electrical measurements12,13. Recently, it has become the
+topic of great interest in connection with magnetic mem-
+ory applications based on the spin-orbit torque mecha-
+nism of magnetization switching14–19 and domain wall
+motion20. The inverse magnetoelectric eﬀect or the spin
+galvanic eﬀect is the generation of charge current due to
+the nonequilibrium spin polarization1. It has been ob-
+served experimentally in semiconductors8,9 and normal
+metals21.
+The equilibrium counterparts of magnetoelectric ef-
+fects discussed above exist in superconducting materials
+resulting from the coupling between supercurrent and
+various magnetic degrees of freedom. These can be ei-
+ther magnetic moments of conductivity electrons form-
+ing spin-triplet Cooper pairs or the localized spins re-
+sponsible for magnetically ordered state. Up to now the
+direct magneto-electric eﬀect was reported for supercon-
+ducting systems in the presence of either intrinsic22–27
+or extrinsic SOC28.
+A number of works predicted an
+anomalous Josephson eﬀect, which can be viewed29 as
+an inverse magnetoelectric eﬀect, speciﬁc for Josephson
+junctions. Its essence is that a spontaneous phase diﬀer-
+ence intermediate between 0 and π appears in the ground
+state of the junction. It was proposed for interlayers with
+SOC under the applied magnetic ﬁeld29–43 and for non-
+coplanar magnetic interlayers39,42–51. The uniﬁed theory
+of anomalous Josephson eﬀect which combines the pres-
+ence of SOC and magnetic texture has been developed
+recently52. This eﬀect has been recently observed in the
+Josephson junctions through a quantum dot53 and Bi2Se3
+interlayer54,55.
+Given the analogy between intrinsic SOC and the
+SU(2) gauge ﬁeld56 which can be induced by the spa-
+tial rotations of magnetization in ferromagnets (F) it is
+natural to expect that equilibrium magnetoelectric eﬀect
+should exist also in spin-textured S/F hybrid structures.
+However in contrast to superconducting systems with
+SOC the direct magnetoelectirc eﬀect in S/F hybrids
+with spin-singlet pairing has not been obtained in the
+previous theoretical works. This is despite the possibil-
+ity to produce spin-triplet Cooper pairs in spin-textured
+S/F systems is well known57,58 and proposed to have a lot
+of future applications in spintronics and superconducting
+electronics59,60. The reason for that roots in the limita-
+tions of the quasiclassical theory which has been widely
+used for the study of such systems and which neglects the
+diﬀerence in the Fermi velocities and the density of states
+in spin-up and spin-down subbands. Although such ap-
+proximation is justiﬁed for the description of weak ferro-
+magnets like dilute magnetic alloys it generically misses
+the anomalous Josephson eﬀect43 and as we show below,
+the direct magnetoelectric eﬀects as well.
+To go beyond the limitations of quasiclassical theory
+we consider its minimal extension for a bilayer S/F sys-
+tem consisting of thin superconducting ﬁlm separated by
+the tunnel barrier from the strong spin-textured ferro-
+magnet. We demonstrate that this system features both
+the direct and inverse magnetoelectric eﬀects. The lat-
+ter produces the phase-inhomogeneous superconducting
+ground state and can be used for electrical detection of
+the domain wall motion and its chirality.
+The former
+leads to the generation of non-collinear spin density in
+the superconducting ﬁlm and can be used for generating
+the spin torque acting on the spin texture in the adjacent
+ferromagnet.
+Equilibrium supercurrent-induced spin torques were
+discussed previously in Josephson junctions through the
+single-domain magnets33,61–64, layered systems47,65–67,
+in ferromagnetic68 and spin-triplet superconductors69.
+arXiv:1811.09304v1  [cond-mat.supr-con]  22 Nov 2018
+2
+Supercurrent-driven domain wall motion in the Joseph-
+son junction through strong ferromagnet was considered
+in70. Here we analyse this eﬀect for S/F bilayers with sin-
+glet superconductors and elucidate its connection with
+the direct magnetoelectric eﬀect.
+The current-induced
+spin polarization in superconducting ﬁeld is found to
+have a component perpendicular to the local magneti-
+zation in the adjacent ferromagnet.
+Therefore it gives
+rise to the spin torque acting on the ferromagnet tex-
+ture M(r).
+The torque that we have found has two
+contributions. The ﬁrst one is similar to the usual adi-
+abatic spin-transfer torque in normal71–75 and supercon-
+ducting systems70. The second part of the torque is inti-
+mately connected to the local chirality of the magnetiza-
+tion texture and is analogous neither to the adiabatic spin
+transfer torque, nor to a non-adiabatic (anti-damping)
+torque76.
+The paper is organized as follows. In Sec. II we discuss
+essential ingredients for obtaining magnetoelectric eﬀects
+in S/F bilayers and develop a theoretical approach for
+treating superconductivity in such structures. In Sec. III
+the spontaneous phase gradients in the ground state of
+the S/F bilayer containing a magnetization texture are
+obtained and possible applications of this eﬀect for elec-
+trical detection of the DW presence, motion and chirality
+are discussed. Sec. IV is devoted to the calculation and
+discussion of the supercurrent-induced spin polarization
+in the superconductor and the resulting torque acting on
+the DW.
+II.
+GENERALIZED USADEL EQUATION
+We consider a thin (the thickness d along the z direc-
+tion is much smaller than the superconducting coherence
+length) superconducting ﬁlm in a contact with a ferro-
+magnet. The sketch of diﬀerent system conﬁgurations,
+which we consider, is presented in Fig. 1. The interface
+is assumed to be in the z = 0 plane. Below we denote
+r = (x, y) to be 2D coordinate vector in plane of the
+ﬁlm. The interface is low-transparent in order to pre-
+vent the complete suppression of superconductivity by
+the exchange ﬁeld of the ferromagnet.
+It is widely accepted in the literature that if the thick-
+ness of the S ﬁlm d is smaller than the superconducting
+coherence length ξS, the magnetic proximity eﬀect, that
+is the inﬂuence of the adjacent ferromagnet with the mag-
+netization M(r) on the S ﬁlm can be described by adding
+the eﬀective exchange ﬁeld heff(r) ∝M(r) to the qua-
+siclassical Eilenberger or Usadel equation, which is used
+for treating the superconductor. This was reported as for
+metallic57, so as for insulating77,78 ferromagnets. While
+for the ferromagnetic insulators the magnetic proximity
+eﬀect is not so simple and in general is not reduced to
+the eﬀective exchange only78–80, the other terms (which
+can be viewed as additional magnetic impurities in the
+superconductor) are omitted in Eq. (1) for simplicity be-
+cause they do not inﬂuence the discussed below eﬀects
+qualitatively. Hence we consider the Usadel equation in
+the form
+−iD∇(ˇgS∇ˇgS) +
+h
+ˇΛ −ˇ∆(r), ˇgS
+i
+= 0,
+(1)
+where ˇgS ≡ˇgS(r, ω) is the momentum-averaged qua-
+siclassical Green’s function amd ω is the Matsubara fre-
+quency, respectively. The matrix gap function is ˇ∆(r) =
+∆(r)ˆτ+ −∆∗(r)ˆτ−with ˆτ± = (ˆτx ± iˆτy)/2 and the diag-
+onal spin-dependent potential term is given by
+ˇΛ = ˇΛ0 ≡ˆτz[iω + ˆσheff(r)]
+(2)
+We denote ˆσi and ˆτi to be the Pauli matrices in spin and
+particle-hole spaces, respectively.
+Although Eq.(1) describes the formation of spin-
+triplet superconducting correlations in the spatially-
+inhomogeneous ﬁeld heff(r), it completely misses the
+magnetoelectric eﬀects, which can be understood from
+the following argument. In general, the supercurrent j
+ﬂowing through the system is a function of eﬀective ex-
+change ﬁeld heff ∝M and the superconducting phase
+gradient ∇ϕ(r).
+The time reversal symmetry dictates
+that j(∇ϕ, M) = −j(−∇ϕ, −M). It was shown43 that
+for a system described by Eq. (1) the additional qua-
+siclassical symmetry holds j(M) = j(−M).
+Com-
+bining this with the time-reversal symmetry we obtain
+j(∇ϕ) = −j(−∇ϕ). Consequently, the anomalous su-
+percurrent at zero ∇ϕ and the phase-inhomogeneous su-
+perconducting ground states are not allowed. In order
+to allow for the magnetoelectric eﬀects two conditions
+should be satisﬁed simultaneously: (i) the magnetization
+M of the ferromagnet should be noncoplanar and (ii) the
+magnetization of the ferromagnet should be treated be-
+yond the quasiclassical approximation Eq. (1) in order to
+violate the quasiclassical symmetry j(M) = j(−M)43.
+Below we demonstrate that the minimal necessary gen-
+eralization of the Eilenberger equation allowing for de-
+scribing magnetoelectric eﬀects is to include the ”spin-
+dependent depairing” term which modiﬁes the diagonal
+potential in Eq.(1)
+ˇΛ = ˇΛ0 + iΓsgnω(ˆτz + P ˆσ)
+(3)
+Qualitatively the last term in Eq.(3) describes the sup-
+pression of superconductivity in the ﬁlm due to spin-
+dependent tunneling of electrons forming Coopers pairs
+into the adjacent normal ferromagnet and Γ is the ef-
+fective depairing parameter.
+The polarization P de-
+scribes the eﬃciency and quantization axis of the spin-
+ﬁlter which acts on the electrons during the tunnelling
+between the superconductor and adjacent layer, ferro-
+magnetic or normal. If the eﬀective exchange and the
+spin ﬁltering tunneling are provided by the same fer-
+romagnet [Fig.1(a)], the direction of P coincides with
+that of the eﬀective exchange ﬁeld P ∥heff, although
+in principle they can diﬀer e.g. due to the small-scale
+magnetic inhomogeneity at the interface layer. The con-
+dition heff ∦P can also be reached in a hybrid structure
+3
+like the sketched in Fig. 1(b), where a weak ferromagnet
+inducing heff and a spin-ﬁltering interface are spatially
+separated by the superconducting ﬁlm.
+DomainWall
+Helix
+F
+S
+N
+spin
+ﬁlter
+S
+F
+?
+PPPPPPPPPPPPPPPPPPPP
+q
+-
+?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+)
+(a)
+(b)
+FIG. 1.
+Sketch of systems under consideration. The left ﬁg-
+ure represents a possible realization of S/F bilayer consisting
+of a conventional superconducting ﬁlm and a strong ferromag-
+net. The right ﬁgure is a possible realization of a S/F bilayer
+with a weak ferromagnet and a spin-ﬁltering interface. The
+spin ﬁltering interface and the ferromagnet are separated by
+the superconducting ﬁlm in order to allow for misaligned mag-
+netizations of these magnetic layers. The considered magnetic
+texture conﬁgurations are shown in the bottom of the ﬁgure.
+Below by an example of a S/F bilayer with spin-
+ﬁltering interface we elucidate the physical origin of the
+spin-ﬁltering term in Eq.(3). The system includes a sin-
+glet superconductor and a weak ferromagnet with the
+exchange ﬁled h ≪εF . We treat the whole bilayer as an
+eﬀective ferromagnetic superconductor with the order pa-
+rameter ∆and the exchange ﬁeld heff(r). It is assumed
+that one of the interfaces of the bilayer is spin-ﬁltering,
+that is it has diﬀerent conductances for spin up and spin
+down electrons. We prefer to make the upper interface of
+the bilayer spin-ﬁltering in order to spatially separate it
+from the ferromagnet to have a possibility to misalign the
+magnetization vectors of the ferromagnet and the spin-
+ﬁltering interface. The sketch of the system is presented
+in Fig. 1(b). In this case the bilayer is described by the
+standard Usadel equation:
+−D[∇r (ˇg∇rˇg) + ∂z (ˇg∂zˇg)]+
+
+ωτz −iheff(r)στz + i ˇ∆(r), ˇg
+
+= 0,
+(4)
+which should be supplemented by the appropriate bound-
+ary conditions. At the impenetrable surface z = 0 it takes
+the form81:
+ˇg∂zˇg = 0
+(5)
+and at the spin-ﬁltering interface z = d it takes the
+form of the generalized Kuprianov-Lukichev boundary
+conditions81, that include spin-polarized tunnelling at
+the SF interfaces80,82–84:
+γˇg∂zˇg = [ˇg, sgnω ˇTτz ˇT †],
+(6)
+where ˇT = tσ0τ0+u ˆPσ with t =
+q
+(1 +
+√
+1 −P 2)/2, u =
+q
+(1 −
+√
+1 −P 2)/2 and ˆP = P /P. γ is the parameter
+describing the barrier strength.
+Integrating Eq. (1) from z = 0 to z = d with the
+boundary conditions Eqs. (5)-(6) and taking into account
+that for d < ξS we can consider ˇg as spatially constant in
+the z-direction, we obtain the following eﬀective Usadel
+equation for the bilayer:
+−D∇
+ ˇg∇ˇg
+
++
+h
+(ω + sgnωΓ)τz −iheffστz +
+sgnωΓP σ + i ˇ∆(r), ˇg
+i
+= 0,
+(7)
+where we denote Γ = D/γd.
+In fact, Eq. (7) can be obtained for a wide class of sys-
+tems containing a thin superconducting ﬁlm with d ≲ξS.
+For example, the superconducting ﬁlm in the S/F bi-
+layer with strong ferromagnet [Fig. 1(a)] is described
+by the same equation, which can be derived making
+use of the general boundary conditions for spin-active
+interfaces78–80. In this case as the eﬀective exchange ﬁeld,
+so as the P -term come from the interface properties:
+while the exchange is a consequence of the spin-mixing77
+upon the quasiparticle reﬂection at the S/F interface, the
+polarization term results from the spin-dependent tun-
+neling through the same interface. In this case Eq. (7)
+is obtained as a simpliﬁed position-independent version
+of the general result, obtained in Ref. 85 for spatially-
+inhomogeneous S/F systems.
+For the discussed model
+of S/strong ferromagnet bilayer the condition P ∥heff
+should be realized as the most probable variant, but, in
+principle, their directions can diﬀer due to small-scale
+magnetic inhomogeneities at the interface. The absence
+of a way to control the mutual orientation of P and heff
+is a drawback of this model with respect to the system,
+where the ferromagnet and spin-ﬁltering layer are spa-
+tially separated.
+III.
+ANOMALOUS GROUND STATE PHASE
+SHIFTS IN S/F BILAYERS CONTAINING SPIN
+TEXTURES
+Here we consider the inverse magnetoelectric eﬀect in
+a S/F bilayer containing a magnetic texture. While the
+general consideration is valid for an arbitrary texture de-
+pending on the only spatial coordinate x, we focus on
+two particular examples of the magnetic helix and the
+head-to-head domain wall.
+The magnetization texture is described by
+h = h(cos θ, sin θ cos δ, sin θ sin δ),
+(8)
+where in general the both angles depend on x-coordinate.
+Let’s make the spin gauge transform in Eq. (7) in or-
+der to work in the reference frame where the quantiza-
+tion axis is aligned with the local magnetization direc-
+tion: ˇg = UˇglU † with U †heff(r)σU = heffσz. Then we
+4
+obtain from Eq. (7):
+−D b∇
+ ˇgl b∇ˇgl
+
++
+h
+(ω + sgnωΓ)τz −iheffσzτz +
+sgnωΓ ˜P σ + i ˇ∆(r), ˇgl
+i
+= 0,
+(9)
+where b∇= ∇+ i
+
+M S
+k σkmS, ...
+
+is the gauge-covariant
+derivative with M S
+kj = Tr[σkU †∂jU]/2imS and ˜P σ =
+U †P σU is the interface polarization term in the local
+spin basis.
+In general ˜P depends on the x-coordinate
+even if P is spatially independent.
+The spin rotation is given by
+ˆU = e−iσxδ/2e−iσzθ/2e−iσyπ/4.
+(10)
+In this considered case when the magnetization texture
+only depends on the x-coordinate the gauge ﬁeld can be
+written as follows:
+M S
+kxσkmS = aσ,
+(11)
+where a = 1
+2(∂xθ, (∂xδ) sin θ, −(∂xδ) cos θ) is a vector in
+spin space. The other components of the spin gauge ﬁeld
+M S
+ky and M S
+kz are zero.
+At ﬁrst we assume that P is aligned with h and
+solve the eﬀective Usadel equation (7) in the S ﬁlm.
+For simplicity we consider the linearized version of this
+equation valid near the critical temperature.
+The lin-
+earized Usadel equation for the anomalous Green’s func-
+tion ˆfl = f0σ0+fσ takes the form [we consider ω > 0, for
+ω < 0 the solutions can be obtained as f0(ω) = f0(−ω),
+f(ω) = −f(−ω)]:
+−D
+2 ∂2
+xf + (ω + Γ + 2Da2)f + 2D[a × ∂xf]+
+(12)
+D[∂xa × f] + iΓP[ez × f] −2D(af)a −ihefff0ez = 0,
+−D
+2 ∂2
+xf0 + (ω + Γ)f0 −ihefffz −i∆= 0.
+(13)
+The general expression for the current reads
+jx = iπT
+2eρN
+X
+ω>0
+(
+Tr2
+ ˆfl∂x ˆ˜fl −ˆ˜fl∂x ˆfl
+
++ 8(f × ˜f)a
+)
+,
+(14)
+where ρN = 1/(2e2NF D) is the resistivity of the super-
+conducting ﬁlm in the normal state.
+The electric current can be represented as the sum of
+the ordinary jo and anomalous ja parts. The ordinary
+and anomalous contributions are given by the ﬁrst and
+the second terms in the curly brackets in Eq.(14). The
+anomalous contribution is deﬁned as the current in the
+absence of the phase diﬀerence ja = j(∂xϕ = 0). Now
+our goal is to ﬁnd the anomalous current, that is to solve
+Eqs. (12)-(13) at ∂xϕ = 0. We solve Eqs. (12)-(13) in the
+approximation of spatially slow magnetic texture with
+the characteristic length scale dW ≫ξS. The solution
+up to the leading order in the parameters ξS/dW and
+ΓP/(ω + Γ) takes the form:
+f0 =
+i∆(ω + Γ)
+(ω + Γ)2 + h2
+eff
+,
+(15)
+fz =
+−∆heff
+(ω + Γ)2 + h2
+eff
+,
+(16)
+fx,y = −
+Dfz
+(ω + Γ)
+h
+±∂xay,x −2azax,y −
+iΓP
+(ω + Γ)
+ ∂xax,y ± 2azay,x
+i
+.
+(17)
+The function components ˜fi can be obtained from the
+corresponding expressions for fi with the substitution
+∆→−∆, P →−P and ϕ →−ϕ.
+It is seen from
+Eq. (17) that fx,y are of the second order with respect
+to ξS/dW ≡
+p
+D/2πTdW . f0,z also contain second order
+in ξS/dW contributions, but they are not written here
+because they do not contribute to the anomalous current
+ja.
+Now substituting Eqs. (15)-(17) into the current
+Eq. (14) we obtain the following expression for the or-
+dinary and anomalous currents:
+ja(x) =
+(18)
+−8πTDΓP
+eρN
+X
+ω>0
+f 2
+z
+(ω + Γ)2
+h
+(∂xa × a)z + 2az(a2
+x + a2
+y)
+i
+jo = −2πT
+eρN
+X
+ω>0
+[f 2
+0 + f 2
+z ]∂xϕ0
+(19)
+The ground state of the system is determined by the con-
+dition of zero total electric current jo + ja = 0. Using
+Eqs.(18), (19) we obtain the ground state that supports
+the gradient of superconducting phase
+∂xϕ0 =
+jaeρN
+2πT P
+ω>0
+[f 2
+0 + f 2z ].
+(20)
+Magnetic helix. Now we consider the special case of
+magnetic texture in the form of a helix.
+In this case
+dθ/dx = 0 and dδ/dx = 2πκ/L, where L is the spatial
+period of the helix and κ = ±1 determines its chirality.
+∂xϕ0 = 8π3 cos θ sin2 θκDΓP
+L3
+
+
+P
+ω>0
+f 2
+z /(ω + Γ)2
+P
+ω>0
+[f 2
+0 + f 2z ]
+
+
+(21)
+One can see that in this case the ground state of the su-
+perconductor corresponds to the helical state - the super-
+conducting state with zero supercurrent and a constant
+phase gradient ∇ϕ = ∂xϕ0ex. Earlier the helical state
+has already been predicted for superconducting systems
+5
+with intrinsic spin-orbit coupling and under a uniform
+Zeeman ﬁeld86–91. Here we report that this state can be
+also realized in S/F spin-textured bilayers without an in-
+trinsic spin-orbit coupling. It is also worth to note here
+that, while looking quite similar, this state is in sharp
+contrast to the famous FFLO state92,93, where the direc-
+tion of the phase gradient is not ﬁxed by the exchange
+ﬁeld. Here the direction of the phase gradient is strictly
+ﬁxed by the magnetization texture.
+Introducing the orthogonal vectors ( ˆh ≡h/h):
+nδ = −∂δˆh/ sin θ
+(22)
+nθ = −(∂xnδ∂θˆh)∂θˆh,
+(23)
+which are also orthogonal to h, we can also rewrite
+Eq. (21) in the form:
+∂xϕ0 = 4π2χintP sin2 θDΓ
+L2
+
+
+P
+ω>0
+f 2
+z /(ω + Γ)2
+P
+ω>0
+[f 2
+0 + f 2z ]
+
+,(24)
+where χint = ˆh(nθ×nδ) = (2πκ/L) cos θ is the invariant,
+describing the internal chirality of the helix. Pχint is the
+same chiral invariant which was introduced in Ref. 51 to
+describe the anomalous Josephson eﬀect in S/F/S junc-
+tions with a helix magnetic interlayer. It illustrates the
+universality of the chiral nature of the inverse magneto-
+electric eﬀect in superconducting hybrids with textured
+ferromagnets.
+Eqs. (21) and (24) describe the helical state in the limit
+of slow helices ξS/L ≪1. The dependence of ∂xϕ0 on the
+inverse helix period in more general case of arbitrary L
+(still larger than the atomic scales) is presented in Fig. 2.
+It is seen that that maximal values of the phase gradi-
+ent are reached for helices with the period L ∼0.15ξS.
+Fig. 2(b) also demonstrates that the stronger the spin-
+dependent part of the depairing PΓ the larger the phase
+gradient of the helical state.
+In fact, the dependence
+∂xϕ0(Γ) is nonmonotonous and |∂xϕ0| is strongly reduced
+at Γ > Tc. But this part of the curve ∂xϕ0(Γ) is not
+plotted because the superconductivity by itself is already
+suppressed at such strong depairing factors.
+Domain wall. Further we consider a domain wall case.
+For deﬁniteness we focus on the head-to-head domain
+wall with θ(x) →0, π at x →∓∞.
+If the wall is coplanar, what is equivalent to the con-
+dition ∂xδ = 0, then ja = 0, as it can be easily seen from
+Eq. (18) and the deﬁnition of vector a. In this case the
+magnetoelectric eﬀect is absent and the ground state of
+the superconductor is a homogeneous state with a spa-
+tially constant phase.
+If the DW is noncoplanar due to some reasons, that is
+∂xδ ̸= 0, ja ̸= 0 and between any points x1 and x2 of
+the superconductor in the ground there is a phase dif-
+ference, which is to be calculated as
+x2
+R
+x1
+∂xϕ0(x)dx, where
+∂xϕ0 is deﬁned by Eq. (20). It is obvious that this phase
+diﬀerence is zero far from the DW, but is ﬁnite if the
+-1.0
+-0.5
+0.0
+0.5
+1.0
+-2
+-1
+0
+1
+2
+ξs/L
+104 × φ0' ξs
+heff/Tc
+0.3
+0.5
+0.7
+0.0
+0.2
+0.4
+0.6
+0.8
+-2.5
+-2.0
+-1.5
+-1.0
+-0.5
+0.0
+Г/Tc
+104 × φo' ξs
+heff/Tc
+0.3
+0.5
+0.7
+FIG. 2. (a) ∂xϕ0 as a function of the inverse helix period L−1
+for diﬀerent heff. Γ = 0.4Tc. (b) ∂xϕ0 as a function of Γ for
+diﬀerent heff. 2πξS/L = 1. For the both panels P = 0.5,
+θ = π/3.
+DW is located inside the region between x1 and x2. The
+noncoplanarity of the wall can be caused by diﬀerent rea-
+sons. For example, it can be induced by the supercur-
+rent moving the DW, or it can be just due to the con-
+tact between the ferromagnet and the superconductor,
+because in this case it is energetically more favorable to
+disturb the initial wall texture in order to reduce stray
+ﬁelds penetrating the superconductor. In any of the de-
+scribed cases the resulting magnetization structure and
+the ground state phase diﬀerence can be calculated, but
+this problem is beyond the scope of the present work. In-
+stead, here we consider the case of the externally induced
+noncoplanarity in the system and demonstrate that in
+this case the resulting ground state phase diﬀerence is
+also governed by a chiral invariant.
+The simplest model system where the external (not
+caused by the internal chirality of the ferromagnet tex-
+ture) chiral invariant takes place is sketched in Fig. 1(b).
+It is assumed that the wall is coplanar, but the polariza-
+tion P of the spin-ﬁltering interface is not fully aligned
+with the ferromagnet magnetization.
+In this case we start from Eq. (7) valid for any mu-
+tual orientation of the exchange ﬁeld and the polarization
+term. In order to obtain nonzero anomalous current ja
+for the considered case of external chirality it is enough
+to ﬁnd the anomalous Green’s functions up to the zero
+6
+order in ξS/dW . Then the linearized Usadel equations
+for the anomalous Green’s function take the form:
+D
+2 ∂2
+xf −(ω + Γ)f + ihefff0ez −iΓ[ ˜P × f] = 0,
+(25)
+D
+2 ∂2
+xf0 −(ω + Γ)f0 + ihefffz + i∆= 0.
+(26)
+The solution of these equations up to the ﬁrst order
+with respect to | ˜P (x)|Γ/(ω + Γ) can be written in the
+compact form:
+f⊥= −iΓfz
+(ω + Γ)[ ˜P × ez],
+(27)
+where f⊥= (fx, fy, 0) is the component of the triplet
+anomalous Green’s function f in plane perpendicular to
+the local quantization axis. The components fz and f0
+are expressed by Eqs. (16) and (15), respectively.
+For
+the
+coplanar
+domain
+wall
+vector
+a
+=
+(1/2)(dθ/dx)ex
+and the anomalous current can be
+expressed as
+ja(x) = 4πTΓ
+eρN
+X
+ω>0
+f 2
+z
+ω + Γ
+ P [∂xˆh × ˆh]
+
+.
+(28)
+The corresponding ground state phase gradient can be
+found according to Eq. (20). The total phase diﬀerence
+acquired in the superconductor due to the DW presence
+can be found as ∆ϕ0 =
+∞
+R
+−∞
+∂xϕ0dx and takes the form:
+∆ϕ0 = 2πΓ|P⊥|χex
+P
+ω>0
+f 2
+z /(ω + Γ)
+P
+ω>0
+[f 2
+0 + f 2z ] ,
+(29)
+where χex = sgn
+h
+P (∂xˆh × ˆh)
+i
+, P⊥is the component of
+the polarization vector P perpendicular to the DW plane.
+We see that the ground state phase diﬀerence acquired
+by the superconductor due to the presence of the DW
+in the ferromagnet is controlled by the external chirality
+invariant χex, which is only nonzero if the polarization
+P of the spin-ﬁltering interface has the component per-
+pendicular to the wall plane.
+Eq. (29) gives the ground state phase diﬀerence at the
+domain wall in the limit of wide DW dW ≫ξS. Beyond
+this limit our analytical treatment is inapplicable, but the
+result of the numerical calculation is presented in Fig. 3.
+It is seen that the maximal phase diﬀerence is acquired
+at wide walls with dW ≫ξS, when ∆ϕ0 tends to the
+analytical answer expressed by Eq. (29).
+In principle, there can be also a contribution to the
+anomalous current from the vector potential of the stray
+ﬁelds generated by the DW. However, this contribution
+depends on y-coordinate and should be zero after averag-
+ing over it. Therefore, the averaged over the y-coordinate
+phase diﬀerence is still given by considered magnetoelec-
+tric eﬀect even if the stray ﬁelds are taken into account.
+In general the discussed above phase diﬀerence aris-
+ing in a superconductor due to the magnetoelectric eﬀect
+-2
+-1
+0
+1
+2
+-1.0
+-0.5
+0.0
+0.5
+1.0
+dW/ξs
+102 × Δφ0
+heff /Tc
+0.3
+0.5
+0.7
+-2
+-1
+0
+1
+2
+-0.4
+-0.2
+0.0
+0.2
+0.4
+dW/ξs
+102 × Δφ0
+P
+0.3
+0.4
+0.5
+FIG. 3. Phase diﬀerence acquired at the DW in case of ex-
+ternal chirality (see text) as a function of d−1
+W . (a) Diﬀerent
+curves correspond to diﬀerent heff, P = 0.5. (b) Diﬀerent
+curves correspond to diﬀerent P, heff = 0.5Tc. For the both
+panels Γ = 0.4Tc.
+provides the connection between the the magnetic tex-
+ture and the condensate phase. In particular, it opens
+a way to detect electrically time-dependent textures (for
+example, moving domain wall and other magnetic de-
+fects) via the relation V = (ℏ/2e)∂t∆ϕ. It is interesting
+that such an electrical detection resolves not only the
+defect movement, but also its chirality. The detailed in-
+vestigation of this problem is beyond the framework of
+this work and we postpone it for a future study.
+IV.
+DIRECT MAGNETOELECTRIC EFFECT IN
+S/F BILAYERS AND THE RELATED TORQUE
+Here we consider the direct magnetoelectric eﬀect in
+S/F bilayers, that is the generation of an equilibrium
+spin polarization in response to a supercurrent. The in-
+duced polarization is found to be perpendicular to the
+ferromagnet magnetization and, therefore, gives rise to a
+torque acting on the ferromagnet texture M(r). Further
+we study the torque in details.
+Our ﬁrst goal is to ﬁnd the supercurrent-induced spin
+polarization in the superconductor m = −2µBs, where
+s is an electron spin. In terms of the linearized quasi-
+classical Green’s function in the ﬁxed spin basis it can be
+7
+calculated as follows:
+m = −iπµBNF
+2
+T
+X
+ω>0
+Tr2
+h
+σ( ˆf ˆ˜f + ˆ˜f ˆf)
+i
+.
+(30)
+If we deﬁne the spin vectors αi for i = x, y, z as αiσ =
+U †σiU, then in terms of the quasiclassical Green’s func-
+tion in the local spin basis Eq. (30) can be written as
+follows:
+mi = −2iπµBNF T
+X
+ω>0
+αi(f0 ˜f + ˜f0f).
+(31)
+In order to calculate the induced electron magnetization
+according to Eq. (31) we have to ﬁnd the anomalous
+Green’s functions in the local spin basis up to the ﬁrst
+order in the applied supercurrent, or in other words, up
+to ﬁrst order in the superconducting phase gradient ∂xϕ.
+We start from the linearized Usadel equations, valid for
+the case of an arbitrary directed polarization of the spin-
+ﬁltering interface:
+D
+2 ∂2
+xf −(ω + Γ + 2Da2)f −D
+
+[∂xa × f] + 2[a × ∂xf]
+
+−
+iΓ[ ˜P × f] + 2D(af)a = −ihefff0ez,
+(32)
+D
+2 ∂2
+xf0 + ihefffz + i∆(x) = (ω + Γ)f0.
+(33)
+Assuming that ∆(x) = ∆eiϕ(x) and performing the
+transformation ˆfl = ˆfheiϕ(x), up to the ﬁrst order in ∂xϕ
+and up to the ﬁrst order in ξS/dW Eqs. (32)-(33) take
+the form
+D
+2 ∂2
+xfh −(ω + Γ)fh −2iD∂xϕ[a × fh] −iΓ[ ˜P × fh] =
+−ihefffh0ez,
+(34)
+D
+2 ∂2
+xfh0 −(ω + Γ)fh0 + i∆= −ihefffhz
+(35)
+The solution of these equations up to the ﬁrst order in
+PΓ/(ω + Γ) takes the form
+fhz = fz
+
+1 +
+4D∂xϕΓ
+(ω + Γ)2 + h2
+eff
+a⊥˜P⊥
+
+,
+(36)
+fh0 = f0 +
+iheff
+(ω + Γ)
+4D∂xϕΓfz
+(ω + Γ)2 + h2
+eff
+a⊥˜P⊥,
+(37)
+fh⊥= f⊥−2i∂xϕD[a × ez]fz
+ω + Γ
+−
+(38)
+2∂xϕDΓfz
+(ω + Γ)2
+
+az ˜P⊥+ ˜Pza⊥
+
+,
+where fz, f0 and f⊥are deﬁned by Eqs. (16), (15) and
+(27), respectively.
+˜P⊥is the component of the vector
+˜P , which is perpendicular to the local direction of the
+ferromagnet magnetization. a⊥is deﬁned in the same
+way. The anomalous Green’s function ˆ˜f h can be obtained
+from Eqs. (36)-(38) with the substitution ∆→−∆, P →
+−P and ∂xϕ →−∂xϕ.
+Substituting the anomalous Green’s functions into
+Eq.
+(31)
+we
+obtain
+the
+following
+result
+for
+the
+supercurrent-induced electron magnetization:
+m = 4πµBNF TD∂xϕ
+X
+ω>0
+fz
+(ω + Γ)[(ω + Γ)2 + h2
+eff] ×
+Γ∆
+n
+(∂xˆh × ˆh)(P ˆh) −δ′ cos θ ˜P⊥
+o
+.
+(39)
+Here we have only written the magnetization component,
+which is perpendicular to the local direction of the fer-
+romagnet ˆh because it is this component that gives rise
+to a torque N acting on the ferromagnet magnetization.
+The torque can be calculated as follows:
+N = 2hβ(ˆh × m),
+(40)
+where β = heff/h < 1 is the dimensionless coeﬃcient
+between the actual exchange ﬁeld of the ferromagnet h
+and the eﬀective exchange ﬁeld heff, which is induced in
+the superconductor due to the magnetic proximity eﬀect.
+Substituting m from Eq. (39) the torque can be written
+as
+N = bj∂xˆh + cjχint( ˜P⊥× ˆh),
+(41)
+cj = πµBNF TD∂xϕ
+X
+ω>0
+8βhΓ∆fz
+(ω + Γ)[(ω + Γ)2 + h2
+eff],
+(42)
+bj = cj(P ˆh),
+(43)
+Here χint is the local internal chirality of the ferromag-
+net texture, deﬁned in the same way as for the magnetic
+helix case:
+χint = δ′ cos θ = ˆh(nθ × nδ),
+(44)
+with nδ and nθ deﬁned by Eqs. (22)-(23). The expression
+for coeﬃcient cj (42) can be rewritten in terms of the
+supercurrent ﬂowing via the superconductor:
+cj = −2βΓ∆µBhj×
+(45)
+X
+ω>0
+fz
+(ω + Γ)[(ω + Γ)2 + h2
+eff]
+ X
+ω>0
+(f 2
+h0 + f 2
+hz),
+where up to the leading order in ξS/dW we have ne-
+glected the anomalous current ja.
+The ﬁrst term in Eq. (41) represents the adiabatic
+spin transfer torque (STT). Typically the adiabatic spin
+transfer torque is originated from the transfer of the an-
+gular momentum from the current-carrying electrons to
+the ferromagnet magnetization and, consequently, coeﬃ-
+cient bj is proportional not only to the electric current j,
+but also the degree of its spin polarization.
+Here the microscopic origin of the adiabatic STT is
+diﬀerent.
+At ﬁrst let us consider the case when P is
+8
+aligned with the ferromagnet magnetization. Then ˜P⊥=
+0 and the adiabatic STT is the only contribution to the
+torque in the system. It can be demonstrated that in this
+case the spin current through the system is zero to the
+considered accuracy.
+Therefore, the electric current is
+not spin polarized and the torque is not connected to the
+derivative of the spin current, that is to the spin transfer
+from the current-carrying electrons to the magnetization.
+Its mechanism is connected to the creation of current-
+induced spin-resolved DOS in the superconductor in the
+region contacted to the textured area of the ferromagnet.
+Therefore, it is speciﬁc only for superconducting systems
+and can also be relevant as for hybrid superconducting
+systems with ferromagnetic metals, so as for hybrids with
+ferromagnetic insulators.
+If P is not fully aligned with the ferromagnet mag-
+netization, the other part of the torque, expressed by
+the second term in Eq. (41) can appear. In general, it
+has components as along the direction ∂xˆh, so as along
+the perpendicular direction ˆh × ∂xˆh. But it cannot be
+included neither to the adiabatic STT, nor to the non-
+adiabatic STT, because it is proportional to the local
+internal chirality of the structure χint and, consequently,
+vanishes for coplanar ferromagnetic textures.
+V.
+CONCLUSIONS
+We have studied the direct and inverse magnetoelectric
+eﬀects in thin ﬁlm S/F bilayers with spin-textured ferro-
+magnets. The generalized Usadel equation, which allows
+for description of the magnetoelectric eﬀects, is formu-
+lated.
+The inverse magnetoelectric eﬀect leads to the
+formation of the phase-inhomogeneous ground state in
+the superconducting ﬁlm due to the exchange interaction
+of spin-triplet Cooper pairs with non-coplanar magnetic
+texture. This eﬀect can be used for electrical detection
+of DW motion.
+The direct magnetoelectric eﬀect induces a stationary
+spin polarization of the superconducting condensate in
+the presence of the applied supercurrent and the non-
+coplanar spin texture. The direction of induced Cooper
+pair spin is non-collinear with the local magnetization
+in the adjacent ferromagnetic layer. Therefore exchange
+interaction of the induced electron spin and the ordered
+magnetic moments acts as a spin torque on the ferromag-
+net magnetization.
+This torque consists of two parts.
+The ﬁrst one is similar to usual adiabatic spin-transfer
+torque, and the second one is connected to the local chi-
+rality of the magnetic texture.
+The chirality-sensitive
+term in the spin torque can be mediated only by the spin-
+triplet superconducting correlations since it is generically
+absent in the normal state.
+The found superconduct-
+ing spin torque in S/F bilayers can be used in spintron-
+ics for the low-dissipative electric current-controlled ma-
+nipulation with positions of domain walls and magnetic
+skyrmions.
+VI.
+ACKNOWLEDGEMENTS
+We acknowledge the ﬁnancial support by the RFBR
+projects 18-52-45011 (I.V.B. and A.M.B.) and 18-02-
+00318 (D.S.R., I.V.B. and A.M.B.). M.S. was supported
+by the Academy of Finland.
+1 L. Levitov, Y. V. Nazarov,
+and G. M. Eliashberg, Sov.
+Phys. JETP 61, 133 (1985).
+2 A. G. Aronov and Y. B. Lyanda-Geller, JETP Lett. 50,
+431 (1989).
+3 A. G. Aronov, Y. B. Lyanda-Geller, and G. E. Pikus, Sov.
+Phys. Jetp 73, 537 (1991).
+4 V. Edelstein, Solid State Communications 73, 233 (1990).
+5 V. K. Kalevich and V. L. Korenev, Jetp Lett. 52, 230
+(1990).
+6 Y. Kato, R. C. Myers, A. C. Gossard,
+and D. D.
+Awschalom, Nature 427, 50 (2004).
+7 A. Y. Silov, P. A. Blajnov, J. H. Wolter, R. Hey, K. H.
+Ploog,
+and N. S. Averkiev, Applied Physics Letters 85,
+5929 (2004), https://doi.org/10.1063/1.1833565.
+8 S. D. Ganichev, E. L. Ivchenko, S. N. Danilov, J. Eroms,
+W. Wegscheider, D. Weiss,
+and W. Prettl, Phys. Rev.
+Lett. 86, 4358 (2001).
+9 S. D. Ganichev, Int. J. Mod. Phys. B 22, 1 (2008).
+10 L. Meier, G. Salis, I. Shorubalko, E. Gini, S. Schn,
+and
+K. Ensslin, Nature Physics 4, 77 (2008).
+11 Z. Wilamowski, H. Malissa, F. Sch¨aﬄer, and W. Jantsch,
+Phys. Rev. Lett. 98, 187203 (2007).
+12 C. H. Li, O. M. J. van t Erve, J. T. Robinson, Y. Liu, L. Li,
+and B. Jonker, Nature Nanotechnology 9, 218 (2014).
+13 C. H. Li, O. M. J. van t Erve, Y. Liu, L. Li, and B. Jonker,
+Scientiﬁc Reports 6, 29533 (2016).
+14 A. Manchon and S. Zhang, Phys. Rev. B 78, 212405 (2008).
+15 A. Manchon and S. Zhang, Phys. Rev. B 79, 094422 (2009).
+16 P. Gambardella and I. M. Miron, Philos Transact A Math
+Phys Eng Sci 369, 3175 (2011).
+17 K. Garello,
+I. M. Miron,
+C. O. Avci,
+F. Freimuth,
+Y. Mokrousov, S. Blgel, S. Auﬀret, O. Boulle, G. Gaudin,
+and P. Gambardella, Nature Nanotechnology 8, 587
+(2013).
+18 I. Mihai Miron, G. Gaudin, S. Auﬀret, B. Rodmacq,
+A. Schuhl, S. Pizzini, J. Vogel, and P. Gambardella, Na-
+ture Materials 9, 230 (2010).
+19 A. Chernyshov,
+M. Overby,
+X. Liu,
+J. K. Furdyna,
+Y. Lyanda-Geller,
+and L. P. Rokhinson, Nature Physics
+5, 656 (2009).
+20 I. M. Miron, T. Moore, H. Szambolics, L. D. Buda-
+Prejbeanu, S. Auﬀret, B. Rodmacq, S. Pizzini, J. Vogel,
+M. Bonﬁm, A. Schuhl, and G. Gaudin, Nature Materials
+10, 419 (2011).
+21 J. C. R. Snchez, L. Vila, G. Desfonds, S. Gambarelli, J. P.
+Attan, J. M. De Teresa, C. Magn,
+and A. Fert, Nature
+Communications 4, 2944 (2013).
+22 V. Edelstein, Phys. Rev. Lett. 75, 2004 (1995).
+9
+23 V. Edelstein, Phys. Rev. B 72, 172501 (2005).
+24 A. Malshukov and C. Chu, Phys. Rev. B 78, 104503 (2008).
+25 I. V. Bobkova, A. M. Bobkov, A. A. Zyuzin, and M. Ali-
+doust, Phys. Rev. B 94, 134506 (2016).
+26 I. V. Bobkova and A. M. Bobkov, Phys. Rev. B 95, 184518
+(2017).
+27 I. V. Bobkova and A. M. Bobkov, Phys. Rev. B 96, 224505
+(2017).
+28 F. S. Bergeret and I. V. Tokatly, Phys. Rev. B 94, 180502
+(2016).
+29 F. Konschelle, I. V. Tokatly,
+and F. S. Bergeret, Phys.
+Rev. B 92, 125443 (2015).
+30 I. V. Krive, L. Y. Gorelik, R. I. Shekhter, and M. Jonson,
+Low Temperature Physics 30, 398 (2004).
+31 Y. Asano, Y. Sawa, Y. Tanaka, and A. A. Golubov, Phys.
+Rev. B 76, 224525 (2007).
+32 A. A. Reynoso, G. Usaj, C. A. Balseiro, D. Feinberg, and
+M. Avignon, Phys. Rev. Lett. 101, 107001 (2008).
+33 A. Buzdin, Phys. Rev. Lett. 101, 107005 (2008).
+34 Y. Tanaka, T. Yokoyama,
+and N. Nagaosa, Phys. Rev.
+Lett. 103, 107002 (2009).
+35 A. Zazunov, R. Egger, T. Jonckheere,
+and T. Martin,
+Phys. Rev. Lett. 103, 147004 (2009).
+36 A. G. Malshukov, S. Sadjina, and A. Brataas, Phys. Rev.
+B 81, 060502 (2010).
+37 A. Brunetti, A. Zazunov, A. Kundu, and R. Egger, Phys.
+Rev. B 88, 144515 (2013).
+38 T. Yokoyama, M. Eto, and Y. V. Nazarov, Phys. Rev. B
+89, 195407 (2014).
+39 F. S. Bergeret and I. V. Tokatly, EPL (Europhysics Let-
+ters) 110, 57005 (2015).
+40 G. Campagnano, P. Lucignano, D. Giuliano, and A. Tagli-
+acozzo, Journal of Physics: Condensed Matter 27, 205301
+(2015).
+41 D. Kuzmanovski, J. Linder, and A. Black-Schaﬀer, Phys.
+Rev. B 94, 180505 (2016).
+42 A. Zyuzin, M. Alidoust,
+and D. Loss, Phys. Rev. B 93,
+214502 (2016).
+43 M. A. Silaev, I. V. Tokatly, and F. S. Bergeret, Phys. Rev.
+B 95, 184508 (2017).
+44 V. Braude and Y. V. Nazarov, Phys. Rev. Lett. 98, 077003
+(2007).
+45 R. Grein, M. Eschrig, G. Metalidis, and G. Schon, Phys.
+Rev. Lett. 102, 227005 (2009).
+46 J.-F. Liu and K. S. Chan, Phys. Rev. B 82, 184533 (2010).
+47 I. Kulagina and J. Linder, Phys. Rev. B 90, 054504 (2014).
+48 A. Moor, A. F. Volkov,
+and K. B. Efetov, Phys. Rev. B
+92, 214510 (2015).
+49 A. Moor, A. F. Volkov,
+and K. B. Efetov, Phys. Rev. B
+92, 180506 (2015).
+50 S. Mironov and A. Buzdin, Phys. Rev. B 92, 184506 (2015).
+51 D. S. Rabinovich, I. V. Bobkova, A. M. Bobkov, and M. A.
+Silaev, Phys. Rev. B 98, 184511 (2018).
+52 I. V. Bobkova, A. M. Bobkov,
+and M. A. Silaev, Phys.
+Rev. B 96, 094506 (2017).
+53 D. B. Szombati, S. Nadj-Perge, D. Car, S. R. Plissard,
+E. P. A. M. Bakkers, and L. P. Kouwenhoven, Nat Phys
+12, 568 (2016).
+54 A. Murani, A. Kasumov, S. Sengupta, Y. A. Kasumov,
+V. T. Volkov, I. I. Khodos, F. Brisset, R. Delagrange,
+A. Chepelianskii, R. Deblock, H. Bouchiat, and S. Guron,
+Nature Communications 8, 15941 (2017).
+55 A. Assouline, C. Feuillet-Palma, N. Bergeal, T. Zhang,
+A.
+Mottaghizadeh,
+A.
+Zimmers,
+E.
+Lhuillier,
+M. Marangolo,
+M. Eddrief,
+P. Atkinson,
+M. Aprili,
+and H. Aubin, “Spin-orbit induced phase-shift in bi2se3
+josephson junctions,” (2018), arXiv:1806.01406.
+56 I. V. Tokatly, Phys. Rev. Lett. 101, 106601 (2008).
+57 F. S. Bergeret, A. F. Volkov, and K. B. Efetov, Phys. Rev.
+Lett. 86, 3140 (2001).
+58 F. S. Bergeret, A. F. Volkov, and K. B. Efetov, Rev. Mod.
+Phys. 77, 1321 (2005).
+59 M. Eschrig, Reports on Progress in Physics 78, 104501
+(2015).
+60 J. Linder and J. W. A. Robinson, Nat Phys 11, 307 (2015).
+61 J.-X. Zhu, Z. Nussinov, A. Shnirman, and A. V. Balatsky,
+Phys. Rev. Lett. 92, 107001 (2004).
+62 Z. Nussinov, A. Shnirman, D. P. Arovas, A. V. Balatsky,
+and J. X. Zhu, Phys. Rev. B 71, 214520 (2005).
+63 C. Holmqvist, S. Teber, and M. Fogelstr¨om, Phys. Rev. B
+83, 104521 (2011).
+64 F. Konschelle and A. Buzdin, Phys. Rev. Lett. 102, 017001
+(2009).
+65 X. Waintal and P. W. Brouwer, Phys. Rev. B 65, 054407
+(2002).
+66 J. Linder and T. Yokoyama, Phys. Rev. B 83, 012501
+(2011).
+67 K. Halterman and M. Alidoust, Supercond. Sci. Technol.
+29, 055007 (2016).
+68 J. Linder, A. Brataas, Z. Shomali, and M. Zareyan, Phys.
+Rev. Lett. 109, 237206 (2012).
+69 R. Takashima, S. Fujimoto, and T. Yokoyama, Phys. Rev.
+B 96, 121203 (2017).
+70 I. V. Bobkova, A. M. Bobkov,
+and M. A. Silaev, Phys.
+Rev. B 98, 014521 (2018).
+71 J. C. Slonczewski, Journal of Magnetism and Magnetic Ma-
+terials 159, L1 (1996).
+72 G. Tatara and H. Kohno, Phys. Rev. Lett. 92, 086601
+(2004).
+73 T. Koyama, D. Chiba, K. Ueda, K. Kondou, H. Tani-
+gawa, S. Fukami, T. Suzuki, N. Ohshima, N. Ishiwata,
+Y. Nakatani, K. Kobayashi,
+and T. Ono, Nature Mate-
+rials 10, 194 (2011).
+74 Z. Li and S. Zhang, Phys. Rev. B 70, 024417 (2004).
+75 Z. Li and S. Zhang, Phys. Rev. Lett. 92, 207203 (2004).
+76 S. Zhang and Z. Li, Phys. Rev. Lett. 93, 127204 (2004).
+77 T. Tokuyasu, J. A. Sauls,
+and D. Rainer, Phys. Rev. B
+38, 8823 (1988).
+78 A. Millis, D. Rainer,
+and J. A. Sauls, Phys. Rev. B 38,
+4504 (1988).
+79 A. Cottet, D. Huertas-Hernando, W. Belzig,
+and Y. V.
+Nazarov, Phys. Rev. B 80, 184511 (2009).
+80 M. Eschrig, A. Cottet, W. Belzig,
+and J. Linder, New
+Journal of Physics 17, 083037 (2015).
+81 M. Y. Kuprianov and V. F. Lukichev, JETP 1163, 78
+(1988), [Zh. Eksp. Teor. Fiz. 94, 139 (1988)].
+82 F. S. Bergeret, A. Verso, and A. F. Volkov, Phys. Rev. B
+86, 214516 (2012).
+83 P. Machon, M. Eschrig, and W. Belzig, Phys. Rev. Lett.
+110, 047002 (2013).
+84 P. Machon, M. Eschrig,
+and W. Belzig, New Journal of
+Physics 16, 073002 (2014).
+85 J. Gelhausen and M. Eschrig, Phys. Rev. B 94, 104502
+(2016).
+86 V. Edelstein, Sov. Phys. JETP 68, 1244 (1989).
+87 V. Barzykin and L. P. Gorkov, Phys. Rev. Lett. 89, 227002
+(2002).
+88 K. V. Samokhin, Phys. Rev. B 70, 104521 (2004).
+10
+89 R. P. Kaur, D. F. Agterberg, and M. Sigrist, Phys. Rev.
+Lett. 94, 137002 (2005).
+90 O. Dimitrova and M. V. Feigelman, Phys. Rev. B 76,
+014522 (2007).
+91 M. Houzet and J. S. Meyer, Phys. Rev. B 92, 014509
+(2015).
+92 A. Larkin and Y. N. Ovchinnikov, JETP 20, 762 (1965).
+93 P. Fulde and R. Ferrel, Phys. Rev. 135, A550 (1965).

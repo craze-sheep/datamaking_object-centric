@@ -1,0 +1,1482 @@
+Under review as a conference paper at ICLR 2016
+GATED GRAPH SEQUENCE NEURAL NETWORKS
+Yujia Li∗& Richard Zemel
+Department of Computer Science, University of Toronto
+Toronto, Canada
+{yujiali,zemel}@cs.toronto.edu
+Marc Brockschmidt & Daniel Tarlow
+Microsoft Research
+Cambridge, UK
+{mabrocks,dtarlow}@microsoft.com
+ABSTRACT
+Graph-structured data appears frequently in domains including chemistry, natural
+language semantics, social networks, and knowledge bases. In this work, we study
+feature learning techniques for graph-structured inputs. Our starting point is pre-
+vious work on Graph Neural Networks (Scarselli et al., 2009), which we modify
+to use gated recurrent units and modern optimization techniques and then extend
+to output sequences. The result is a ﬂexible and broadly useful class of neural net-
+work models that has favorable inductive biases relative to purely sequence-based
+models (e.g., LSTMs) when the problem is graph-structured. We demonstrate the
+capabilities on some simple AI (bAbI) and graph algorithm learning tasks. We
+then show it achieves state-of-the-art performance on a problem from program
+veriﬁcation, in which subgraphs need to be matched to abstract data structures.
+1
+INTRODUCTION
+Many practical applications build on graph-structured data, and thus we often want to perform ma-
+chine learning tasks that take graphs as inputs. Standard approaches to this problem include engineer-
+ing custom features of an input graph, graph kernels (Kashima et al., 2003; Shervashidze et al., 2011),
+and methods that deﬁne graph features in terms of random walks on graphs (Perozzi et al., 2014).
+More closely related to our goal in this work are methods that learn features on graphs, including
+Graph Neural Networks (Gori et al., 2005; Scarselli et al., 2009), spectral networks (Bruna et al.,
+2013) and recent work on learning graph ﬁngerprints for classiﬁcation tasks on graph representations
+of chemical molecules (Duvenaud et al., 2015).
+Our main contribution is an extension of Graph Neural Networks that outputs sequences. A secondary
+contribution is highlighting that Graph Neural Networks (and further extensions we develop here)
+are a broadly useful class of neural network model that is applicable to the problems currently facing
+the ﬁeld. Previous work on feature learning for graph-structured inputs has focused on models that
+produce single outputs such as graph-level classiﬁcations, but many problems with graph inputs
+require outputting sequences. Examples include paths on a graph, enumerations of graph nodes
+with desirable properties, or sequences of global classiﬁcations mixed with, for example, a start and
+end node. We are not aware of existing graph feature learning work suitable for this problem. Our
+motivating application comes from program veriﬁcation and requires outputting logical formulas,
+which we formulate as a sequential output problem.
+There are two settings for feature learning on graphs: (1) learning a representation of the input graph,
+and (2) learning representations of the internal state during the process of producing a sequence of
+outputs. Here, (1) is mostly achieved by previous work on Graph Neural Networks (Scarselli et al.,
+2009); we make several minor adaptations of this framework, including changing it to use modern
+practices around Recurrent Neural Networks. (2) is important because we desire outputs from graph-
+structured problems that are not solely individual classiﬁcations. In these cases, the challenge is how
+∗Work done primarily while author was an intern at Microsoft Research.
+1
+arXiv:1511.05493v2  [cs.LG]  19 Nov 2015
+Under review as a conference paper at ICLR 2016
+to learn features on the graph that encode the partial output sequence that has already been produced
+(e.g., the path so far if outputting a path) and that still needs to be produced (e.g., the remaining
+path). We will show how the GNN framework can be adapted to these settings, leading to a novel
+graph-based neural network model that we call Gated Graph Sequence Neural Networks (GGS-NNs).
+We illustrate aspects of this general model in experiments on bAbI tasks (Weston et al., 2015) and
+graph algorithm learning tasks that illustrate the capabilities of the model. Finally, we discuss an
+application to the veriﬁcation of computer programs. When attempting to prove properties such as
+memory safety (i.e., that there are no null pointer dereferences in a program), a core problem is to ﬁnd
+mathematical descriptions of the data structures used in a program. Following Brockschmidt et al.
+(2015), we have phrased this as a machine learning problem where we will learn to map from a set of
+input graphs representing the state of memory to a logical description of the data structures that have
+been instantiated. Whereas Brockschmidt et al. (2015) relied on a large amount of hand-engineering
+of features, we show that the system can be replaced with a GGS-NN at no cost in accuracy.
+2
+GRAPH NEURAL NETWORKS
+In this section, we review Graph Neural Networks (GNNs) (Gori et al., 2005; Scarselli et al., 2009)
+and introduce notation and concepts that will be used throughout.
+GNNs are a general neural network architecture deﬁned according to a graph structure G = (V, E).
+Nodes v ∈V take unique values from 1, . . . , |V|, and edges are pairs e = (v, v′) ∈V × V. We will
+focus in this work on directed graphs, so (v, v′) represents a directed edge v →v′, but we note that
+the framework can easily be adapted to undirected graphs; see Scarselli et al. (2009). The node vector
+(or node representation or node embedding) for node v is denoted by hv ∈RD. Graphs may also
+contain node labels lv ∈{1, . . . , LV} for each node v and edge labels or edge types le ∈{1, . . . , LE}
+for each edge. We will overload notation and let hS = {hv | v ∈S} when S is a set of nodes, and
+lS = {le | e ∈S} when S is a set of edges. The function IN(v) = {v′ | (v′, v) ∈E} returns the set of
+predecessor nodes v′ with v′ →v. Analogously, OUT(v) = {v′ | (v, v′) ∈E} is the set of successor
+nodes v′ with edges v →v′. The set of all nodes neighboring v is NBR(v) = IN(v) ∪OUT(v), and
+the set of all edges incoming to or outgoing from v is CO(v) = {(v′, v′′) ∈E | v = v′ ∨v = v′′}.
+GNNs map graphs to outputs via two steps. First, there is a propagation step that computes node rep-
+resentations for each node; second, an output model ov = g(hv, lv) maps from node representations
+and corresponding labels to an output ov for each v ∈V. In the notation for g, we leave the depen-
+dence on parameters implicit, and we will continue to do this throughout. The system is differentiable
+from end to end, so all parameters are learned jointly using gradient-based optimization.
+2.1
+PROPAGATION MODEL
+Here, an iterative procedure propagates node representations. Initial node representations h(1)
+v
+are
+set to arbitrary values, then each node representation is updated following the recurrence below until
+convergence, where t denotes the timestep:
+h(t)
+v
+= f ∗(lv, lCO(v), lNBR(v), h(t−1)
+NBR(v)).
+Several variants are discussed in Scarselli et al. (2009) including positional graph forms, node-speciﬁc
+updates, and alternative representations of neighborhoods. Concretely, Scarselli et al. (2009) suggest
+decomposing f ∗(·) to be a sum of per-edge terms:
+f ∗(lv, lCO(v), lNBR(v), h(t)
+NBR(v)) =
+X
+v′∈IN(v)
+f(lv, l(v′,v), lv′, h(t−1)
+v′
+) +
+X
+v′∈OUT(v)
+f(lv, l(v,v′), lv′, h(t−1)
+v′
+),
+where f(·) is either a linear function of hv′ or a neural network. The parameters of f depends on the
+conﬁguration of labels, e.g. in the following linear case, A and b are learnable parameters,
+f(lv, l(v′,v), lv′, h(t)
+v′ ) = A(lv,l(v′,v),lv′)h(t−1)
+v′
++ b(lv,l(v′,v),lv′).
+2.2
+OUTPUT MODEL AND LEARNING
+The output model is deﬁned per node and is a differentiable function g(hv, lv) that maps to an output.
+This is generally a linear or neural network mapping. Scarselli et al. (2009) focus on outputs that are
+2
+Under review as a conference paper at ICLR 2016
+3
+4
+1
+2
+h(t−1)
+2
+h(t−1)
+1
+h(t−1)
+3
+h(t−1)
+4
+h(t)
+4
+h(t)
+3
+h(t)
+2
+h(t)
+1
+B
+C
+C
+B
+1
+2
+3
+4
+1
+2
+3
+4
+Outgoing Edges
+B’
+C’
+C’
+B’
+1
+2
+3
+4
+Incoming Edges
+|
+{z
+}
+|
+{z
+}
+(a)
+(b)
+(c) A =
+
+A(out), A(in)
+Figure 1: (a) Example graph. Color denotes edge types. (b) Unrolled one timestep. (c) Parameter
+tying and sparsity in recurrent matrix. Letters denote edge types with B′ corresponding to the reverse
+edge of type B. B and B′ denote distinct parameters.
+independent per node, which are implemented by mapping the ﬁnal node representations h(T )
+v
+, to an
+output ov = g(h(T )
+v
+, lv) for each node v ∈V. To handle graph-level classiﬁcations, they suggest to
+create a dummy “super node” that is connected to all other nodes by a special type of edge. Thus,
+graph-level regression or classiﬁcation can be handled in the same manner as node-level regression
+or classiﬁcation.
+Learning is done via the Almeida-Pineda algorithm (Almeida, 1990; Pineda, 1987), which has the
+advantage of not needing to store intermediate states in order to compute gradients. The disadvantage
+is that parameters must be constrained so that the propagation step is a contraction map. This is
+needed to ensure convergence, but it may limit the expressivity of the model. When f(·) is a neural
+network, this is encouraged using a penalty term on the 1-norm of the network’s Jacobian. See
+Appendix A for an example that gives the intuition that contraction maps have trouble propagating
+information across a long range in a graph.
+3
+GATED GRAPH NEURAL NETWORKS
+We now describe Gated Graph Neural Networks (GG-NNs), our adaptation of GNNs that is suitable
+for non-sequential outputs. We will describe sequential outputs in the next section. The biggest mod-
+iﬁcation of GNNs is that we use Gated Recurrent Units (Cho et al., 2014) and unroll the recurrence
+for a ﬁxed number of steps T and use backpropagation through time in order to compute gradients.
+This requires more memory than the Almeida-Pineda algorithm, but it removes the need to constrain
+parameters to ensure convergence. We also extend the underlying representations and output model.
+3.1
+NODE ANNOTATIONS
+In GNNs, there is no point in initializing node representations because the contraction map constraint
+ensures that the ﬁxed point is independent of the initializations. This is no longer the case with
+GG-NNs, which lets us incorporate node labels as additional inputs. To distinguish these node labels
+used as inputs from the ones introduced before, we call them node annotations, and use vector x to
+denote these annotations.
+To illustrate how the node annotations are used, consider an example task of training a graph neural
+network to solve a basic reachability task: whether node t can be reached from node s on a given
+graph. For this task, there are two problem-related special nodes s and t, and we can set xs = [1, 0]⊤,
+xt = [0, 1]⊤, and xv = [0, 0]⊤for any other node v. We then initialize the node state vectors h(1)
+v
+using these label vectors. The propagation model naturally propagates this task-related information
+across the graph. In this reachability example, if all nodes reachable from A have their ﬁrst bit of
+node representation set to 1 after the propagation, then a classiﬁer can easily tell whether node t is
+reachable from s using the node representations. In practice, we initialize h(1)
+v
+by copying xv into it
+and padding with extra 0’s to provide more capacity. We do not force h(t)
+v , t > 1 to be interpretable,
+and just let the model learn a proper representation for the tasks from the data.
+3
+Under review as a conference paper at ICLR 2016
+3.2
+PROPAGATION MODEL
+The basic recurrence of the propagation model is
+h(1)
+v
+= [x⊤
+v , 0]⊤
+(1)
+a(t)
+v
+= A⊤
+v:
+h
+h(t−1)
+1
+⊤. . . h(t−1)
+|V|
+⊤i⊤
++ b
+(2)
+zt
+v = σ
+
+Wza(t)
+v
++ Uzh(t−1)
+v
+
+(3)
+rt
+v = σ
+
+Wra(t)
+v
++ Urh(t−1)
+v
+
+(4)
+g
+h(t)
+v
+= tanh
+
+Wa(t)
+v
++ U
+
+rt
+v ⊙h(t−1)
+v
+
+(5)
+h(t)
+v
+= (1 −zt
+v) ⊙h(t−1)
+v
++ zt
+v ⊙g
+h(t)
+v .
+(6)
+The matrix A ∈RD|V|×2D|V| determines how nodes in the graph communicate with each other. The
+sparsity structure and parameter tying in A is illustrated in Fig. 1. The sparsity structure corresponds
+to the edges of the graph, and the parameters in each submatrix are determined by the edge type
+and direction. Av: ∈RD×2D|V| is the submatrix of A containing the rows corresponding to node
+v. Eq. 1 is the initialization step, which copies node annotations into the ﬁrst components of the
+hidden state and pads the rest with zeros. Eq. 2 is the step that passes information between different
+nodes of the graph via incoming and outgoing edges with parameters dependent on the edge type
+and direction. a(t)
+v
+∈R2D contains activations from edges in both directions. The remaining are
+GRU-like updates that incorporate information from the other nodes and from the previous timestep
+to update each node’s hidden state. z and r are the update and reset gates, σ(x) = 1/(1 + e−x) is the
+logistic sigmoid function, and ⊙is element-wise multiplication. We initially experimented with a
+vanilla recurrent neural network-style update, but in preliminary experiments we found this GRU-like
+propagation step to be more effective.
+3.3
+OUTPUT MODELS
+There are several types of one-step outputs that we would like to produce in different situations. First,
+GG-NNs support node selection tasks by making ov = g(h(T )
+v
+, xv) for each node v ∈V output node
+scores and applying a softmax over node scores. Second, for graph-level outputs, we deﬁne a graph
+level representation vector as
+hG = tanh
+ X
+v∈V
+σ(i(h(T )
+v
+, xv)) ⊙tanh
+
+h(T )
+v
+!
+,
+(7)
+where σ(i(h(T )
+v
+, xv)) acts as a soft attention mechanism that decides which nodes are relevant to the
+current graph-level task. i(h(T )
+v
+, xv) is a neural network that takes the concatenation of h(T )
+v
+and xv
+as input and outputs real-valued scores. The tanh functions can also be replaced with the identity.
+4
+GATED GRAPH SEQUENCE NEURAL NETWORKS
+Here we describe Gated Graph Sequence Neural Networks (GGS-NNs), in which several GG-NNs
+operate in sequence to produce an output sequence o(1) . . . o(K).
+For the kth output step, we denote the matrix of node annotations as X (k) = [x(k)
+1 ; . . . ; x(k)
+|V|]⊤∈
+R|V|×LV. We use two GG-NNs F(k)
+o
+and F(k)
+X : F(k)
+o
+for predicting o(k) from X (k), and F(k)
+X
+for
+predicting X (k+1) from X (k). X (k+1) can be seen as the states carried over from step k to k + 1.
+Both F(k)
+o
+and F(k)
+X
+contain a propagation model and an output model. In the propagation models,
+we denote the matrix of node vectors at the tth propagation step of the kth output step as H(k,t) =
+[h(k,t)
+1
+; . . . ; h(k,t)
+|V| ]⊤∈R|V|×D. As before, in step k, we set H(k,1) by 0-extending X (k) per node.
+An overview of the model is shown in Fig. 2.
+We introduce a node annotation output model for predicting X (k+1) from H(k,T ). The prediction is
+done for each node independently using a neural network j(h(k,T )
+v
+, x(k)
+v ) that takes the concatenation
+of h(k,T )
+v
+and x(k)
+v
+as input and outputs a vector of real-valued scores:
+x(k+1)
+v
+= σ
+
+j(h(k,T )
+v
+, x(k)
+v )
+
+.
+(8)
+4
+Under review as a conference paper at ICLR 2016
+X (1)
+H(1,1)
+o(1)
+X (2)
+H(2,1)
+o(2)
+X (3)
+. . .
+Init
+F (1)
+o
+F (1)
+X
+Init
+F (2)
+o
+F (2)
+X
+Figure 2: Architecture of GGS-NN models.
+There are two settings for training GGS-NNs: specifying all intermediate annotations X (k), or train-
+ing the full model end-to-end given only X (1), graphs and target sequences. The former can improve
+performance when we have domain knowledge about speciﬁc intermediate information that should
+be represented in the internal state of nodes, while the latter is more general. We describe both.
+Sequence outputs with observed annotations
+Consider the task of making a sequence of predic-
+tions for a graph, where each prediction is only about a part of the graph. In order to ensure we
+predict an output for each part of the graph exactly once, it sufﬁces to have one bit per node, indicat-
+ing whether the node has been “explained” so far. In some settings, a small number of annotations
+are sufﬁcient to capture the state of the output procedure. When this is the case, we may want to
+directly input this information into the model via labels indicating target intermediate annotations. In
+some cases, these annotations may be sufﬁcient, in that we can deﬁne a model where the GG-NNs are
+rendered conditionally independent given the annotations.
+In this case, at training time, given the annotations X (k) the sequence prediction task decomposes
+into single step prediction tasks and can be trained as separate GG-NNs. At test time, predicted
+annotations from one step will be used as input to the next step. This is analogous to training directed
+graphical models when data is fully observed.
+Sequence outputs with latent annotations
+More generally, when intermediate node annotations
+X (k) are not available during training, we treat them as hidden units in the network, and train the
+whole model jointly by backpropagating through the whole sequence.
+5
+EXAMPLE APPLICATIONS
+We discuss and evaluate on illustrative example problems and an application to program veriﬁcation.
+5.1
+EXPLANATORY EXAMPLES
+We have deﬁned a basic transformation procedure that maps bAbI tasks (Weston et al., 2015) to
+GG-NNs or GGS-NNs. We use the --symbolic option from the released bAbI code to get stories
+that just involve sequences of relations between entities, which are then converted into a graph. Each
+entity is mapped to a node, and each relation is mapped to an edge with edge label given by the
+relation. The full story is consumed and mapped to a single graph. Questions are marked by eval
+in the data and are comprised of a question type (e.g., has fear), and some argument (e.g., one
+or more nodes). The arguments are converted into initial node annotations, with the i-th bit of the
+i-th argument node’s annotation vector set to 1. For example, if the eval line is eval E > A
+true, then E gets initial annotation x(1)
+E
+= [1, 0]⊤, A gets x(1)
+A
+= [0, 1]⊤, and for all other nodes
+v, x(1)
+v
+= [0, 0]⊤. Question type is 1 (for ‘>’) and output is class 1 (for ‘true’). Some tasks have
+multiple question types, for example Task 4 which has 4 question types: e, s, w, n. For such tasks
+we simply train a separate GG-NN for each task. A few examples of the generated data are included
+in Appendix B to illustrate the data format. For all tasks in this section, we generate 1000 training
+examples and 1000 test examples, 50 of the training examples are used for validation.
+We do not use the strong supervision labels or give the GGS-NNs any intermediate annotations in
+any experiments. While simple, this transformation does not preserve all information about the story
+(e.g., it discards temporal order of the inputs), and it does not easily handle ternary and higher order
+relations (e.g., Yesterday John went to the garden is not easily mapped to a simple
+edge). Relaxing these restrictions is left for future work.
+However, even with this simple transformation, there are a variety of bAbI tasks that can be formu-
+lated, including Task 19 (Path Finding), which is arguably the hardest task. We provide baselines
+5
+Under review as a conference paper at ICLR 2016
+to show that the symbolic representation does not help RNNs or LSTMs signiﬁcantly, and show
+that GGS-NNs solve the problem with a small number of training instances. We also develop two
+new bAbI-like tasks that involve outputting sequences on graphs: shortest paths, and a simple form
+of Eulerian circuits (on random connected 2-regular graphs). The point of these experiments is to
+illustrate the capabilities of GGS-NNs across a variety of problems.
+5.1.1
+SINGLE STEP OUTPUTS
+We choose four bAbI tasks that are suited to the restrictions described above and require single
+step outputs: 4 (Two Argument Relations), 15 (Basic Deduction), 16 (Basic Induction), and 18 (Size
+Reasoning). For Task 4, 15 and 16, a node selection GG-NN is used. For Task 18 we used a graph-
+level classiﬁcation version. All the GNN networks contain less than 600 parameters.
+As baselines, we train RNN and LSTM models on the symbolic data in raw sequence form. The
+RNNs and LSTMs use 50 dimensional embeddings and 50 dimensional hidden layers; they predict
+a single output at the end of the sequences and the output is treated as a classiﬁcation problem, the
+loss is cross entropy. The RNNs and LSTMs contain around 5k and 30k parameters, respectively.
+Task
+RNN
+LSTM
+GG-NN
+bAbI Task 4
+99.2 (250)
+98.7 (250)
+100.0 (50)
+bAbI Task 15
+46.0 (950)
+49.5 (950)
+100.0 (50)
+bAbI Task 16
+33.6 (950)
+36.9 (950)
+100.0 (50)
+bAbI Task 18
+100.0 (50)
+100.0 (50)
+100.0 (50)
+Table 1: Accuracy in percentage of different models
+for different tasks. Number in parentheses is number
+of training examples required to reach shown accuracy.
+Test results appear in Table 1. For all
+tasks GG-NN achieves perfect test accu-
+racy using only 50 training examples, while
+the RNN/LSTM baselines either use more
+training examples (Task 4) or fail to solve
+the tasks (Task 15 and 16), except for task
+18 which is easy for all methods. A more de-
+tailed performance break down of the base-
+lines on Task 4 as the amount of training
+data varies is available in the Appendix B.1.
+5.1.2
+SEQUENTIAL OUTPUTS
+The bAbI Task 19 (Path Finding) is arguably the hardest task among all bAbI tasks (see e.g.,
+(Sukhbaatar et al., 2015), which reports an accuracy of less than 20% for all methods that do not use
+the strong supervision). We apply a GGS-NN to this problem, again on the symbolic form of the data
+(so results are not comparable to those in (Sukhbaatar et al., 2015)). An extra ‘end’ class is added
+to the end of each output sequence; at test time the network will keep making predictions until it
+predicts the ‘end’ class.
+The results for this task are given in Table 2. Both RNN and LSTM fail on this task. However, with
+only 50 training examples, our GGS-NNs achieve much better test accuracy than RNN and LSTM.
+Task
+RNN
+LSTM
+GGS-NNs
+bAbI Task 19
+24.5 (950)
+29.4 (950)
+60.9 (50)
+80.3 (100)
+99.6 (250)
+Shortest Path
+11.1 (950)
+10.7 (950)
+100.0 (50)
+Eulerian Circuit
+0.5 (950)
+0.4 (950)
+100.0 (50)
+Table 2: Accuracy in percentage of different models for different tasks. The number in parentheses
+is number of training examples required to reach that level of accuracy.
+We further developed two new bAbI-like tasks based on algorithmic problems on graphs: Shortest
+Paths, and Eulerian Circuits. For the ﬁrst, we generate random graphs and produce a story that lists
+all edges in the graphs. Questions come from choosing two random nodes A and B and asking for the
+shortest path (expressed as a sequence of nodes) that connects the two chosen nodes. We constrain
+the data generation to only produce questions where there is a unique shortest path from A to B
+of length at least 2. For Eulerian circuits, we generate a random two-regular connected graph and a
+separate random distractor graph. The question gives two nodes A and B to start the circuit, then
+the question is to return the Eulerian circuit (again expressed as a sequence of nodes) on the given
+subgraph that starts by going from A to B. Results are shown in the Table 2. RNN and LSTM fail
+on both tasks, but GGS-NNs learns to make perfect predictions using only 50 training examples.
+6
+Under review as a conference paper at ICLR 2016
+5.2
+APPLICATION TO PROGRAM VERIFICATION
+node* concat(node* a, node* b) {
+if (a == NULL) return b;
+node* cur = a;
+while (cur.next != NULL)
+cur = cur->next;
+cur->next = b;
+return a;
+}
+Our work on GGS-NNs is motivated by a practical
+application in program veriﬁcation. A crucial step in
+automatic program veriﬁcation is the inference of pro-
+gram invariants, which approximate the set of pro-
+gram states reachable in an execution. Finding invari-
+ants about data structures is an open problem. As an
+example, consider the simple C function on the right.
+To prove that this program indeed concatenates the two lists a and b and that all pointer dereferences
+are valid, we need to (mathematically) characterize the program’s heap in each iteration of the loop.
+For this, we use separation logic (O’Hearn et al., 2001; Reynolds, 2002), which uses inductive
+predicates to describe abstract data structures. For example, a list segment is deﬁned as ls(x, y) ≡
+x = y ∨∃v, n.ls(n, y) ∗x 7→{val : v, next : n}, where x 7→{val : v, next : n} means that
+x points to a memory region that contains a structure with val and next ﬁelds whose values are
+in turn v and n. The ∗connective is a conjunction as ∧in Boolean logic, but additionally requires
+that its operators refer to “separate” parts of the heap. Thus, ls(cur, NULL) implies that cur is
+either NULL, or that it points to two values v, n on the heap, where n is described by ls again. The
+formula ∃t.ls(a, cur) ∗ls(cur, NULL) ∗ls(b, t) is an invariant of the loop (i.e., it holds when
+entering the loop, and after every iteration). Using it, we can prove that no program run will fail due
+to dereferencing an unallocated memory address (this property is called memory safety) and that the
+function indeed concatenates two lists using a Hoare-style veriﬁcation scheme (Hoare, 1969).
+The hardest part of this process is coming up with formulas that describe data structures, and this is
+where we propose to use machine learning. Given a program, we run it a few times and extract the
+state of memory (represented as a graph; see below) at relevant program locations, and then predict a
+separation logic formula. Static program analysis tools (e.g., (Piskac et al., 2014)) can check whether
+a candidate formula is sufﬁcient to prove the desired properties (e.g., memory safety).
+5.2.1
+FORMALIZATION
+Representing Heap State as a Graph
+As inputs we consider directed, possibly cyclic graphs
+representing the heap of a program. These graphs can be automatically constructed from a program’s
+memory state. Each graph node v corresponds to an address in memory at which a sequence of
+pointers v0, . . . , vk is stored (we ignore non-pointer values in this work). Graph edges reﬂect these
+pointer values, i.e., v has edges labeled with 0, . . . , k that point to nodes v0, . . . , vk, respectively. A
+subset of nodes are labeled as corresponding to program variables.
+Output Representation
+Our aim is to mathematically describe the shape of the heap. In our model,
+we restrict ourselves to a syntactically restricted version of separation logic, in which formulas are of
+the form ∃x1, . . . , xn.a1 ∗. . . ∗am, where each atomic formula ai is either ls(x, y) (a list from x to
+y), tree(x) (a binary tree starting in x), or none(x) (no data structure at x). Existential quantiﬁers are
+used to give names to heap nodes which are needed to describe a shape, but not labeled by a program
+variable. For example, to describe a “panhandle list” (a list that ends in a cycle), the ﬁrst list element
+on the cycle needs to be named. In separation logic, this can be expressed as ∃t.ls(x, t) ∗ls(t, t).
+Data
+We can generate synthetic (labeled) datasets for this problem. For this, we ﬁx a set of pred-
+icates such as ls and tree (extensions could consider doubly-linked list segments, multi-trees, . . .)
+together with their inductive deﬁnitions. Then we enumerate separation logic formulas instantiat-
+ing our predicates using a given set of program variables. Finally, for each formula, we enumerate
+heap graphs satisfying that formula. The result is a dataset consisting of pairs of heap graphs and
+associated formulas that are used by our learning procedures.
+5.2.2
+FORMULATION AS GGS-NNS
+It’s easy to obtain the node annotations for the intermediate prediction steps from the data generation
+process. So we train a variant of GGS-NN with observed annotations to infer formulas from heap
+graphs. Note that it is also possible to use an unobserved GGS-NN variant and do end-to-end learning.
+The procedure breaks down the production of a separation logic formula into a sequence of steps.
+7
+Under review as a conference paper at ICLR 2016
+We ﬁrst decide whether to declare existential variables, and if so, choose which node corresponds
+to the variable. Once we have declared existentials, we iterate over all variable names and produce
+a separation logic formula describing the data structure rooted at the node corresponding to the
+current variable. The full algorithm appears with an example run in Appendix C.1. Note that node
+annotations are given at training time but not at test time.
+5.2.3
+PROGRAM VERIFICATION EXPERIMENTS
+For this paper, we produced a dataset of 327 formulas that involves three program variables, with 498
+graphs per formula, yielding around 160,000 formula/heap graph combinations. To evaluate, we split
+the data into training, validation and test sets using a 6:2:2 split on the formulas (i.e., the formulas in
+the test set were not in the training set). We measure correctness by whether the formula predicted at
+test time is logically equivalent to the ground truth; equivalence is approximated by canonicalizing
+names and order of the formulas and then comparing for exact equality.
+We compared our GGS-NN-based model with a method we developed earlier (Brockschmidt et al.,
+2015). Our earlier approach treats each prediction step as standard classiﬁcation, and requires com-
+plex, manual, problem-speciﬁc feature engineering, to achieve an accuracy of 89.11%. In contrast, our
+new model was trained with no feature engineering and very little domain knowledge and achieved an
+accuracy of 89.96%. We have also successfully used our new model in a program veriﬁcation frame-
+work, supplying needed program invariants to a theorem prover to prove correctness of a collection
+of list-manipulating algorithms such as insertion sort.
+In practice, we map from several memory states at the same program location to one separation
+logic formula. Furthermore, we additionally discussed a more complex scenario allowing for nested
+data structures (e.g., list of lists) in Brockschmidt et al. (2015). For reasons of simplicity, we do not
+discuss this extension here, but can report that we could successfully extend our GGS-NN model to
+it as well. More details on this can be found in Appendix C.
+6
+RELATED WORK
+The most closely related work is GNNs, which we have discussed at length above. Micheli (2009)
+proposed another closely related model that differs from GNNs mainly in the output model. GNNs
+have been applied in several domains (Gori et al., 2005; Di Massa et al., 2006; Scarselli et al., 2009;
+Uwents et al., 2011), but they do not appear to be in widespread use in the ICLR community. Part of
+our aim here is to publicize GNNs as a useful and interesting neural network variant.
+An analogy can be drawn between our adaptation from GNNs to GG-NNs, to the work of Domke
+(2011) and Stoyanov et al. (2011) in the structured prediction setting. There belief propagation (which
+must be run to near convergence to get good gradients) is replaced with truncated belief propagation
+updates, and then the model is trained so that the truncated iteration produce good results after a
+ﬁxed number of iterations. Similarly, Recursive Neural Networks (Goller & Kuchler, 1996; Socher
+et al., 2011) being extended to Tree LSTMs (Tai et al., 2015) is analogous to our using of GRU
+updates in GG-NNs instead of the standard GNN recurrence with the aim of improving the long-term
+propagation of information across a graph structure.
+The general idea expressed in this paper of assembling problem-speciﬁc neural networks as a compo-
+sition of learned components has a long history, dating back at least to the work of Hinton (1988) on
+assembling neural networks according to a family tree structure in order to predict relations between
+people. Similar ideas appear in Hammer & Jain (2004) and Bottou (2014).
+Graph kernels (Shervashidze et al., 2011; Kashima et al., 2003) can be used for a variety of kernel-
+based learning tasks with graph-structured inputs, but we are not aware of work that learns the kernels
+and outputs sequences. Perozzi et al. (2014) convert graphs into sequences by following random
+walks on the graph then learns node embeddings using sequence-based methods. Sperduti & Starita
+(1997) map graphs to graph vectors then classify using an output neural network. There are several
+models that make use of similar propagation of node representations on a graph structure. Bruna et al.
+(2013) generalize convolutions to graph structures. The difference between their work and GNNs is
+analogous to the difference between convolutional and recurrent networks. Duvenaud et al. (2015)
+also consider convolutional like operations on graphs, building a learnable, differentiable variant of
+a successful graph feature. Lusci et al. (2013) converts an arbitrary undirected graph to a number of
+8
+Under review as a conference paper at ICLR 2016
+different DAGs with different orientations and then propagates node representations inwards towards
+each root, training an ensemble of models. In all of the above, the focus is on one-step problems.
+GNNs and our extensions have many of the same desirable properties of pointer networks (Vinyals
+et al., 2015); when using node selection output layers, nodes from the input can be chosen as outputs.
+There are two main differences: ﬁrst, in GNNs the graph structure is explicit, which makes the models
+less general but may provide stronger generalization ability; second, pointer networks require that
+each node has properties (e.g., a location in space), while GNNs can represent nodes that are deﬁned
+only by their position in the graph, which makes them more general along a different dimension.
+GGS-NNs are related to soft alignment and attentional models (e.g., Bahdanau et al. (2014); Kumar
+et al. (2015); Sukhbaatar et al. (2015)) in two respects: ﬁrst, the graph representation in Eq. 7
+uses context to focus attention on which nodes are important to the current decision; second, node
+annotations in the program veriﬁcation example keep track of which nodes have been explained so
+far, which gives an explicit mechanism for making sure that each node in the input has been used
+over the sequence of producing an output.
+7
+DISCUSSION
+B is E
+E has_fear H
+eval B has_fear
+What is being learned?
+It is instructive to consider what is being learned
+by the GG-NNs. To do so, we can draw analogy between how the bAbI task
+15 would be solved via a logical formulation. As an example, consider the
+subset of lines needed to answer one example on the right.
+To do logical reasoning, we would need not only a logical encoding of the facts present in the story
+but also the background world knowledge encoded as inference rules such as
+is(x, y) ∧has-fear(y, z) =⇒has-fear(x, z).
+(9)
+Our encoding of the tasks simpliﬁes the parsing of the story into graph form, but it does not provide
+any of the background knowledge. The GG-NN model can be seen as learning this, with results
+stored in the neural network weights.
+Discussion
+The results in the paper show that GGS-NNs have desirable inductive biases across a
+range of problems that have some intrinsic graph structure to them, and we believe there to be many
+more cases where GGS-NNs will be useful. There are, however, some limitations that need to be
+overcome to make them apply even more broadly. Two limitations that we mentioned previously are
+that the bAbI task translation does not incorporate temporal order of inputs or ternary and higher order
+relations. We can imagine several possibilities for lifting these restrictions, such as concatenating a
+series of GG-NNs, where there is one GG-NNs for each edge, and representing higher order relations
+as factor graphs. A more signiﬁcant challenge is how to handle less structured input representations.
+For example, in the bAbI tasks it would be desirable not to use the symbolic form of the inputs.
+One possible approach is to incorporate less structured inputs, and latent vectors, in our GGS-NNs.
+However, experimentation is needed to ﬁnd the best way of addressing these issues.
+The current GGS-NNs formulation speciﬁes a question only after all the facts have been consumed.
+This implies that the network must try to derive all consequences of the seen facts and store all
+pertinent information to a node within its node representation. This is likely not ideal; it would be
+preferable to develop methods that take the question as an initial input, and then dynamically derive
+the facts needed to answer the question.
+We are optimistic about the further applications of GGS-NNs. We are particularly interested in
+continuing to develop end-to-end learnable systems that can learn about semantic properties of
+programs, that can learn more complicated graph algorithms, and in applying these ideas to problems
+that require reasoning over knowledge bases and databases. More generally, we consider these graph
+neural networks as representing a step towards a model that can combine structured representations
+with the powerful algorithms of deep learning, with the aim of taking advantage of known structure
+while learning and inferring how to reason with and extend these representations.
+9
+Under review as a conference paper at ICLR 2016
+ACKNOWLEDGEMENTS
+We thank Siddharth Krishna, Alex Gaunt, and Pushmeet Kohli for useful conversations and Douwe
+Kiela for comments on an earlier draft of the paper.
+REFERENCES
+Almeida, Luis B. A learning rule for asynchronous perceptrons with feedback in a combinatorial
+environment. In Artiﬁcial neural networks, pp. 102–111. IEEE Press, 1990.
+Bahdanau, Dzmitry, Cho, Kyunghyun, and Bengio, Yoshua. Neural machine translation by jointly
+learning to align and translate. CoRR, abs/1409.0473, 2014.
+Bottou, L´eon. From machine learning to machine reasoning. Machine learning, 94(2):133–149,
+2014.
+Brockschmidt, Marc, Chen, Yuxin, Cook, Byron, Kohli, Pushmeet, and Tarlow, Daniel. Learning to
+decipher the heap for program veriﬁcation. In Workshop on Constructive Machine Learning at the
+International Conference on Machine Learning (CMLICML), 2015.
+Bruna, Joan, Zaremba, Wojciech, Szlam, Arthur, and LeCun, Yann. Spectral networks and locally
+connected networks on graphs. arXiv preprint arXiv:1312.6203, 2013.
+Cho, Kyunghyun, Van Merri¨enboer, Bart, Gulcehre, Caglar, Bahdanau, Dzmitry, Bougares, Fethi,
+Schwenk, Holger, and Bengio, Yoshua. Learning phrase representations using rnn encoder-decoder
+for statistical machine translation. arXiv preprint arXiv:1406.1078, 2014.
+Di Massa, Vincenzo, Monfardini, Gabriele, Sarti, Lorenzo, Scarselli, Franco, Maggini, Marco, and
+Gori, Marco. A comparison between recursive neural networks and graph neural networks. In
+International Joint Conference on Neural Networks (IJCNN), pp. 778–785. IEEE, 2006.
+Domke, Justin. Parameter learning with truncated message-passing. In IEEE Conference on Com-
+puter Vision and Pattern Recognition (CVPR), pp. 2937–2943. IEEE, 2011.
+Duvenaud, David, Maclaurin, Dougal, Aguilera-Iparraguirre, Jorge, G´omez-Bombarelli, Rafael,
+Hirzel, Timothy, Aspuru-Guzik, Al´an, and Adams, Ryan P. Convolutional networks on graphs for
+learning molecular ﬁngerprints. arXiv preprint arXiv:1509.09292, 2015.
+Goller, Christoph and Kuchler, Andreas. Learning task-dependent distributed representations by back-
+propagation through structure. In IEEE International Conference on Neural Networks, volume 1,
+pp. 347–352. IEEE, 1996.
+Gori, Marco, Monfardini, Gabriele, and Scarselli, Franco. A new model for learning in graph domains.
+In International Joint Conference onNeural Networks (IJCNN), volume 2, pp. 729–734. IEEE,
+2005.
+Hammer, Barbara and Jain, Brijnesh J. Neural methods for non-standard data. In European Sympo-
+sium on Artiﬁcial Neural Networks (ESANN), 2004.
+Hinton, Geoffrey E. Representing part-whole hierarchies in connectionist networks. In Proceedings
+of the Tenth Annual Conference of the Cognitive Science Society, pp. 48–54. Erlbaum., 1988.
+Hoare, Charles Antony Richard. An axiomatic basis for computer programming. Communications
+of the ACM, 12(10):576–580, 1969.
+Kashima, Hisashi, Tsuda, Koji, and Inokuchi, Akihiro. Marginalized kernels between labeled graphs.
+In Proceedings of the International Conference on Machine Learning, volume 3, pp. 321–328,
+2003.
+Kingma, Diederik and Ba, Jimmy. Adam: A method for stochastic optimization. arXiv preprint
+arXiv:1412.6980, 2014.
+10
+Under review as a conference paper at ICLR 2016
+Kumar, Ankit, Irsoy, Ozan, Su, Jonathan, Bradbury, James, English, Robert, Pierce, Brian, Ondruska,
+Peter, Gulrajani, Ishaan, and Socher, Richard. Ask me anything: Dynamic memory networks for
+natural language processing. arXiv preprint arXiv:1506.07285, 2015.
+Lusci, Alessandro, Pollastri, Gianluca, and Baldi, Pierre. Deep architectures and deep learning in
+chemoinformatics: the prediction of aqueous solubility for drug-like molecules. J Chem Inf Model,
+2013.
+Micheli, Alessio. Neural network for graphs: A contextual constructive approach. IEEE Transactions
+on Neural Networks, 20(3):498–511, 2009.
+O’Hearn, Peter, Reynolds, John C., and Yang, Hongseok. Local reasoning about programs that alter
+data structures. In 15th International Workshop on Computer Science Logic (CSL’01), pp. 1–19,
+2001.
+Perozzi, Bryan, Al-Rfou, Rami, and Skiena, Steven. Deepwalk: Online learning of social representa-
+tions. In Proceedings of the 20th ACM SIGKDD international conference on Knowledge discovery
+and data mining, pp. 701–710. ACM, 2014.
+Pineda, Fernando J. Generalization of back-propagation to recurrent neural networks. Physical
+review letters, 59(19):2229, 1987.
+Piskac, Ruzica, Wies, Thomas, and Zufferey, Damien. GRASShopper - complete heap veriﬁcation
+with mixed speciﬁcations. In 20st International Conference on Tools and Algorithms for the
+Construction and Analysis of Systems (TACAS’14), pp. 124–139, 2014.
+Reynolds, John C.
+Separation logic: A logic for shared mutable data structures.
+In 7th IEEE
+Symposium on Logic in Computer Science (LICS’02), pp. 55–74, 2002.
+Scarselli, Franco, Gori, Marco, Tsoi, Ah Chung, Hagenbuchner, Markus, and Monfardini, Gabriele.
+The graph neural network model. IEEE Transactions on Neural Networks, 20(1):61–80, 2009.
+Shervashidze, Nino, Schweitzer, Pascal, Van Leeuwen, Erik Jan, Mehlhorn, Kurt, and Borgwardt,
+Karsten M. Weisfeiler-lehman graph kernels. The Journal of Machine Learning Research, 12:
+2539–2561, 2011.
+Socher, Richard, Lin, Cliff C, Manning, Chris, and Ng, Andrew Y. Parsing natural scenes and natural
+language with recursive neural networks. In Proceedings of the 28th international conference on
+machine learning (ICML-11), pp. 129–136, 2011.
+Sperduti, Alessandro and Starita, Antonina. Supervised neural networks for the classiﬁcation of
+structures. IEEE Transactions on Neural Networks, 8(3):714–735, 1997.
+Stoyanov, Veselin, Ropson, Alexander, and Eisner, Jason. Empirical risk minimization of graphical
+model parameters given approximate inference, decoding, and model structure. In International
+Conference on Artiﬁcial Intelligence and Statistics, pp. 725–733, 2011.
+Sukhbaatar, Sainbayar, Szlam, Arthur, Weston, Jason, and Fergus, Rob. End-to-end memory networks.
+arXiv preprint arXiv:1503.08895, 2015.
+Tai, Kai Sheng, Socher, Richard, and Manning, Christopher D. Improved semantic representations
+from tree-structured long short-term memory networks. arXiv preprint arXiv:1503.00075, 2015.
+Uwents, Werner, Monfardini, Gabriele, Blockeel, Hendrik, Gori, Marco, and Scarselli, Franco. Neural
+networks for relational learning: an experimental comparison. Machine Learning, 82(3):315–349,
+2011.
+Vinyals, Oriol, Fortunato, Meire, and Jaitly, Navdeep.
+Pointer networks.
+arXiv preprint
+arXiv:1506.03134, 2015.
+Weston, Jason, Bordes, Antoine, Chopra, Sumit, and Mikolov, Tomas. Towards ai-complete question
+answering: a set of prerequisite toy tasks. arXiv preprint arXiv:1502.05698, 2015.
+11
+Under review as a conference paper at ICLR 2016
+A
+CONTRACTION MAP EXAMPLE
+Consider a linear 1-hidden unit cycle-structured GNN with N nodes {1, . . . , N}. For simplicity we
+ignored all edge labels and node labels, equivalently this is a simple example with LV = 1 and
+LE = 1. At each timestep t we update hidden states h1, . . . , hN as
+h(t)
+i
+= mi · h(t−1)
+i−1
++ bi,
+(10)
+for each i, where mi and bi are parameters of the propagation model. We use the convention that hj
+cycles around and refers to hN+j when j ≤0. Let h(t) = [h(t)
+1 , . . . , h(t)
+N ]⊤,
+M =
+
+
+0
+0
+0
+. . .
+m1
+m2
+0
+0
+0
+0
+m3
+0
+0
+...
+...
+0
+0
+mN
+0
+
+
+(11)
+and b = [b1, . . . , bN]⊤. We can write the joint update for all i as
+h(t) = Mh(t−1) + b = T(h(t−1))
+(12)
+Restrict the update to deﬁne a contraction mapping in the Euclidean metric. This means that there is
+some ρ < 1 such that for any h, h′,
+||T(h) −T(h′)|| < ρ||h −h′||,
+(13)
+or in other words,
+||M(h −h′)|| < ρ||h −h′||.
+(14)
+We can immediately see that this implies that |mi| < ρ for each i by letting h be the elementary
+vector that is all zero except for a 1 in position i −1 and letting h′ be the all zeros vector.
+Expanding Eq. 10, we get
+h(t)
+i
+= mi · (mi−1h(t−2)
+i−1
++ bi−1) + bi
+= mimi−1h(t−2)
+i−1
++ mibi−1 + bi
+= mimi−1(mi−2h(t−3)
+i−2
++ bi−2) + mibi−1 + bi
+= mimi−1mi−2h(t−3)
+i−2
++ mimi−1bi−2 + mibi−1 + bi.
+(15)
+In the GNN model, node label li controls which values of mi and bi are used during the propagation.
+Looking at this expansion and noting that mi < ρ for all i, we see that information about labels of
+nodes δ away will decay at a rate of
+
+1
+ρ
+δ
+. Thus, at least in this simple case, the restriction that T be
+a contraction means that it is not able to maintain long-range dependencies.
+A.1
+NONLINEAR CASE
+The same analysis can be applied to a nonlinear update, i.e.
+h(t)
+i
+= σ
+
+mi · h(t−1)
+i−1
++ bi
+
+,
+(16)
+where σ is any nonlinear function. Then T(h) = σ (Mh + b). Let T(h) = [T1(h), ..., TN(h)]⊤,
+where Ti(h(t−1)) = h(t)
+i . The contraction map deﬁnition Eq. 13 implies that each entry of the
+Jacobian matrix of T is bounded by ρ, i.e.
+
+∂Ti
+∂hj
+ < ρ,
+∀i, ∀j.
+(17)
+To see this, consider two vectors h and h′, where hk = h′
+k, ∀k ̸= j and hj + ∆= h′
+j. The deﬁnition
+in Eq. 13 implies that for all i,
+||Ti(h) −Ti(h′)|| ≤||T(h) −T(h′)|| < ρ|∆|.
+(18)
+12
+Under review as a conference paper at ICLR 2016
+Therefore
+
+Ti(h1, ..., hj−1, hj, hj+1, ..., hN) −Ti(h1, ..., hj−1, hj + ∆, hj+1, ..., hN)
+∆
+ < ρ,
+(19)
+where the left hand side is
+ ∂Ti
+∂hj
+ by deﬁnition as ∆→0.
+When j = i −1,
+
+∂Ti
+∂hi−1
+ < ρ.
+(20)
+Also, because of the special cycle graph structure, for all other js we have ∂Ti
+∂hj = 0. Applying this to
+the update at timestep t, we get
+
+∂h(t)
+i
+∂h(t−1)
+i−1
+ < ρ.
+(21)
+Now let’s see how a change in h(1)
+1
+could affect h(t)
+t . Using the chain rule and the special graph
+structure, we have
+
+∂h(t)
+t
+∂h(1)
+1
+ =
+
+∂h(t)
+t
+∂h(t−1)
+t−1
+· ∂h(t−1)
+t−1
+∂h(t−2)
+t−2
+· · · ∂h(2)
+2
+∂h(1)
+1
+
+=
+
+∂h(t)
+t
+∂h(t−1)
+t−1
+ ·
+
+∂h(t−1)
+t−1
+∂h(t−2)
+t−2
+ · · ·
+
+∂h(2)
+2
+∂h(1)
+1
+
+< ρ · ρ · · · ρ = ρt−1.
+(22)
+As ρ < 1, this derivative will approach 0 exponentially fast as t grows. Intuitively, this means that the
+impact one node has on another node far away will decay exponetially, therefore making it difﬁcult
+to model long range dependencies.
+B
+EXAMPLE SYMBOLIC TRAINING DATA AND SETUP
+Below is an example from the symbolic dataset for bAbI task 15, Basic Deduction.
+D is A
+B is E
+A has_fear F
+G is F
+E has_fear H
+F has_fear A
+H has_fear A
+C is H
+eval B has_fear
+H
+eval G has_fear
+A
+eval C has_fear
+A
+eval D has_fear
+F
+Here the ﬁrst 8 lines describe the facts, the GG-NN will use these facts to build a graph. Capital
+letters are nodes, is and has fear are interpreted as edge labels or edge types. The last 4 lines
+are 4 questions asked for this input data. has fear in these lines are interpreted as a question type.
+For this task, in each question only one node is special, e.g. the B in eval B has fear, and we
+assign a single value 1 to the annotation vector for this special node and 0 to all the other nodes.
+For RNN and LSTM the data is converted into token sequences like below:
+13
+Under review as a conference paper at ICLR 2016
+n6 e1 n1 eol n6 e1 n5 eol n1 e1 n2 eol n4 e1 n5 eol n3 e1 n4
+eol n3 e1 n5 eol n6 e1 n4 eol q1 n6 n2 ans 1
+where n<id> are nodes, e<id> are edges, q<id> are question types, extra tokens eol (end-of-
+line) and ans (answer) are added to give the RNN & LSTM access to the complete information
+available in the dataset. The ﬁnal number is the class label.
+Here is an example from the symbolic dataset for bAbI task 19, Path Finding.
+E s A
+B n C
+E w F
+B w E
+eval path B A w,s
+Here the ﬁrst 4 lines describe edges, s, n, w, e (e does not appear in this example) are all different
+edge types. The last line is a path question, the answer is a sequence of directions w,s, as the path
+going from B to A is to ﬁrst go west to E then go south to A. The s, n, w, e in the question lines are
+treated as output classes.
+When evaluating model performance, for all bAbI tasks that contain more questions in one example,
+the prediction is treated as correct only when the answer to all questions for that example are correct.
+For all explanatory tasks we unrolled the propagation process for 5 steps. For bAbI task 15 and 16
+we used a GG-NN with the size of node vectors h(t)
+v
+set to D = 4. For bAbI task 4, 18 and 19 we
+used D = 6. For shortest path and Eulerian circuit tasks, we used D = 20.
+All models are trained long enough with Adam (Kingma & Ba, 2014), and the validation set is used
+to choose the best model to evaluate and avoid models that are overﬁtting.
+B.1
+PERFORMANCE OF THE RNN/LSTM BASELINES ON BABI TASK 4
+For all explanatory tasks, we start by training different models on only 50 training examples, and
+gradually increase the number of training examples to 100, 250, 500, and 950 (50 of the training
+examples are reserved for validation) until the model’s test accuracy reaches 95% or above, a success
+by bAbI standard Weston et al. (2015). For each method, we report the minimum number of training
+examples it needs to reach 95% accuracy along with the accuracy it reaches with that amount of
+training examples.
+In Table 3, we further break down performance of the baselines for task 4 as the amount of training
+data varies. While both RNN and LSTM are able to solve the task perfectly, our GG-NN reaches
+100% accuracy with a lot less data.
+#Training Examples
+50
+100
+250
+500
+950
+RNN
+67.8
+88.4
+99.2
+97.4
+100.0
+LSTM
+69.6
+83.6
+98.7
+100.0
+100.0
+Table 3: Performance breakdown of RNN and LSTM on bAbI task 4 as the amount of training data
+changes.
+B.2
+WHY ARE RNN AND LSTM SO BAD ON THE SEQUENCE PREDICTION TASKS?
+RNN and LSTM performance on the sequence prediction tasks, i.e. bAbI task 19, shortest path and
+Eulerian circuit, are very poor compared to single output tasks. The Eulerian circuit task is the one
+that RNN and LSTM fail most dramatically. A typical training example for this task looks like the
+following,
+14
+Under review as a conference paper at ICLR 2016
+3 connected-to 7
+7 connected-to 3
+1 connected-to 2
+2 connected-to 1
+5 connected-to 7
+7 connected-to 5
+0 connected-to 4
+4 connected-to 0
+1 connected-to 0
+0 connected-to 1
+8 connected-to 6
+6 connected-to 8
+3 connected-to 6
+6 connected-to 3
+5 connected-to 8
+8 connected-to 5
+4 connected-to 2
+2 connected-to 4
+eval eulerian-circuit 5 7
+5,7,3,6,8
+This describes a graph with two cycles 3-7-5-8-6 and 1-2-4-0, where 3-7-5-8-6 is the target cycle and
+1-2-4-0 is a smaller distractor graph. All edges are presented twice in both directions for symmetry.
+The task is to ﬁnd the cycle that starts with the given two nodes and in the direction from the ﬁrst to
+the second. The distractor graph is added to increase the difﬁculty of this task, this also makes the
+output cycle not strictly “Eulerian”.
+For RNN and LSTM the above training example is further transformed into a sequence of tokens,
+n4 e1 n8 eol n8 e1 n4 eol n2 e1 n3 eol n3 e1 n2 eol n6 e1 n8 eol
+n8 e1 n6 eol n1 e1 n5 eol n5 e1 n1 eol n2 e1 n1 eol n1 e1 n2 eol
+n9 e1 n7 eol n7 e1 n9 eol n4 e1 n7 eol n7 e1 n4 eol n6 e1 n9 eol
+n9 e1 n6 eol n5 e1 n3 eol n3 e1 n5 eol q1 n6 n8 ans 6 8 4 7 9
+Note the node IDs here are different from the ones in the original symbolic data. The RNN and
+LSTM read through the whole sequence, and start to predict the ﬁrst output when reading the ans
+token. Then for each prediction step, the ans token is fed as the input and the target node ID (treated
+as a class label) is expected as the output. In this current setup, the output of each prediction step is
+not fed as the input for the next. Our GGS-NN model uses the same setup, where the output of one
+step is not used as input to the next, only the predicted node annotations X (k) carry over from one
+step to the next, so the comparison is still fair for RNN and LSTM. Changing both our method and
+the baselines to make use of previous predictions is left as future work.
+From this example we can see that the sequences the RNN and LSTM have to handle is quite long,
+close to 80 tokens before the predictions are made. Some predictions really depend on long range
+memory, for example the ﬁrst edge (3-7) and ﬁrst a few tokens (n4 e1 n8) in the sequence are
+needed to make prediction in the third prediction step (3 in the original symbolic data, and 4 in the
+tokenized RNN data). Keeping long range memory in RNNs is challenging, LSTMs do better than
+RNNs but still can’t completely solve the problem.
+Another challenge about this task is the output sequence does not appear in the same order as in the
+input sequence. In fact, the data has no sequential nature at all, even when the edges are randomly
+permutated, the target output sequence should not change. Same applies for bAbI task 19 and the
+shortest path task. GGS-NNs are good at handling this type of “static” data, while RNN and LSTM
+are not. However it is not straight forward to apply GGS-NNs to temporal sequential data which
+15
+Under review as a conference paper at ICLR 2016
+Step
+Labeled Graph
+Out
+Input
+1
+b
+2
+3
+4
+0
+0
+0
+0
+Line 3/(†)
+1
+b
+2
+3
+4
+0
+0
+0
+0
+Line 4-7/(‡)
+1
+b
+2
+3
+t
+4
+∃t.
+0
+0
+0
+0
+Line 10 (for b)
+1
+b
+2
+3
+t
+4
+∃t.
+0
+0
+0
+0
+Step
+Labeled Graph
+Out
+Line 11/(⋆)
+1
+b
+2
+3
+t
+4
+∃t.
+0
+0
+0
+0
+Line 13,14/(♥)
+1
+b
+2
+3
+t
+4
+∃t.ls(b, t)∗
+0
+0
+0
+0
+Line 18/(♠)
+1
+b
+2
+3
+t
+4
+∃t.ls(b, t)∗
+0
+0
+0
+0
+Line 10 (for t)
+1
+b
+2
+3
+t
+4
+∃t.ls(b, t)∗
+0
+0
+0
+0
+Figure 3: Illustration of the ﬁrst 8 steps to predict a separation logic formula from a memory state.
+Label is-named signiﬁed by variable near node, active by double border, is-explained by white ﬁll.
+RNN and LSTM are good at. This is one limitation of the GGS-NNs model which we discussed in
+Section 7.
+C
+MORE PROGRAM VERIFICATION EXPERIMENT DETAILS AND RESULTS
+C.1
+ILLUSTRATION AND ALGORITHM FOR PROGRAM VERIFICATION
+An example input graph is displayed as “Input” in Fig. 3. In it, the node id (i.e., memory address) is
+displayed in the node. Edge labels correspond to speciﬁc ﬁelds in the program, e.g., 0 in our example
+corresponds to the next pointer in our example function from Section 5.2. For binary trees there are
+two more types of pointers left and right pointing to the left and right children of a tree node.
+The full algorithm for predicting separation logic formula appears below, as Alg. 1. We use three
+explicit node annotations, namely is-named (heap node labeled by program variable or declared
+existentially quantiﬁed variable), active (cf. algorithm) and is-explained (heap node is part of data
+structure already predicted). Initial node labels can be directly computed from the input graph: “is-
+named” is on for nodes labeled by program variables, “active” and “is-explained” are always off
+(done in line 2). The commented lines in the algorithm are implemented using a GG-NN, i.e., Alg. 1
+is an instance of our GGS-NN model. An illustration of the beginning of a run of the algorithm is
+shown in Fig. 3, where each step is related to one line of the algorithm.
+Algorithm 1 Separation logic formula prediction procedure
+Input: Heap graph G with named program variables
+1: X ←compute initial labels from G
+2: H ←initialize node vectors by 0-extending X
+3: while ∃quantiﬁer needed do
+▷Graph-level Classiﬁcation (†)
+4:
+t ←fresh variable name
+5:
+v ←pick node
+▷Node Selection (‡)
+6:
+X ←turn on “is-named” for v in X
+7:
+print “∃t.”
+8: end while
+9: for node vℓwith label “is-named” in X do
+10:
+H ←initialize node vectors, turn on “active” label for vℓin X
+11:
+pred ←pick data structure predicate
+▷Graph-level Classiﬁcation (⋆)
+12:
+if pred = ls then
+13:
+ℓend ←pick list end node
+▷Node Selection (♥)
+14:
+print “ls(ℓ, ℓend) ∗”
+15:
+else
+16:
+print “pred(ℓ) ∗”
+17:
+end if
+18:
+X ←update node annotations in X
+▷Node Annotation (♠)
+19: end for
+16
+Under review as a conference paper at ICLR 2016
+C.2
+MODEL SETUP DETAILS
+For all the GG-NN components in the GGS-NN pipeline, we unrolled the propagation process for
+10 time steps. The GGS-NNs associatd with step (†) (deciding wheter more existentially quantiﬁed
+variable need to be declared) and (‡) (identify which node need to be declared as existentially quanti-
+ﬁed) uses D = 16 dimensional node representations. For all other GGS-NN components, D = 8 is
+used. Adam (Kingma & Ba, 2014) is used for optimization, the models are trained on minibatches of
+20 graphs, and optimized until training error is very low. For the graph-level classiﬁcation tasks, we
+also artiﬁcially balanced classes to have even number of examples from each class in each minibatch.
+All the GGS-NN components contain less than 5k parameters and no overﬁtting is observed during
+training.
+C.3
+BATCH PREDICTION DETAILS
+In practice, a set of heap graphs will be given as input and a single output formula is expected to
+describe and be consistent with all the input graphs. The different heap graphs can be snapshots
+of the heap state at different points in the program execution process, or different runs of the same
+program with different inputs. We call this the “batch prediction” setup contrasting with the single
+graph prediction described in the main paper.
+To make batch predictions, we run one GGS-NN for each graph simultaneously, and aggregates the
+outputs of all the GGS-NNs at different prediction steps across the batch of graphs. The key is to
+aggregate the predictions made by the output models. Variable names are shared across graphs as all
+graphs are consistent with a single output formula, and these names link nodes on different graphs
+together.
+For node selection outputs, we compute the score for a particular named variable t as ot = P
+g og
+Vg(t),
+where Vg(t) maps variable name t to a node in graph g, and og
+Vg(t) is the output score for named
+variable t in graph g. When applying a softmax over all names using ot as scores, this is equivalent
+to a model that computes p(toselect = t) = Q
+g pg(toselect = Vg(t)).
+For graph-level classiﬁcation outputs, we add up scores of a particular class across the batch of
+graphs, or equivalently compute p(class = k) = Q
+g pg(class = k).
+Node annotation outputs are updated for each graph independently as different graphs have com-
+pletely different set of nodes. When the algorithm tries to turn on a particular bit of annotation for one
+named variable deterministically, the nodes associated with that variable in all graphs are updated.
+During training, all labels for intermediate steps are available to us from the data generation process,
+so the training process again can be decomposed to single output single graph training.
+It is possible to train GG-NNs end-to-end in this batch prediction setup, we leave this to the future
+work.
+The results reported in Section 5.2.3 are obtained with the batch prediction setup.
+C.4
+NESTED PREDICTION DETAILS
+Data structures like list of lists are nested data structures, in which the val pointer of each node
+in a data structure points to another data structure. Such data structures can be represented in sep-
+aration logic by allowing predicates to be nested. For example, a list of lists can be represented as
+ls(x, y, λt →ls(t, NULL)), where λt →ls(t, NULL) is a lambda expression and says that for each
+node in the list from x to y, its val pointer t satisﬁes ls(t, NULL). So there is a list from x to y, where
+each node in that list points to another list. A simple list without nested structures can be represented
+as ls(x, y, ⊤) where ⊤represents an empty predicate. Note that unlike the non-nested case where the
+val pointer always points to NULL, we have to consider the val pointers here in order to describe
+and handle nested data structures.
+To make our GGS-NNs able to predict nested formulas, we adapt Alg. 1 to Alg. 2. Where an outer
+loop goes through each named variable once and generate a nested predicate with the node associated
+with that variable as the active node. The nested prediction procedure handles prediction similarly as
+in Alg. 1. Before calling the nested prediction procedure recursively, the node annotation update in
+17
+Under review as a conference paper at ICLR 2016
+line 32 not only annotates nodes in the current structure as “is-explained”, but also annotates nodes
+linked to via the “val” pointer from all nodes in the current structure as “active”. For the list of lists
+example, after predicting “ls(x, y,”, the annotation step annotates all nodes in the list from x to y as
+“is-explained” and all nodes the val pointer points to from the list as “active”. This knowledge is not
+hard coded into the algorithm, the annotation model can learn this behavior from data.
+Algorithm 2 Nested separation logic formula prediction procedure
+1: procedure OUTERLOOP(G)
+▷Graph G with named program variables
+2:
+X ←compute initial labels from G
+3:
+for each variable name var do
+4:
+vℓ←node associated with var
+5:
+turn on “active” bit for vℓin X
+6:
+PREDICTNESTEDFORMULA(G, X, var)
+7:
+end for
+8: end procedure
+9:
+10: procedure PREDICTNESTEDFORMULA(G, X, var)
+11:
+H ←initialize node vectors by 0-extending X
+12:
+while ∃quantiﬁer needed do
+▷Graph-level Classiﬁcation (†)
+13:
+e ←fresh existentially quantiﬁed variable name
+14:
+v ←pick node
+▷Node Selection (‡)
+15:
+X ←turn on “is-named” for v in X
+16:
+print “∃e.”
+17:
+end while
+18:
+if var is a lambda variable name then
+19:
+print “λ var.”
+20:
+end if
+21:
+pred ←pick data structure predicate
+▷Graph-level Classiﬁcation (⋆)
+22:
+if pred = ls then
+23:
+ℓend ←pick list end node
+▷Node Selection (♥)
+24:
+varend ←get variable name associated with ℓend
+25:
+print “ls(var, varend,”
+26:
+else if pred = tree then
+27:
+print “tree(var,”
+28:
+else
+29:
+print “none(var) ∗”
+30:
+return
+31:
+end if
+32:
+X ←update node annotations in X
+▷Node Annotation (♠)
+33:
+t ←fresh lambda variable name
+34:
+PREDICTNESTEDFORMULA(G, X, t)
+▷Recursively predict all nested formulas.
+35:
+print “) ∗”
+36: end procedure
+C.5
+SOME EXTRA PROGRAM VERIFICATION RESULTS
+One example heap graph and the corresponding separation logic formula found by our GGS-
+NN model is shown in Fig. 4. This example also involves nested data structures and the extension
+developed in the previous section is used in prediction.
+The following Table 4 lists a set of benchmark list manipulation programs and the separation logic
+formula invariants found by the GGS-NN model, which were successfully used in a veriﬁcation
+framework to prove the correctness of corresponding programs. A further extension of the current
+pipeline has been shown to be able to successfully prove more sophisticated programs like sorting
+programs and various other list-manipulating programs.
+18
+Under review as a conference paper at ICLR 2016
+Figure 4: A heap graph example that contains two named variables arg1 and arg2, and one iso-
+lated NULL node (node 1). All the edges to NULL are not shown here for clarity. The numbers
+on edges indicate different edge types. Our GGS-NN model successfully ﬁnds the right formula
+ls(arg1, NULL, λt1 →ls(t1, NULL, ⊤)) ∗tree(arg2, λt2 →∃e1.ls(t2, e1, ⊤) ∗ls(e1, e1, ⊤)).
+Program
+Invariant Found
+Traverse1
+ls(lst, curr) ∗ls(curr, NULL)
+Traverse2
+curr ̸= NULL ∗lst ̸= NULL ∗ls(lst, curr) ∗ls(curr, NULL)
+Concat
+a ̸= NULL ∗a ̸= b ∗b ̸= curr ∗curr ̸= NULL
+∗ls(curr, NULL) ∗ls(a, curr) ∗ls(b, NULL)
+Copy
+ls(curr, NULL) ∗ls(lst, curr) ∗ls(cp, NULL)
+Dispose
+ls(lst, NULL)
+Insert
+curr ̸= NULL ∗curr ̸= elt ∗elt ̸= NULL ∗elt ̸= lst ∗lst ̸= NULL
+∗ls(elt, NULL) ∗ls(lst, curr) ∗ls(curr, NULL)
+Remove
+curr ̸= NULL ∗lst ̸= NULL ∗ls(lst, curr) ∗ls(curr, NULL)
+Table 4: Example list manipulation programs and the separation logic formula invariants the GGS-
+NN model founds from a set of input graphs. The “̸=” parts are produced by a deterministic procedure
+that goes through all the named program variables in all graphs and checks for inequality.
+19

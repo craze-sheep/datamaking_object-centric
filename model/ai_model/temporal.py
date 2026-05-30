@@ -66,8 +66,9 @@ class TemporalGRU(nn.Module):
         # [B, Th, N, D] -> [B*N, Th, D]
         tokens_flat = tokens.permute(0, 2, 1, 3).reshape(B * N, Th, D)
 
-        # Run GRU
-        _, h_last = self.gru(tokens_flat)
+        # Run GRU (with input projection if dims differ)
+        x_proj = self.input_proj(tokens_flat)
+        _, h_last = self.gru(x_proj)
         # h_last: [num_layers, B*N, hidden_dim]
 
         # Reshape back: [num_layers, B*N, H] -> [B, N, num_layers, H]
@@ -96,8 +97,8 @@ class TemporalGRU(nn.Module):
         # Prepare initial hidden state: [num_layers, B*N, hidden_dim]
         h = h_init.permute(2, 0, 1, 3).reshape(self.num_layers, B * N, self.hidden_dim)
 
-        # Prepare initial input: [B*N, 1, D]
-        x = initial_token.reshape(B * N, 1, D)
+        # Prepare initial input: [B*N, 1, D] with projection
+        x = self.input_proj(initial_token.reshape(B * N, 1, D))
 
         future_tokens = []
         for _ in range(predict_length):

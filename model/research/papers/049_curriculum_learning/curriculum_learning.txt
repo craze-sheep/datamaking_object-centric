@@ -1,0 +1,939 @@
+arXiv:0912.4940v1  [math.DG]  25 Dec 2009
+PROJECTIVELY FLAT CONNECTIONS AND FLAT
+CONNECTIONS ON HOMOGENEOUS SPACES
+HAJIME URAKAWA
+Dedicated to the memory of Professor Masaru Takeuchi
+Abstract. We show a correspondence between the set of all G-
+invariant projectively ﬂat connections on a homogeneous space
+M = G/K, and the one of all eG-invariant ﬂat connections on
+homogeneous spaces f
+M = eG/K, where eG is a central extension of
+G (Theorem 3.3).
+1. Introduction and statement of results.
+Flat connections and projectively ﬂat ones have been extensively
+studied by many authors (for examples, [1], [2], [3], [6], [8], [9], [11],
+[13]). Even though they are of course very diﬀerent objects, but it
+seems that there would exist deep unknown relations between them
+each other. In this paper, we want to show some relation between the
+set of all G-invariant projectively ﬂat connections on a homogeneous
+space M = G/K, and the one of all eG-invariant ﬂat connections on
+homogeneous spaces f
+M = eG/K, where eG is a central extension of G.
+Indeed, let eG ⊃G ⊃K be three Lie groups with Lie algebras eg ⊃
+g ⊃k, where eg = g ⊕RE, and [E, eg] = {0}. Let us consider two
+homogeneous (not necessarily reductive) spaces f
+M = eG/K and M =
+G/K, respectively.
+We consider the two sets of all
+eG-invariant ﬂat
+aﬃne connections on f
+M, and of all G-invariant projectively ﬂat aﬃne
+connections on M, which correspond to the sets F0(eg, k) and PF 0(eg, k)
+of irreducible aﬃne representations of eg, respectively (for more precise,
+see §3, Deﬁnitions 3.1, 3.2). Then,
+2000 Mathematics Subject Classiﬁcation. Primary 53A15; Secondary 53C35,
+53C42, 22E45.
+Key words and phrases. projectively ﬂat connection, ﬂat connection, reductive
+homogeneous space, symmetric space, simple Lie group.
+Supported by the Grant-in-Aid for the Scientiﬁc Research, (B), No. 16340044,
+and also (A), No. 19204004, (C), No. 21540207, Japan Society for the Promotion
+of Science.
+1
+2
+HAJIME URAKAWA
+Theorem 1.1. (cf. Theorem 3.3) It holds that
+F0(eg, k) = PF 0(eg, k) ∪F II
+0 (eg, k),
+where F II
+0 (eg, k) is the set of all real irreducible aﬃne representations
+( ef, eq, eV ) of eg satisfying that
+(1) dim eV = dim G/K + 1,
+(2) eV admits an ef(eg)-invariant complex structure J, and
+(3) there exists a non-zero element v0 ∈eV satisfying that
+ef(k)v0 = {0}, and
+eV = ef(g)v0 ⊕R ef(E)v0.
+In particular, in the case that dim M = dim G/K is even, then,
+F0(eg, k) = PF 0(eg, k)
+and
+F II
+0 (eg, k) = ∅.
+Thus, G/K admits a G-invariant ﬂat connection if and only if eG/K
+admits a eG-invariant projectively ﬂat connection in the case that G/K
+is of even dimension.
+Let us recall a classiﬁcation of real semi-simple Lie groups admitting
+a projectively ﬂat connection ([1], [13], [3]).
+Theorem 1.2. Let G be a real semi-simple Lie group. Then, G admits
+a left invariant projectively ﬂat connection if and only if the Lie algebra
+g is one of the following:
+(1)
+sl(n + 1, R),
+n ≥1,
+(2)
+su∗(2n),
+n ≥1,
+where su∗(2n) is the Lie algebra given by
+su∗(2n) =
+( 
+Z1
+Z2
+−Z2
+Z1
+!
+; Z1, Z2 ∈M(n, C), TrZ1 + TrZ1 = 0
+)
+.
+Since Theorems 1.1 and 1.2 (and also Remark 1.6) except the case
+of the real representation of G = SL(n + 1, R) on gl(n + 1, R) (cf.
+Theorem 4.3 in Chapter 3 in [9], see also [1]), we have
+Corollary 1.3. Let G be a real semi-simple Lie group with Lie algebra
+g of even dimension, and let eg = g ⊕RE, with [E, eg] = {0}. Let eG be
+a simply connected Lie group with Lie algebra eg. Then, eG admits a left
+invariant ﬂat aﬃne connection if and only if G admits a left invariant
+projectively ﬂat aﬃne connection. In this case, g is sl(n+1, R), where
+n ≥1 is even.
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+3
+Let us recall a classiﬁcation of irreducible Riemannian symmetric
+spaces admitting invariant projectively ﬂat connections ([1], [13]).
+Theorem 1.4. Let M = G/K be an irreducible simply connected Rie-
+mannian symmetric space. Then, M admits a G-invariant projectively
+ﬂat aﬃne connection if and only if M = G/K is one of the following:
+(1) Sn = SO(n + 1)/SO(n)
+n ≥2,
+(2) SL(n + 1, R)/SO(n + 1)
+n ≥2,
+(3) SU∗(2n)/Sp(n)
+n ≥3,
+(4) SO0(n, 1)/SO(n)
+n ≥2,
+(5) SL(n + 1, C)/SU(n + 1)
+n ≥1
+(6) E6/F4 (of non-compact type EIV).
+Since Theorems 1.1 and 1.4 (and also Remark 1.6), we have
+Corollary 1.5. Let M = G/K be an irreducible simply connected
+Riemannian symmetric space of even dimension, eg = g ⊕RE with
+[E, eg] = {0}, and eG, a Lie group with Lie algebra eg and f
+M is simply
+connected. Then, M = G/K admits a G-invariant projectively ﬂat
+aﬃne connection if and only if f
+M = eG/K admits a eG-invariant ﬂat
+aﬃne connection. In this case, G/K is one of (1) ∼(6) in Theorem
+1.4 of even dimension.
+Remark 1.6. In Corollaries 1.3, and 1.5, Agaoka ([1]) showed that,
+if G (resp. M = G/K) admits a left invariant (resp. invariant) ﬂat
+connection, then eG (resp.
+f
+M = eG/K) admits a left invariant (resp.
+eG-invariant) ﬂat connection. In this, paper, we show the reverse of his
+results in Corollaries 1.3 and 1.5 in the case of even dimension.
+Acknowledgement: The author would like to express his gratitude
+to Professor T. Yamada who gave useful discussions during his stay at
+Tohoku University as his postdoctoral student from April, 2006, to Sep-
+tember, 2007, and discussions at January, 2009, at Shimane University,
+and Professor A. Kasue for the ﬁnancial support, and the referee who
+pointed out several errors in the manuscript and gave many suggestions
+to improve it into this form.
+4
+HAJIME URAKAWA
+2. Preliminaries.
+In this section, we prepare materials and several facts on invariant
+connection on homogeneous spaces (cf.
+[5]) and also invariant ﬂat
+connections and projectively ﬂat invariant connections on homogeneous
+spaces (cf. [10]).
+Let us consider a C∞aﬃne connection D on a C∞manifold M. In
+this paper, we assume that everything is C∞.
+Deﬁnition 2.1. A connection D is to be ﬂat if it has a vanishing
+curvature tensor RD and a vanishing torsion tensor T D, where
+RD(X, Y ) = DXDY −DY DX −D[X,Y ],
+and
+T D(X, Y ) = DXY −DY X −[X, Y ]
+for all vector ﬁelds X, Y on M.
+Let us recall also that the theory of invariant connections on homo-
+geneous spaces (cf. [5], Vol. II, p.188). In case of aﬃne connections,
+we have
+Theorem 2.2. Let M be a homogeneous space M = G/K.
+Then,
+there exists a one-to-one correspondence between the set of G-invariant
+aﬃne connections on M = G/K and the set of linear mappings Λ :
+g →gl(To(G/K)) (o = {K}, the origin of G/K) such that
+Λ(X) = λ(X)
+(X ∈k),
+(2.1)
+Λ(Ad(k)(X)) = Ad(λ(k))(Λ(X))
+(k ∈K, X ∈g),
+(2.2)
+where λ is the isotropy representation of K, i.e., for k ∈K, λ(k) =
+k∗: To(G/K) →To(G/K) denotes the diﬀerential of k at o = {K}.
+To each G-invariant connection D on M = G/K, there corresponds
+the linear mapping Λ deﬁned by
+Λ(X) = −(A e
+X)o
+(X ∈g).
+(2.3)
+Here, each X ∈g induces a tangent vector Xo ∈ToM, and also a
+vector ﬁeld f
+X on M = G/K, naturally. For all vector ﬁeld f
+X on M,
+A e
+X is the tensor ﬁeld of type (1,1) on M deﬁned by
+A e
+X = L e
+X −D e
+X,
+(2.4)
+where L e
+X is Lie derivative by f
+X.
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+5
+Assume that a homogeneous space M = G/K is reductive, i.e., the
+Lie algebra g is decomposed into g = k ⊕m, where k is the Lie algebra
+of K and m is an Ad(K)-invariant subspace of g. Then, we have ([5],
+Vol II, p. 191)
+Theorem 2.3. Assume that M = G/K is a reductive homogeneous
+space with decomposition g = k⊕m. Then, there is a one-to-one corre-
+spondence between the set of G-invariant aﬃne connections on M and
+the set of linear mappings Λm : m →gl(To(G/K)) such that
+Λm(Ad(k)(X)) = Ad(λ(k))(Λm(X))
+(X ∈m, k ∈K),
+(2.5)
+where λ(k) denotes the isotropy representation of K on G/K.
+The
+correspondence is given by
+Λ(X) =
+( λ(X)
+(X ∈k),
+Λm(X)
+(X ∈m).
+(2.6)
+To each G-invariant connection D, the correspondence (2.6) is given
+by
+Λm(X) = −(A e
+X)o
+(X ∈m).
+(2.7)
+The torsion tensor T D and the curvature tensor RD of a G-invariant
+connection D can be expressed in terms of Λ as follows ([5], Vol. II, p.
+189).
+Theorem 2.4. In the above theorems, the torsion tensor T D and the
+curvature tensor RD of a G-invariant connection D can be expressed
+as follows:
+T D(X, Y )o = Λ(X)(Yo) −Λ(Y )(Xo) −[X, Y ]o
+(X, Y ∈g),
+(2.8)
+RD(X, Y )o = [Λ(X), Λ(Y )] −Λ([X, Y ])
+(X, Y ∈g).
+(2.9)
+For G-invariant ﬂat connections on M = G/K, due to the above
+theorems, we have ([10])
+Theorem 2.5. Assume that a homogeneous space M = G/K admits a
+G-invariant ﬂat connection on M = G/K. Then, there exists a aﬃne
+representation (f, q, V ) of g on V such that
+( dim V = dim M,
+q : g →V is surjective, and Ker(q) = k.
+(2.10)
+6
+HAJIME URAKAWA
+Conversely, if G is simply connected, and the Lie algebra g admits
+an aﬃne representation (f, q, V ) satisfying (2.10), then M = G/K
+admits a G-invariant ﬂat aﬃne connection. Here, two linear mappings
+q : g →V , and f : g →gl(V ) are given by q(X) = Xo (X ∈g), and
+f(X) = Λ(X) (X ∈g), where V = ToM. Then, that (f, q, V ) is an
+aﬃne representation g on V means that
+( [f(X), f(Y )] = f([X, Y ])
+(X, Y ∈g),
+q([X, Y ]) = f(X)q(Y ) −f(Y )q(X)
+(X, Y ∈g).
+(2.11)
+Now, let us recall the notion of projectively ﬂat connections.
+Deﬁnition 2.6. D is to be projectively ﬂat if the Ricci tensor
+RicD(Y, Z) := Tr({TpM ∋X 7→RD(X, Y )Z ∈TpM})
+(Y, Z ∈TpM p ∈M), is symmetric, i.e., RicD(Y, Z) = RicD(Z, Y ),
+and for every p ∈M, there exists a neighborhood U of p such that D
+is equivalent to a ﬂat connection D on U, i.e., there exists a closed
+1-form ρ on U such that
+DXY = DXY + ρ(X)Y + ρ(Y )X,
+for all X, Y ∈X(U).
+A classical theorem says that
+Theorem 2.7. Assume that D is an aﬃne connection of which RicD
+is symmetric and T D = 0. Then, D is projectively ﬂat if and only if
+the Weyl curvature tensor vanishes, i.e.,
+RD(X, Y )Z =
+1
+n −1{RicD(Y, Z)X −RicD(X, Z)Y }
+and the Codazzi equation holds, i.e.,
+(DXRicD)(Y, Z) = (DY RicD)(X, Z)
+for all X, Y, Z ∈X(M).
+Let us consider a centro-aﬃne immersion of an n-dimensional man-
+ifold M into Rn+1, ϕ : M ֒→Rn+1, that is,
+Tϕ(p)Rn+1 = ϕ∗(TpM) ⊕R −−−→
+o ϕ(p),
+(p ∈M).
+Then, the induced connection D on M from the standard ﬂat connec-
+tion D0 on Rn+1 via ϕ, i.e.,
+(D0
+XY )p = ϕ∗(DXY )p + h(X, Y )(−−−−→
+o ϕ(p)),
+(X, Y ∈X(M), p ∈M),
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+7
+is projectively ﬂat. Furthermore, it holds ([11]) that
+Theorem 2.8. Let M = G/K be a simply connected homogeneous
+space. Then, the following two conditions are equivalent:
+(1)
+M = G/K admits a G-invariant projectively ﬂat connection.
+(2)
+M = G/K admits a G-equivariant centro-aﬃne immersion.
+Furthermore, Shima showed ([11], see also [10], p. 228) that
+Theorem 2.9. Let M = G/K be an arbitrary homogeneous space.
+(1) Assume that M = G/K admits a G-invariant projectively ﬂat
+connection. Let g be the Lie algebra of G, and k the Lie subalgebra cor-
+responding to K, respectively. Let eg be the central extension of g, i.e.,
+eg = g ⊕RE, where [E, eg] = {0}. Then, eg admits an aﬃne representa-
+tion ( ef, eq, eV ) on a vector space eV of dimension dim M + 1 satisfying
+the following two conditions:
+(i)
+eq : eg →eV is surjective and Ker(eq) is k,
+(ii)
+ef(E) is the identity map of eV and eq(E) ̸= 0.
+(2) Conversely, if eg admits an aﬃne representation ( ef, eq, eV ) on eV of
+dimension dim M + 1 satisfying (i) and (ii), then, M = G/K admits a
+G-invariant projectively ﬂat aﬃne connection if G is simply connected.
+3. Invariant projectively flat connections and flat
+connections.
+Let us begin the following example due to Shima ([10], Ch. 9, Exer-
+cise 9.1.1):
+Example 3.1.
+Let eG = GL(n, R),
+K :=
+( 
+Ir
+x
+O
+y
+!
+; x ∈M(r, n −r), y ∈M(n −r, n −r)
+)
+.
+Then, the quotient space f
+M = eG/K admits a eG-invariant ﬂat connec-
+tion. Here, Ir is the identity matrix of degree r, and O is the (n−r)×r
+zero matrix where r = 1, . . . , n −1. Then, eg = gl(n, R),
+k :=
+( 
+O
+X
+O
+Y
+!
+; X ∈M(r, n −r), Y ∈M(n −r, n −r)
+)
+,
+and T0 f
+M is isomorphic to V where
+V =
+( 
+X′
+O
+Y ′
+O
+!
+; X′ ∈M(r, r), Y ′ ∈M(n −r, r)
+)
+.
+8
+HAJIME URAKAWA
+Then, eg = k ⊕V , and for every X ∈eg, f(X) ∈gl(V ) and q(X) ∈V
+are deﬁned by
+f(X)v = Xv ∈V,
+q(X) = XV ∈V,
+(X ∈eg, v ∈V ),
+where Xv is the matrix multiplication of X and v, and XV ∈V is the V -
+component of X ∈eg corresponding to the decomposition of eg = k ⊕V .
+Then, (f, q, V ) is an aﬃne representation of eg on V which induces the
+eG-invariant ﬂat connection on f
+M. But, f
+M = eG/K is not a reductive
+homogeneous space since there is no ad(k)-invariant decomposition of
+eg (see also [5], Vol. II, p. 199, Example 2.1). The action of ad(eg) on
+V is irreducible if and only if r = 1.
+Example 3.2.
+GL(n, R), GL(n, C), the upper triangular nilpotent
+Lie group N1:
+N1 =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+∗
+1
+...
+O
+1
+
+
+
+
+
+; ∗is arbitrary
+
+
+
+
+
+
+
+
+
+
+
+,
+the (2n + 1)-dimensional Heisenberg nilpotent Lie group N2, and the
+solvable Lie group S:
+S =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+eθ1
+∗
+eθ2
+...
+O
+eθn
+
+
+
+
+
+; θ1, θ2, . . . , θn ∈R, ∗is arbitrary
+
+
+
+
+
+
+
+
+
+
+
+admit left invariant ﬂat connections.
+But, SU(2) admits no left invariant ﬂat connection.
+In this section, we do not assume that every homogeneous space is
+reductive. Our setting is as follows. Let eG ⊃G ⊃K be three Lie
+groups with Lie algebras eg ⊃g ⊃k, respectively. Let us consider two
+quotient spaces f
+M = eG/K, and M = G/K, respectively. Assume that
+the Lie algebra eg is a central extension of g given by eg = g⊕RE, where
+[E, eg] = {0}. Then, dim f
+M = dim M + 1.
+Deﬁnition 3.1. Let us denote by Fe
+G( f
+M) the set of all
+eG-invariant
+ﬂat aﬃne connections on f
+M, and PF G(M), the set of all G-invariant
+projectively ﬂat aﬃne connections on M. Let us deﬁne F(eg, k), the set
+of all aﬃne representations ( ef, eq, eV ) of eg on eV satisfying that
+(1) dim eV = dim f
+M,
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+9
+(2) eq : eg →eV is a surjection, and Ker(eq) = k,
+and also PF(eg, k), the set of all aﬃne representations ( ef, eq, eV ) of eg on
+eV satisfying that
+(1) dim eV = dim M + 1,
+(2) eq : eg →eV is a surjection, Ker(eq) = k,
+(3) ef(E) is a non-zero constant multiple of the identity
+transformation of eV , and eq(E) ̸= 0,
+respectively.
+Remark here that in the original deﬁnition of PF(eg, k) in [10] corre-
+sponding to the above deﬁnition (3) was that:
+(3′) ef(E) is the identity transformation of eV , and eq(E) ̸= 0.
+But, if we replace E into a constant multiple of E, then we have (3′)
+from (3′), so that our PF(eg, k) corresponds bijectively to PF G(M).
+If eG is simply connected, there exists a one-to-one correspondence
+between Fe
+G( f
+M) and F(eg, k), and also if G is simply connected, there ex-
+ists a one-to-one correspondence between PF G(M) and PF(eg, k) ([10]).
+By deﬁnition, PF(eg, k) ⊂F(eg, k), so that PFG(M) ⊂Fe
+G( f
+M).
+To analyze them further, let us deﬁne
+Deﬁnition 3.2.
+F0(eg, k) = {( ef, eq, eV ) ∈F(eg, k); ( ef, eq, eV ) is irreducible under eg},
+and also
+PF 0(eg, k) = {( ef, eq, eV ) ∈PF(eg, k); ( ef, eq, eV ) is irreducible under eg},
+respectively. Then, PF 0(eg, k) ⊂F0(eg, k) by deﬁnition.
+Then, we obtain
+Theorem 3.3. It holds that
+F0(eg, k) = PF 0(eg, k) ∪F II
+0 (eg, k),
+where the set F II
+0 (eg, k) is a subset of F0(eg, k), and coincides with the
+one of all real irreducible aﬃne representations ( ef, eq, eV ) of eg satisfying
+that
+(1) dim eV = dim G/K + 1,
+(2) eV admits an ef(eg)-invariant complex structure J, and
+(3) there exists a non-zero element v0 ∈eV satisfying that
+ef(k)v0 = {0}, and
+eV = ef(g)v0 ⊕R ef(E)v0.
+10
+HAJIME URAKAWA
+In particular, in the case that dim M = dim G/K is even, then,
+F0(eg, k) = PF 0(eg, k)
+and
+F II
+0 (eg, k) = ∅.
+Proof.
+Let ( ef, eq, eV ) ∈F0(eg, k). Then, the aﬃne representation ( ef, eq, eV )
+satisﬁes that
+(1)
+( ef, eq, eV ) is an irreducible representation of eg,
+(2)
+dim eV = dim f
+M = dim M + 1,
+(3)
+eq : eg →eV is a surjection, and Ker(eq) = k.
+By (1),
+ef(E) is a semi-simple linear transformation of eV because
+( ef, eq, eV ) is a completely reducible representation of g (see, for example,
+[12], p. 28, Theorem 2.9). Then, eV is decomposed into
+eV = V1 ⊕· · · ⊕Vs ⊕Vs+1 ⊕· · · ⊕Vr,
+where
+(i) each Vi is ef(E)-invariant and the only ef(E)-invariant subspaces
+of Vi are Vi itself or {0}, and
+(ii) for the complex extension ef(E)C of ef(E) to ViC, there exist
+linearly independent vectors {vi
+j}di
+j=1 in the complexiﬁcation ViC of Vi
+and some complex number λi
+j such that
+ef(E)Cvi
+j = λi
+jvi
+j
+(j = 1, . . . , di).
+(3.1)
+Notice here that dim ViC = 1, and di = 1 in this case due to (i).
+(iii) For each i = 1, . . . , s, λi
+j = ai is a real number, and Vi itself
+is the eigenspace of ef(E), and {vi
+j}di
+j=1 is a basis of ViC.
+(iv) For each i = s + 1, . . . , r, λi
+j = ai
+j + √−1bi
+j where ai
+j and bi
+j
+are real numbers with bi
+j ̸= 0, and vi
+j = ui
+j + √−1wi
+j (ui
+j, wi
+j ∈Vi; j =
+1, . . . , di) such that
+
+
+
+ef(E)ui
+j = ai
+jui
+j −bi
+jwi
+j
+ef(E)wi
+j = bi
+jui
+j + ai
+jwi
+j.
+(3.2)
+Then, by (i), it holds that dim ViC = 2, di = 1, and for j = 1,
+
+
+
+ef(E)Cvi
+1 = λi
+1 vi
+1,
+Vi
+C = C vi
+1 ⊕Cvi
+1,
+(3.3)
+where {vi
+1, vi
+1} is a basis of ViC.
+Then we have two cases: V1 ⊕· · · ⊕Vs is {0} or not.
+Case (a): V1 ⊕· · · ⊕Vs ̸= {0}.
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+11
+In this case, V1 ⊕· · · ⊕Vs is a non-zero
+ef(eg)-invariant subspace.
+Indeed, for each v ∈Vi and f
+X ∈eg, since [E, eg] = {0} and ef is a Lie
+algebra homomorphism, we have
+ef(E)( ef(f
+X)v) = ef(f
+X)( ef(E)v) = ai ef(f
+X)v,
+which implies ef(f
+X)v belongs to V1 ⊕· · · ⊕Vs. Thus, eV = V1 ⊕· · · ⊕Vs
+and ef(E) has a unique real eigenvalue, say, a ∈R, since ( ef, eV ) is an
+irreducible representation of eg.
+Furthermore, a ̸= 0. Because if we assume that a = 0, then, ef(E) =
+0. Then, for each f
+X ∈eg, we have
+ef(f
+X)(eq(E)) = ef(E)(eq(f
+X)) = 0,
+(3.4)
+which implies that eq(E) = 0. Because if we assume eq(E) ̸= 0, then,
+{0} ̸= R eq(E) (̸= eV ) is ef(eg)-invariant by means of (3.4). This contra-
+dicts the irreducibility of ( ef, eq, eV ). So we have eq(E) = 0. However,
+that eq(E) = 0 contradicts the assumption that Ker(eq) = k. So, we
+have a ̸= 0.
+Notice here that, if we put E′ = 1
+a E, then, we have also eg = g⊕RE′,
+and [E′, eg] = {0}. Furthermore, the aﬃne representation ( ef, eq, eV ) of
+eg still satisﬁes all the conditions (1), (2) and (3) for the set PF(eg, k)
+in Deﬁnition 3.1. Because, for (1), (2) they are the same, and for (3),
+we have that ef(E′) =
+1
+a
+ef(E) = I, and eq(E′) =
+1
+a eq(E) ̸= 0. Thus,
+( ef, eq, eV ) ∈PF 0(eg, k).
+Case (b): V1 ⊕· · · ⊕Vs = {0}.
+In this case, let λ be any non-zero λi
+j in (ii), and consider a non-zero
+complex subspace
+W :=
+X
+λk
+ℓ=λ
+(Cvk
+ℓ⊕Cvk
+ℓ)
+of
+Pr
+j=s+1 Vj
+C, where λk
+ℓrun over the set of all complex eigenvalues of
+ef(E)C in (3.1) which are equal to λ. Then,
+W ∩eV =
+X
+λk
+ℓ=λ
+(Ruk
+ℓ⊕Rwk
+ℓ),
+(3.5)
+where we denote vk
+ℓ= uk
+ℓ+ √−1wk
+ℓ, uk
+ℓ, wk
+ℓ∈eV .
+Then, for each f
+X ∈eg,
+ef(E)C ef(f
+X)Cvk
+ℓ= ef(f
+X)C ef(E)Cvk
+ℓ= λ ef(f
+X)Cvk
+ℓ,
+which implies that ef(f
+X)Cvk
+ℓbelongs to W. Furthermore, we have for
+each f
+X ∈eg,
+ef(f
+X)(W ∩eV ) ⊂W ∩eV .
+12
+HAJIME URAKAWA
+Because, since it holds that
+ef(f
+X)uk
+ℓ+
+√
+−1 ef(f
+X)wk
+ℓ= ef(f
+X)Cvk
+ℓ=
+X
+λp
+q=λ
+(αpqvp
+q + βpqvp
+q),
+for some complex numbers αpq, and βpq, we have
+ef(f
+X)uk
+ℓ=
+X
+λp
+q=λ
+n
+ℜe(αpq + βpq) up
+q + ℑm(−αpq + βpq) wp
+q
+o
+∈W ∩eV ,
+ef(f
+X)wk
+ℓ=
+X
+λp
+q=λ
+n
+ℑm(αpq + βpq) up
+q + ℜe(αpq −βpq) wp
+q
+o
+∈W ∩eV .
+Thus, together with (3.5), we have ef(f
+X)(W ∩eV ) ⊂W ∩eV .
+Since ( ef, eq, eV ) is an irreducible representation of eg, we have
+eV = W ∩eV =
+X
+λk
+ℓ=λ
+(Ruk
+ℓ+ Rwk
+ℓ),
+which means that Vs+1C ⊕· · · ⊕VrC is the sum of the two eigenspaces
+of ef(E)C with the eigenvalues λ and λ for some complex number λ =
+a + √−1b (a, b ∈R) with b ̸= 0.
+By means of (3.2), ef(E) can be written as
+ef(E) = a I + b J,
+(3.6)
+where I is the identity transformation of eV , and J is the transformation
+of eV of the form:
+J(uj) = −wj,
+J(wj) = uj
+(j = 1, . . . , d),
+(3.7)
+where {u1, . . . , ud, w1, . . . , wd} is a basis of eV (dim eV = 2d). Then, J
+is a complex structure of eV , i.e., J2 = −I.
+The complex structure J of eV is ef(eg)-invariant, i.e.,
+J ef(f
+X) = ef(f
+X) J
+(∀f
+X ∈eg).
+(3.8)
+Because, since E is central in eg, we have, for each f
+X ∈eg,
+ef(E) ef(f
+X) = ef(f
+X) ef(E).
+(3.9)
+The left hand side of (3.9) coincides with
+(a I + b J) ef(f
+X) = a ef(f
+X) + b J ef(f
+X).
+The right hand side of (3.9) is equal to
+ef(f
+X)(a I + b J) = a ef(f
+X) + b ef(f
+X) J.
+Since b ̸= 0, we have (3.8).
+Notice that eq(E) ̸= 0 since Ker(eq) = k. Since
+eq([f
+X, eY ]) = ef(f
+X)(eq( eY )) −ef( eY )(eq(f
+X))
+(f
+X, eY ∈eg),
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+13
+we have
+ef( eY )(eq(E)) = ef(E)(eq( eY )) = (a I + b J)(eq( eY )).
+(3.10)
+Then, we have, for all eY ∈eg,
+eq( eY ) =
+1
+a2 + b2(a I −b J)
+ ef( eY )(eq(E))
+
+= ef( eY )
+
+1
+a2 + b2(a I −b J)(eq(E))
+
+= ef( eY )v0
+(3.11)
+where
+0 ̸= v0 :=
+1
+a2 + b2(a I −b J)(eq(E)) ∈eV .
+(3.12)
+By (3.11),
+ef(k)v0 = {0} since Ker(eq) = k.
+Since eq :
+eg →
+eV is a
+surjection and eg = g ⊕RE, and (3.11), we also have
+eV = ef(g)v0 ⊕R ef(E)v0.
+(3.13)
+Thus, we have ( ef, eq, eV ) ∈F II
+0 (eg, k).
+□
+Remark 3.4. (1)
+The set PF 0(eg, k) corresponds ([13], Theorem 1.3)
+to the set of all real irreducible representations (f, eV ) of g of dimen-
+sion dim M + 1 which admits a nonzero vector v0 ∈
+eV such that
+f(k)v0 = {0} and
+eV
+= f(g)v0 ⊕Rv0.
+Each (f, eV ) induces a G-
+equivariant centro-aﬃne immersion ϕ : M = G/K →eV by ϕ(xK) =
+f(xK)v0 (xK ∈G/K) with transversal vector ﬁeld ξxK = −−−−−−→
+o ϕ(xK)
+(xK ∈G/K) ([9]). Our Theorem 3.3 suggests that the set F II
+0 (eg, k)
+would correspond to the set of all G-equivariant aﬃne immersions given
+by ϕ′(xK) = ef(xK)v0 (xK ∈G/K) with the transversal vector ﬁeld
+ξ′
+xK =
+−−−−−−−−−−−−−−→
+ϕ′(xK) ef(E)ϕ′(xK) (xK ∈G/K). Then, M = G/K would
+admit a G-invariant aﬃne connection via the immersion ϕ′ (cf. [9]).
+(2)
+There is an example belonging to F II
+0 (eg, k). Indeed, let us recall
+Example 11.1 in the book of Takeuchi [12], p. 119, and let g = su(2),
+k = {0}, eg = g ⊕RE, with E = I2. Let V = C2 =
+( 
+z
+w
+!
+; z, w ∈C
+)
+,
+and eV , the real 4-dimensional space V restricted to the ﬁeld R, and
+g acts on eV by the matrix multiplications ef(X)v = Xv ∈eV , (X ∈
+g, v ∈eV ), and ef(E)v = I2v = v (v ∈eV ). Then, eV admits the complex
+14
+HAJIME URAKAWA
+structure J deﬁned by
+Jv =
+ 
+0
+−1
+1
+0
+!
+v,
+v ∈eV ,
+which satisﬁes J(Xv) = XJv, (X ∈g, v ∈eV ). The linear mapping
+eq : eg →eV is given by eq
+  
+iθ
+α
+−α
+−iθ
+!
++ ξE
+!
+=
+ 
+iθ
+−α
+!
++ ξ
+ 
+1
+0
+!
+, and
+satisﬁes
+eq([f
+X, eY ]) = ef(f
+X)eq( eY ) −ef( eY )eq(f
+X),
+(f
+X, eY ∈eg).
+Then, ( ef, eq, eV ) ∈F II
+0 (eg, k).
+(3) The real representations in F II
+0 (eg, k) in the case k = {0} were
+treated, called the representations of eg of class II, in the book of Takeuchi
+([12], pp. 85–92).
+(4) The union in the right hand side for F0(eg, k) in Theorem 3.3
+seems to be a disjoint union.
+References
+[1] Y. Agaoka,
+Invariant ﬂat projective structures on homogeneous spaces,
+Hokkaido Math. J., 11 (1982), 125–172.
+[2] H. Doi, Non-existence of torsion free ﬂat connections on reductive homogeneous
+spaces, Hiroshima Math. J., 9 (1979), 321–322.
+[3] A. Elduque, Invariant projectively ﬂat aﬃne connections on Lie groups,
+Hokkaido Math. J., 30 (2001), 231–239.
+[4] S. Helgason, Diﬀerential Geometry, Lie Groups, and Symmetric Spaces, Aca-
+demic Press, New York, 1978.
+[5] S. Kobayashi and K. Nomizu, Foundation of Diﬀerential Geometry, Vol. I, II,
+(1963), (1969), John Wiley and Sons, New York.
+[6] H. Matsushima and K. Okamoto, Non-existence of torsion free ﬂat connections
+on a real semisimple Lie group, Hiroshima Math. J., 9 (1979), 59–60.
+[7] Y. Matsushima and S. Murakami, On vector bundle valued harmonic forms
+and automorphic forms on symmetric Riemannian manifolds, Ann. Math., 78
+(1963), 365–416.
+[8] K. Nomizu, Invariant aﬃne connections on homogeneous spaces, Amer. J.
+Math., 76(1954), 33–65.
+[9] K. Nomizu and T. Sasaki, Aﬃne Diﬀerential Geometry, Geometry of Aﬃne
+Immersions, (1994), Shokabo, Tokyo; (1994), Cambridge Univ. Press, Cam-
+bridge.
+[10] H. Shima, The Geometry of Hessian Structures, (2001), Shokabo, Tokyo;
+(2007), World Sci. Publ., Hackensack.
+PROJECTIVELY FLAT CONNECTIONS AND FLAT CONNECTIONS
+15
+[11]
+, Homogeneous spaces with invariant projectively ﬂat aﬃne connections,
+Trans. Amer. Math. Soc., 351(1999), 4713–4726.
+[12] M. Takeuchi, Real Irreducible Representations of Real Simple Lie Algebras (in
+Japanese), Lecture Notes Series, Vol. 3, 1996, Osaka University.
+[13] H. Urakawa, On invariant projectively ﬂat aﬃne connections, Hokkaido Math.
+J., 28 (1999), 333–356.
+Division of Mathematics, Graduate School of Information Sciences,
+Tohoku University, Aoba 6-3-09, Sendai, 980-8579, Japan
+E-mail address: urakawa@math.is.tohoku.ac.jp

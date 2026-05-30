@@ -224,6 +224,19 @@ def train(args):
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs)
     scaler = GradScaler() if use_amp else None
 
+    # Resume from checkpoint if specified
+    start_epoch = 0
+    best_val = float('inf')
+    if args.resume and os.path.exists(args.resume):
+        print(f"\n=== Resuming from {args.resume} ===")
+        ckpt = torch.load(args.resume, map_location=device)
+        model.load_state_dict(ckpt['model_state_dict'])
+        if 'optimizer_state_dict' in ckpt:
+            optimizer.load_state_dict(ckpt['optimizer_state_dict'])
+        start_epoch = ckpt.get('epoch', 0)
+        best_val = ckpt.get('best_val_loss', float('inf'))
+        print(f"  Resumed from epoch {start_epoch}, best_val_loss={best_val:.4f}")
+
     # Data
     print("\n=== Loading data ===")
     train_loader = create_dataloader(
@@ -241,11 +254,10 @@ def train(args):
     # Checkpoint dir
     ckpt_dir = os.path.join(_this_dir, 'checkpoints')
     os.makedirs(ckpt_dir, exist_ok=True)
-    best_val = float('inf')
 
     # Training loop
     print(f"\n=== Training: {num_epochs} epochs x {max_steps} steps ===")
-    for epoch in range(num_epochs):
+    for epoch in range(start_epoch, num_epochs):
         model.train()
         losses = {'total': 0, 'rgb': 0, 'state': 0, 'collision': 0, 'mask': 0}
         n_steps = 0
@@ -334,6 +346,8 @@ def main():
     parser.add_argument('--epochs', type=int, default=5)
     parser.add_argument('--batch-size', type=int, default=None)
     parser.add_argument('--max-steps', type=int, default=None)
+    parser.add_argument('--resume', type=str, default=None,
+                        help='Path to checkpoint .pt file to resume from')
     args = parser.parse_args()
     train(args)
 

@@ -1,0 +1,322 @@
+EXPERIMENTAL AND NUMERICAL STUDY FOR THE
+REPRESENTATION OF STANDING WAVES IN A KUNDT’S TUBE
+A PREPRINT
+Alex Estupiñán∗
+Facultad de Ciencias, Escuela de Física
+Universidad Industrial de Santander (UIS)
+Colombia, Santander, Bucaramanga
+alex.estupinan@saber.uis.edu.co
+Raul Ortiz
+Departamento De Matemáticas Y Ciencias Naturales
+Universidad Autónoma de Bucaramanga (UNAB)
+Colombia, Santander, Bucaramanga
+rortiz579@unab.edu.co
+Ángel Duarte, Jesús Sanchez, Jefferson Arciniegas
+Universidad Autónoma de Bucaramanga (UNAB)
+Colombia, Santander, Bucaramanga
+December 12, 2018
+ABSTRACT
+The study of the behavior of a standing wave inside a resonant cavity, such as a closed tube, has
+always been of great revelation in the manufacture of wind musical instruments, in addition to
+research carried out on the transfer and absorption of heat, energy and pressure for the acoustic
+characterization of materials by injecting sound waves at one end of the Kundt’s tube.
+In this work, we did the implementation of two experiments for measure the speed of sound, using a
+Kundt’s tube where also we obtained the bellies and nodes of the sound wave and we veriﬁcated with
+a computational code that was wrote for us in Python, in which we made simulation of the temporal
+evolution was achieved of the wave that vibrated inside the tube.
+Finally, we show the wave proﬁle for the ﬁrst four harmonics with computational simulations and we
+presented the experimental results by two different methods, these were compared with the obtained
+using the equations modeled by the undulatory theory of physics.
+Keywords Kundt’s tube · resonant cavity · harmonics · stationary waves. · fundamental frequency.
+1
+Introduction
+Undulatory phenomena have been of great importance in the study of physics, for teachers, researchers and engineers
+in many ﬁelds such as optics and acoustics, in which these phenomena have several relevant applications. Using the
+fundamental concepts, belonging to the branch of physics waves and particles, we present an experimental procedure,
+with which the deﬁnition of a standing wave can be explained, as the superposition of two waves propagating in opposite
+directions, besides being able to show the position of the nodes and bellies using small spheres of polystyrene inside the
+tube (See the Figure 2(b)).
+With the purpose of model the equations that govern the movement of the wave inside the tube, we realiced a
+computational simulation, with wich we show the change in the behavior of the wave for different frequency values,
+in order to better observe the vibratory movement of the standing wave present in the tube, here it was possible to
+identify and verify the corresponding independence of the number of nodes and antinodes as a function of the oscillation
+fundamental frequency and the harmonics of the acustic wave.
+The remaining part of this paper is organized as follows: Section 2, describes the theoretical background model
+corresponding to the calculates that we needing for modeling the phenomenom to study. In Section 3, shown the
+∗djlexes@gmail.com, personal email address
+arXiv:1812.04365v1  [physics.ed-ph]  11 Dec 2018
+A PREPRINT - DECEMBER 12, 2018
+experimental procedure for the data-taking. In Section 4, presents the results of the numerical analysis for the four ﬁrst
+harmonic, that is developed with a series of simulations, after of this we showed the experimental results of calculation
+sound velocity in the Kundt’s tube, using two different methods.
+2
+Theoretical Background
+The physical system to be studied is shown in the Figure 1.
+Figure 1: Physical scheme of system Kundt’s tube, where A indicates the position of the antinodes and N the position
+of the nodes.
+The theoretical basis for understanding the operation and being able to interpret the experimental results with the
+Kundt’s tube focuses on the study of standing waves and their discretization in normal modes [1], stationary waves are
+a particular case of the phenomenon of wave interference, since it deals with the superposition of waves with equal
+amplitudes and wavelengths, which travel in the same direction but in the opposite directions [2].
+In the standing waves in tubes, each gas molecule oscillates around its equilibrium position when the tube is excited at a
+certain frequency. In the case of the Kundt’s tube, the standing waves are inside a tube that usually has one end closed.
+When the tube is closed at both ends it is called a closed tube. In addition, it is of great importance to emphasize that
+the amplitude of the resulting stationary wave generated, despreciando the effects of absorption and damping, must be
+twice the amplitude of the waves that initially overlap to form it. The equation that models the oscillatory behavior of a
+standing wave is expressed in the Equation (1)
+y(x, t) = 2Asin(kx) · cos(ωt),
+(1)
+where k and ω, are the number of wave and the angular frequency respectively, their mathematical expression is given
+by:
+k = 2π
+λ
+and
+ω = 2πf
+(2)
+where λ is the wavelength, in order to ﬁnd the position of the nodes and bellies inside the tube, we must take into
+account Equation (1), where to ﬁnd the nodal points of zero oscillation, we do:
+sin
+2π
+λ x
+
+= 0.
+(3)
+The condition for the sinusoidal function to be canceled is fulﬁlled only for n integer values of π
+2π
+λ x = nπ,
+(4)
+from the above equation it follows that the standing wave presents a node for the position x:
+x = nλ
+2
+(5)
+2
+A PREPRINT - DECEMBER 12, 2018
+It is also very important to ﬁnd the position of the bellies of the wave, which will be the values of maximum amplitude
+of the stationary wave, algebraically this is expressed as:
+sin
+2π
+λ x
+
+= ±1,
+(6)
+The condition for the function sin(kx) to be maximum is given for odd integer values 2n + 1, in the following way:
+2π
+λ x = (2n + 1)π
+2
+.
+(7)
+From the above equation, we can deduce that the position for each belly is:
+x = (2n + 1)λ
+4
+(8)
+From equations (5) and (8) it can be seen that the separation distance between two nodes and two consecutive bellies is
+equal to half a wavelength λ/2.
+Continuing with the boundary conditions of a Kundt’s tube, for which at the two ends of the tube, a node is presented,
+y(0, t) = 0
+and
+y(L, t) = 0.
+(9)
+Where L is the length of the tube ,applying these boundary conditions to equation (1), we obtain the n normal modes of
+system oscillation, which are:
+2Asin(kL) · cos(ωt) = 0
+(10)
+continuing in the operation for the number wave k, we obtained
+sin(kL) = 0,
+kn = nπ
+L ,
+(11)
+where n are integers values, the above equation as a function of the wavelength, can be expressed as follows,
+λn = 2π
+kn
+= 2L
+n .
+(12)
+If we use the ratio of the speed of propagation of the wave, depending on the wavelength and frequency, we can obtain
+the frequency for the different harmonics n, in the following way:
+v = λn · f,
+fn = nv
+2L,
+(13)
+with this last expression, we can calculate the speed of sound inside the resonant chamber,
+vn = 2L
+n · f
+(14)
+3
+Experimental study
+To perform the experimental study of standing waves in the Kundt’s tubes, the assemblies shown in ﬁgures 2(a) and 2(b)
+were made, where in the experiment of Figure 2(a), it was necessary to use a digital oscilloscope to detect the position
+of the antinodal points and in Figure 2(b) this detection was used observing the organization of the small polystyrene
+spheres [3].
+For both experiments, we used an signal generator and mesuremented the separation distance between two consecutive
+bellies (antinodes) Lx, also we registered the wavelength value λ and period T, were recorded for six different
+frequencies values, these data are recorded in the tables 1 and 2.
+3
+A PREPRINT - DECEMBER 12, 2018
+(a)
+(b)
+Figure 2: (a) Experimental setup of a Kundt’s tube, using a PVC tube and an oscilloscope. (b) Experimental setup of a
+Kundt’s tube, using an acrylic tube and small spheres of polystyrene inside the chamber.
+Frequency [hz]
+Lx [m]
+λ [m]
+T [ms]
+600
+0.288
+0.576
+1.666
+800
+0.215
+0.430
+1.250
+1000
+0.173
+0.346
+1
+1200
+0.142
+0.284
+0.833
+1400
+0.127
+0.254
+0.714
+1600
+0.112
+0.224
+0.625
+Table 1: Experimental data, using the assembly of the Figure 2(a).
+Frequency [hz]
+Lx [m]
+λ [m]
+T [ms]
+600
+0.275
+0.550
+1.666
+800
+0.221
+0.442
+1.250
+1000
+0.178
+0.356
+1
+1200
+0.143
+0.286
+0.833
+1400
+0.129
+0.258
+0.714
+1600
+0.114
+0.248
+0.625
+Table 2: Experimental data, using the assembly of the Figure 2(b).
+4
+Results
+4.1
+Numerical Analysis
+One of the relevant features of this work consists in the elaboration of a computer code written in Python, and executed
+using the Jupyter Notebook tool [4], with which it was possible to observe the different harmonics for the case of a tube
+of 1 meter in length.
+We did the simulation of the standing wave in a kundt’s tube, for the ﬁrst ﬁve harmonics using the equations (13) and
+(14) as shown in Table 3, where we take the speed of sound equal to 243 m/s [5].
+Length of tube
+1 m
+Frequancy [hz]
+n
+λ [m]
+Period T [ms]
+171
+1
+2
+5.847
+343
+2
+1
+2.915
+514
+3
+0.66
+1.945
+686
+4
+0.50
+1.457
+857
+5
+0.40
+1.167
+Table 3: Number of harmonics present in the tube as a function of frequency and period.
+In the ﬁgure 3, we can observe the behavior of the standing wave inside the Kundt’s tube for the ﬁrst four harmonics.
+4
+A PREPRINT - DECEMBER 12, 2018
+(a)
+(b)
+(c)
+(d)
+Figure 3: Behavior of the standing wave for the n ﬁrst four harmonics, on the X axis is the length of the tube and on
+the Y axis the amplitude of the wave: (a) n = 1. (b) n = 2. (c) n = 3. (d) n = 4.
+4.2
+Experimental Analysis
+In order to measure the speed of sound in the air [6], using the two experimental assemblies shown in the section 3, we
+look for an analytical model that can be adjusted to the experimental data presented in tables 1 and 2.
+We used the values in Table 1 and performing a linear ﬁt of the data with the Equation (15), we obtained the relationship
+shown in Figure 4.
+f = 1/T,
+v = λ · f
+⇒
+λ = v · T
+(15)
+On the other hand, the linear ﬁt for the data shown in Table 2 is shown in Figure 5,
+using the linear model shown in Equation (15), Table 4 was constructed, in which we can compare the experimental error
+obtained for both types of experimental assemblies, where the values obtained by these two experimental adjustments
+were compared with the speed of sound at 20 degrees Celsius (v ≈343.2 m/s)
+5
+A PREPRINT - DECEMBER 12, 2018
+Figure 4: Linear ﬁtting for the experiment in which we use the PVC tube.
+Figure 5: Linear ﬁtting for the experiment in which we use the acrylic tube.
+Experimental setup
+Speed of sound [m/s]
+Absolute error [m/s]
+% Relative error
+No.1 (tube of PVC)
+339.099
+4.101
+1.194
+No.2 (tube of acrylic)
+305.749
+37.451
+10.912
+Table 4: Experimental errors obtained for the two experimental conﬁgurations implemented.
+From the results shown in Table 4, we could notice that a lower percentage of error is obtained for the case of the ﬁrst
+experimental assembly, in which we use the digital oscilloscope, unlike the second experimental setup, in which we
+observe the spatial distribution of the small spheres of polystyrene, for measured the distance between two consecutive
+bellies.
+5
+Conclusions
+In this article, we were able to show two experimental methods, in which we were able to measure the speed of sound,
+with an experimental percentage relative error below 11%, also we present the results obtained from the computational
+simulation; for the ﬁrst four harmonics and with this, we can understand better the wave phenomenon that occurs inside
+a Kundt tube.
+6
+A PREPRINT - DECEMBER 12, 2018
+Acknowledgments
+The authors would like to thank the Universidad Autónoma de Bucaramanga (UNAB), for lend us the installations and
+materials for realizing these two experiments presented in this paper.
+References
+[1] Benson, H. (2000). Física universitaria, Vol. 1. México: Cecsa.
+[2] Yunes, C. A., & Boles, M. A. (2012). Termodinámica. editorial MacGrawHill
+[3] Alba, J., Marant, V., Aguilera, J. L., & Ramis, J. (2006). Criterios de selección de materiales acústicos
+absorbentes con técnicas basadas en tubo de Kundt. TecniAcústica, Gandía.
+[4] Kluyver, T., Ragan-Kelley, B., Pérez, F., Granger, B. E., Bussonnier, M., Frederic, J., ... & Ivanov, P. (2016,
+May). Jupyter Notebooks-a publishing format for reproducible computational workﬂows. In ELPUB (pp.
+87-90).
+[5] da Costa Saab, S., Cássaro, F. A. M., & Brinatti, A. M. (2005). Laboratório caseiro: tubo de ensaio adaptado
+como tubo de kundt para medir a velocidade do som no ar. Caderno Brasileiro de Ensino de Física, 22(1),
+112-120.
+[6] Nursulistiyo, E. (2018, March). Design and development of multipurpose Kundt’s tube as physics learning
+media. In Journal of Physics: Conference Series (Vol. 983, No. 1, p. 012011). IOP Publishing.
+7

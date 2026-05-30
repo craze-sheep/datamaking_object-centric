@@ -1,0 +1,739 @@
+Prepared for submission to JINST
+Observation of Radon Mitigation in MicroBooNE by a
+Liquid Argon Filtration System
+MicroBooNE Collaboration
+P. AbratenkoℎℎJ. Anthony𝑑L. Arellano𝑠J. Asaadi𝑔𝑔A. Ashkenazi𝑒𝑒S. Balasubramanian𝑘
+B. Baller𝑘C. Barnes𝑢G. Barr𝑥J. Barrow𝑡,𝑒𝑒V. Basque𝑘L. Bathe-Peters𝑚
+O. Benevides Rodrigues𝑑𝑑S. Berkman𝑘A. Bhanderi𝑠A. Bhat𝑑𝑑M. Bhattacharya𝑘
+M. Bishai𝑏A. Blake𝑝T. Bolton𝑜J. Y. Book𝑚L. Camilleri𝑖D. Caratelli𝑐,𝑘I. Caro Terrazasℎ
+F. Cavanna𝑘G. Cerati𝑘Y. Chen𝑎,𝑎𝑎D. Cianci𝑖J. M. Conrad𝑡M. Convery𝑎𝑎
+L. Cooper-Troendle𝑘𝑘J. I. Crespo-Anadón𝑒M. Del Tutto𝑘S. R. Dennis𝑑P. Detje𝑑A. Devitt𝑝
+R. Diurba𝑣R. Dorrill𝑛K. Duﬀy𝑘,𝑥S. Dytman𝑦B. Eberly𝑐𝑐A. Ereditato𝑎J. J. Evans𝑠R. Fine𝑞
+G. A. Fiorentini Aguirre𝑏𝑏R. S. Fitzpatrick𝑢B. T. Fleming𝑘𝑘N. Foppiani𝑚D. Franco𝑘𝑘
+A. P. Furmanski𝑣D. Garcia-Gamez𝑙S. Gardiner𝑘G. Ge𝑖S. Gollapinni 𝑓𝑓,𝑞O. Goodwin𝑠
+E. Gramellini𝑘P. Green𝑠H. Greenlee𝑘W. Gu𝑏R. Guenette𝑚,𝑠P. Guzowski𝑠L. Hagaman𝑘𝑘
+O. Hen𝑡C. Hilgenberg𝑣G. A. Horton-Smith𝑜A. Hourlier𝑡R. Itay𝑎𝑎C. James𝑘X. Ji𝑏L. Jiang𝑖𝑖
+J. H. Jo𝑘𝑘C. Joe𝑘R. A. Johnson𝑔Y.-J. Jwa𝑖D. Kalra𝑖N. Kamp𝑡N. Kaneshige𝑐
+G. Karagiorgi𝑖W. Ketchum𝑘M. Kirby𝑘T. Kobilarcik𝑘I. Kreslo𝑎I. Lepetic𝑧J.-Y. Li 𝑗K. Li𝑘𝑘
+Y. Li𝑏K. Lin𝑞B. R. Littlejohn𝑛W. C. Louis𝑞X. Luo𝑐K. Manivannan𝑑𝑑C. Mariani𝑖𝑖
+D. Marsden𝑠J. Marshall 𝑗𝑗D. A. Martinez Caicedo𝑏𝑏K. MasonℎℎA. Mastbaum𝑧
+N. McConkey𝑠V. Meddage𝑜T. Mettler𝑎K. Miller 𝑓J. MillsℎℎK. Mistry𝑠A. Moganℎ
+T. Mohayai𝑘M. MooneyℎA. F. Moor𝑑C. D. Moore𝑘L. Mora Lepin𝑠J. Mousseau𝑢
+S. Mulleriababu𝑎D. Naples𝑦A. Navrer-Agasson𝑠N. Nayak𝑏M. Nebot-Guinot𝑗R. K. Neely𝑜
+D. A. Newmark𝑞J. Nowak𝑝M. Nunes𝑑𝑑O. Palamara𝑘V. Paolone𝑦A. Papadopoulou𝑡
+V. Papavassiliou𝑤H. B. Parkinson 𝑗S. F. Pate𝑤N. Patel𝑝A. Paudel𝑜Z. Pavlovic𝑘
+E. Piasetzky𝑒𝑒I. D. Ponce-Pinto𝑘𝑘S. Prince𝑚X. Qian𝑏J. L. Raaf𝑘V. Radeka𝑏A. Raﬁque𝑜
+M. Reggiani-Guzzo𝑠L. Ren𝑤L. C. J. Rice𝑦L. Rochester𝑎𝑎J. Rodriguez Rondon𝑏𝑏
+M. Rosenberg𝑦M. Ross-Lonergan𝑖C. Rudolf von Rohr𝑎G. Scanavini𝑘𝑘D. W. Schmitz 𝑓
+A. Schukraft𝑘W. Seligman𝑖M. H. Shaevitz𝑖R. Sharankova𝑘J. Shi𝑑J. Sinclair𝑎A. Smith𝑑
+E. L. Snider𝑘M. Soderberg𝑑𝑑S. Söldner-Rembold𝑠P. Spentzouris𝑘J. Spitz𝑢M. Stancari𝑘
+J. St. John𝑘T. Strauss𝑘K. Sutton𝑖S. Sword-Fehlberg𝑤A. M. Szelc𝑗W. Tang 𝑓𝑓K. Terao𝑎𝑎
+C. Thorpe𝑝D. Torbunov𝑏D. Totani𝑐M. Toups𝑘Y.-T. Tsai𝑎𝑎M. A. Uchida𝑑T. Usher𝑎𝑎
+B. Viren𝑏M. Weber𝑎H. Wei𝑏,𝑟A. J. White𝑘𝑘Z. Williams𝑔𝑔S. Wolbers𝑘T. Wongjiradℎℎ
+M. Wospakrik𝑘K. Wresilo𝑑N. Wright𝑡W. Wu𝑘E. Yandel𝑐T. Yang𝑘G. Yarbrough 𝑓𝑓
+L. E. Yates𝑘,𝑡H. W. Yu𝑏G. P. Zeller𝑘J. Zennamo𝑘C. Zhang𝑏M. Zuckerbrot𝑘
+𝑎Universität Bern, Bern CH-3012, Switzerland
+𝑏Brookhaven National Laboratory (BNL), Upton, NY, 11973, USA
+𝑐University of California, Santa Barbara, CA, 93106, USA
+arXiv:2203.10147v2  [physics.ins-det]  26 Oct 2022
+𝑑University of Cambridge, Cambridge CB3 0HE, United Kingdom
+𝑒Centro de Investigaciones Energéticas, Medioambientales y Tecnológicas (CIEMAT), Madrid E-28040,
+Spain
+𝑓University of Chicago, Chicago, IL, 60637, USA
+𝑔University of Cincinnati, Cincinnati, OH, 45221, USA
+ℎColorado State University, Fort Collins, CO, 80523, USA
+𝑖Columbia University, New York, NY, 10027, USA
+𝑗University of Edinburgh, Edinburgh EH9 3FD, United Kingdom
+𝑘Fermi National Accelerator Laboratory (FNAL), Batavia, IL 60510, USA
+𝑙Universidad de Granada, E-18071, Granada, Spain
+𝑚Harvard University, Cambridge, MA 02138, USA
+𝑛Illinois Institute of Technology (IIT), Chicago, IL 60616, USA
+𝑜Kansas State University (KSU), Manhattan, KS, 66506, USA
+𝑝Lancaster University, Lancaster LA1 4YW, United Kingdom
+𝑞Los Alamos National Laboratory (LANL), Los Alamos, NM, 87545, USA
+𝑟Louisiana State University, Baton Rouge, LA, 70803, USA
+𝑠The University of Manchester, Manchester M13 9PL, United Kingdom
+𝑡Massachusetts Institute of Technology (MIT), Cambridge, MA, 02139, USA
+𝑢University of Michigan, Ann Arbor, MI, 48109, USA
+𝑣University of Minnesota, Minneapolis, Mn, 55455, USA
+𝑤New Mexico State University (NMSU), Las Cruces, NM, 88003, USA
+𝑥University of Oxford, Oxford OX1 3RH, United Kingdom
+𝑦University of Pittsburgh, Pittsburgh, PA, 15260, USA
+𝑧Rutgers University, Piscataway, NJ, 08854, USA
+𝑎𝑎SLAC National Accelerator Laboratory, Menlo Park, CA, 94025, USA
+𝑏𝑏South Dakota School of Mines and Technology (SDSMT), Rapid City, SD, 57701, USA
+𝑐𝑐University of Southern Maine, Portland, ME, 04104, USA
+𝑑𝑑Syracuse University, Syracuse, NY, 13244, USA
+𝑒𝑒Tel Aviv University, Tel Aviv, Israel, 69978
+𝑓𝑓University of Tennessee, Knoxville, TN, 37996, USA
+𝑔𝑔University of Texas, Arlington, TX, 76019, USA
+ℎℎTufts University, Medford, MA, 02155, USA
+𝑖𝑖Center for Neutrino Physics, Virginia Tech, Blacksburg, VA, 24061, USA
+𝑗𝑗University of Warwick, Coventry CV4 7AL, United Kingdom
+𝑘𝑘Wright Laboratory, Department of Physics, Yale University, New Haven, CT, 06520, USA
+E-mail: microboone_info@fnal.gov
+Abstract: The MicroBooNE liquid argon time projection chamber (LArTPC) maintains a high
+level of liquid argon purity through the use of a ﬁltration system that removes electronegative
+contaminants in continuously-circulated liquid, recondensed boil oﬀ, and externally supplied argon
+gas.
+We use the MicroBooNE LArTPC to reconstruct MeV-scale radiological decays.
+Using
+this technique we measure the liquid argon ﬁltration system’s eﬃcacy at removing radon. This is
+studied by placing a 500 kBq 222Rn source upstream of the ﬁlters and searching for a time-dependent
+increase in the number of radiological decays in the LArTPC. In the context of two models for radon
+mitigation via a liquid argon ﬁltration system, a slowing mechanism and a trapping mechanism,
+MicroBooNE data supports a radon reduction factor of greater than 99.999% or 97%, respectively.
+Furthermore, a radiological survey of the ﬁlters found that the copper-based ﬁlter material was the
+primary medium that removed the 222Rn. This is the ﬁrst observation of radon mitigation in liquid
+argon with a large-scale copper-based ﬁlter and could oﬀer a radon mitigation solution for future
+large LArTPCs.
+Contents
+1
+Introduction
+1
+2
+Radon-222 Decay Topology
+2
+3
+Simulation and Selection
+4
+4
+Run Conﬁgurations and Findings
+6
+5
+Radiological Survey of Filters
+7
+6
+Radon Filtration
+9
+6.1
+Eﬃcacy via Filter Slowing
+9
+6.2
+Eﬃcacy via Filter Capture
+10
+7
+Implications
+11
+8
+Conclusions
+11
+1
+Introduction
+Detectors that employ noble liquids as an active medium have come to the forefront of particle
+physics at the MeV energy scale [1–9], providing low thresholds and precise measurements of the
+positions and energies of interacting particles. One challenge when deploying liquid noble detectors
+to explore physics at MeV and lower energies is the necessity to maintain an environment low in
+radioactivity, as decays can mimic the signals being studied. One major background is the decay
+of radon-222 and its decay products. In deep underground detectors, this contamination has been
+kept to a level on the order of 2 µBq/kg [10] to maintain backgrounds to an acceptable rate.
+MicroBooNE is an 85 metric ton liquid argon time projection chamber (LArTPC) that operated
+from 2015 to 2021 [11]. LArTPCs operate by collecting ionization electrons and scintillation light
+produced by charged particles traversing the liquid argon medium. The measurement presented
+in this paper leverages only this charge signal.
+These ionization electrons drift in an applied
+electric ﬁeld toward a charge-sensitive anode plane creating signals that are sampled and digitally
+recorded. In MicroBooNE, the applied drift ﬁeld is 273 V/cm [12, 13] and the maximum drift
+distance is 2.56 m. This corresponds to an average drift velocity of 1.098 mm/µs [13] for electrons
+and 4 mm/s for argon ions [12]. MicroBooNE’s charge readout is achieved using an array of
+readout wires arranged into three planes and connected to waveform digitization electronics. This
+analysis uses the collection plane which has an eﬀective noise charge (ENC) of 300 electrons [14].
+The ability for LArTPCs to detect this charge depends on the ability to drift ionization over long
+distances through liquid argon (LAr). While drifting, the ionization electrons can be absorbed by
+– 1 –
+electronegative contaminants in the LAr, which attenuates the measured signal at the anode. This
+attenuation appears as an exponential decrease in signal size as a function of the drift time, with the
+characteristic time constant commonly referred to as the “electron lifetime.” The electron lifetime
+measured in MicroBooNE during normal operations is in excess of 20 ms [15], such that any signal
+attenuation is negligible over the maximum drift time of 2.3 ms.
+Generally, liquid noble experiments searching for dark matter [16] and rare processes [17–19]
+employ ﬁltration in the gaseous phase, passing the recirculated gases through activated charcoal
+and other ﬁlter materials to remove contaminants that can attenuate signals or produce radioactive
+background signals. Instead, MicroBooNE ﬁlters in the liquid phase to remove electronegative
+contaminants employing a two-part ﬁltration system, known as a “ﬁlter skid” [11]. First, gaseous
+argon which has boiled oﬀthe LAr in the cryostat is re-condensed and mixed with recirculated LAr
+drawn from the cryostat in the liquid phase. This mixture is then pumped at a typical rate of 0.63 L/s
+through a 4Å molecular sieve [20] (mole sieve) ﬁlter that removes some contaminant molecules,
+such as water. The liquid is then passed through a second ﬁlter containing BASF CU-0226 S, which
+is a high–surface area pelletized alumina impregnated with copper [21]; this stage was designed to
+remove residual oxygen. Together these two ﬁlters are highly eﬃcient at removing electronegative
+impurities from the LAr, allowing MicroBooNE to maintain electron lifetimes signiﬁcantly above
+the 3 ms design speciﬁcation [15]. This system ﬁlters the entire volume of the MicroBooNE cryostat
+roughly every three days. The MicroBooNE cryogenic system includes two independent ﬁlter skids
+and it is possible to switch between them, allowing maintenance of either ﬁlter without interrupting
+detector operations [11]. The ﬁrst set of ﬁlters, referred to as the full-sized ﬁlter skid, is the primary
+system used during MicroBooNE operations and contains 77 L of each ﬁltering material. The
+second, referred to as the 30%-sized ﬁlter skid, contains 25.2 L of mole sieve material and 23.5 L
+of copper material.
+While these ﬁlters have demonstrated their ability to remove electronegative contaminants,
+their eﬀectiveness in mitigating radioactive contaminants has not previously been explored. To
+study this, a Pylon Electronics, Inc. Model 2000A [22] 500 kBq 226Ra source was placed inline
+with gas ﬂow from an external 500 US gallon argon dewar (used to regularly replenish the cryostat),
+in the conﬁguration shown in ﬁgure 1. The 226Ra (𝑡1/2 = 1600 y) contained within this source
+decays, producing 222Rn (𝑡1/2 = 3.82 d) gas which mixes with the gaseous argon. This radon-doped
+gaseous argon is then passed into the condenser and mixed with the recirculated LAr. This LAr
+then passes ﬁrst through a mole sieve ﬁlter followed by a copper ﬁlter before being reintroduced
+into the MicroBooNE cryostat.
+2
+Radon-222 Decay Topology
+To identify 222Rn decays in the MicroBooNE LArTPC we leverage a unique signature of its decay
+chain: the 214Bi-214Po decay series. This sequence of decays occurs in the 238U series, and proceeds
+as follows:
+214
+83 Bi
+𝛽−, 𝑄=3.3 MeV
+−−−−−−−−−−−−→
+19.9 min
+214
+84 Po
+𝛼, 7.7 MeV
+−−−−−−−−−→
+164.3 µs
+210
+82 Pb
+The 164 µs half life of 214Po equates to a roughly 10 cm separation between the drifting ionization
+electrons from the 214Bi and 214Po decay products. Meanwhile, the recoil distance of the heavy
+– 2 –
+Condenser
+Cryostat 
+Boil-off 
+Gas
+226Ra  
+Source
+Mole 
+Sieve 
+Filter
+Copper 
+Filter
+Mole 
+Sieve 
+Filter
+Copper 
+Filter
+Full-Sized Filter Skid
+30%-Sized  
+Filter Skid
+LAr Pump
+Filter  
+Bypass Switch
+MicroBooNE  
+Cryostat
+500  
+US Gallons
+Argon
+Dewar
+Figure 1. A ﬂow diagram of the MicroBooNE cryogenic system, which was modiﬁed for these studies to
+include a 226Ra source (designated in red above); green lines indicate gas argon ﬂow and blue lines indicate
+argon liquid ﬂow. The arrows designate the ﬂow of liquid and gaseous argon. The “ﬁlter bypass switch”
+enables recondensed argon to ﬂow past the liquid argon pump and ﬁlter skids and ﬂow directly back to the
+cryostat. The switch downstream of the liquid argon pump allows the liquid argon to ﬂow either through the
+full-sized ﬁlter skid or the 30%-sized ﬁlter skid before ﬂowing back into the cryostat. The orientation of the
+switches is shown as closer toward their default conﬁguration during standard operation.
+214Po ion and its drift during this same period of time are much smaller than the mm-scale position
+resolution in MicroBooNE. This means that the decay products of 214Bi and 214Po will be detected
+on the same channel (wire), but clearly separated in time, creating a powerful topological handle
+for event selection.
+In addition to the characteristic spatial separation of low-energy signals, we can also leverage
+the particles that result from the radioactive decays.
+The 214Bi decays via 𝛽-decay with the
+predominant transition having an end-point of 3.269 MeV (producing ≈100, 000 electrons) while
+the 214Po decays via a monoenergetic 7.686 MeV 𝛼emission (producing ≈4, 000 electrons) [23].
+The distance traveled by the 𝛽emerging from the 214Bi decay will span between 1 to 4 channels
+of the MicroBooNE readout, while the 𝛼will typically be constrained to a single channel. When
+𝛼particles deposit their energy in LAr they tend to produce relatively little ionization charge and
+more scintillation light [24]; for the 𝛼produced in the signal 214Po decays, the scintillation yield is
+∼95% larger than the ionization yield [25]. Thus, topologically we search for a small electron-like
+energy deposition in the 1–3 MeV range followed by a faint point-like energy deposition on the same
+channel and separated by several centimeters in the drift direction. In most cases the 214Bi decay
+also produces a coincident 𝛾, which can result in additional isolated low-energy activity in the
+vicinity of the decay; this activity is not used in our selection.
+– 3 –
+0
+10
+20
+30
+40
+50
+60
+Days since source is introduced
+0
+100
+200
+300
+400
+500
+600
+700
+800
+222Rn decays per 3.2 ms
+MicroBooNE Simulation
+222Rn activity
+226Ra activity
+Source removed
+Figure 2. The number of 222Rn decays expected per 3.2 ms detector readout as a function of time since the
+source was added under the assumption that the cryostat activity comes into secular equilibrium with that of
+the source. This also assumes that the ﬁlters remove none of the injected 222Rn. In this example, we then
+model removing the source at 30 days and study the reduction in the number of 222Rn decays.
+3
+Simulation and Selection
+To determine the amount of 222Rn introduced into the MicroBooNE cryostat we start with two
+assumptions: the activity in the cryostat will reach secular equilibrium with the source activity; and
+the ﬁltration system will remove no radon. Then we estimate the number of 222Rn decays expected
+in the active volume of the MicroBooNE TPC during a single 3.2 ms readout for our 500 kBq
+source, shown in ﬁgure 2. We ﬁnd that if the radon is allowed to ﬂow freely into the detector we
+would expect to see >100 222Rn decays per readout within the ﬁrst day the source is introduced,
+and after two weeks we would expect to see roughly 700 222Rn decays per readout. The functional
+form of the activity estimate is described in further detail in section 6.
+Using these estimates we can build a detailed simulation of these decays. We employ the
+Decay0 event generator [26, 27] to simulate the coincident decay of 214Bi and 214Po. The number
+of decays is randomized and selected based on the source’s activity.
+These decays are then
+overlaid with MicroBooNE cosmic data, taking into account the full detector response model and
+calibrations [12, 13, 15]. An example simulated 214Bi–214Po decay is shown in ﬁgure 3.
+Both data and simulated events then follow an identical reconstruction path.
+We start by
+processing the raw detector signals with a series of low-threshold signal processing algorithms,
+which removes the electronics noise and accounts for the ﬁeld responses near the wire planes [28, 29].
+This process results in Gaussian-shaped signals that are subsequently ﬁt with normal distributions
+creating what are known as “hits.” These hits represent an energy deposition on a channel at a point
+in space in the drift coordinate. For isolated charge deposits exhibiting relatively little wire activity,
+contiguous hits are collected into clusters [5, 30]. Since MicroBooNE sits near the Earth’s surface,
+– 4 –
+100 cm
+214Bi
+214Po
+β
+α
+(Q = 3.3 MeV)
+T1/2 = 164 μs
+(7.7 MeV)
+50 mm
+MicroBooNE Simulation
+Figure 3. A simulated 214Bi–214Po decay event, overlaid with MicroBooNE cosmic ray-only data, labeled to
+indicate the associated 𝛽and 𝛼activity. The apparent separation between the 𝛽-decay and 𝛼-decay products
+comes from the ionization charge of the 𝛽drifting towards the anode-plane over the 164 µs 214Po half-life.
+No other activity in the event display meets the signal topology requirements. The scale bars shown apply
+both horizontally and vertically.
+it is constantly inundated by cosmic ray activity [31]. To remove low-energy activity associated
+with these cosmic rays, we exclude activity occurring within a cylindrical region of radius 15 cm
+centered around the trajectory of track-like objects [5, 30].
+The remaining clusters, around 270/event on average (or 0.992 events per kg per second in the
+TPC active volume), are then evaluated to determine if they ﬁt our criteria as 214Bi–214Po coincident
+decay candidates, which are based on the topological features described above. Speciﬁcally, the
+selection identiﬁes two separate small energy deposits (with fewer than ﬁve hits) which either start
+or end on the same readout channel. We require that these two energy deposits be within 6.25 µs to
+312.5 µs of each other, and the second cluster must have less ionization charge than the ﬁrst. When
+applied to simulated events, the eﬃciency of the event selection – as deﬁned by correctly tagging
+the 𝛽-decay – is found to be 46%. To assess an uncertainty on this eﬃciency, we take as due to
+the selection eﬃciency the full diﬀerence between the observed and predicted rates of candidate
+events early in the ﬁlter-bypass conﬁguration (discussed in section 4). This data-driven technique
+accounts for uncertainties in our modeling of particle decays, detector response, source eﬃciency,
+and reconstruction uncertainties. This procedure yields a ﬁnal selection eﬃciency estimate of
+(46+31
+−29)%. According to the simulation, the primary source of ineﬃciency in the selection is the
+non-identiﬁcation of the 214Po 𝛼-signals originating far from the wire planes due to longitudinal
+diﬀusion [32] of ionization electrons reducing the signal below threshold.
+– 5 –
+0
+25
+50
+75
+100
+125
+150
+175
+200
+Time since start (h)
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+0.30
+Fractional change in liquid level (%)
+Full-sized filter 
+Filter-bypass 
+30%-sized filter
+Figure 4. Fractional increase in the cryostat LAr levels during each run conﬁguration.
+4
+Run Conﬁgurations and Findings
+In this study the MicroBooNE cryogenic system was operated in three conﬁgurations:
+1. Filter-bypass: the recondensed gas was not passed through the ﬁlters but the recirculated LAr
+was.
+2. Full-sized ﬁlter: the recondensed gas and recirculated LAr were passed through the 77 L
+(53.1 kg) mole sieve ﬁlter followed by the 77 L (65.5 kg) copper ﬁlter before entering the
+cryostat.
+3. 30%-sized ﬁlter: the recondensed gas and recirculated LAr were passed through the 25.2 L
+(17.4 kg) mole sieve followed by the 23.5 L (20 kg) of copper before entering the cryostat.
+In each of these modes, we constantly ﬂowed gaseous argon from an external 500 US gallon dewar
+over our 226Ra source and into the cryostat. The cryostat liquid level was continuously monitored,
+and the relative change during each period is shown in ﬁgure 4. The increase in the LAr level does
+not appreciably change the mass of LAr in the cryostat or impact detector operation, except during
+the ﬁlter bypass when the unﬁltered LAr carried electronegative contaminants into the cryostat.
+This ﬁgure highlights that the radon-laced carrier gas was able to make it into the cryostat.
+A cross-check of the radon doping system was performed by running in ﬁlter-bypass mode.
+Here, the radon-doped condensed LAr was directed around the ﬁlter system and injected directly
+into the cryostat’s liquid phase. Running in this mode allowed us to verify that the radon doping
+system was capable of bringing radon-doped LAr into the detector volume, and provided a test of
+the event selection and identiﬁcation of 214Bi–214Po candidates. However, bypassing the ﬁltration
+system also stops the removal of electronegative contaminants, degrading the electron lifetime. The
+– 6 –
+0
+20
+40
+60
+80
+100
+120
+ Time Since Start [hours]
+2
+4
+6
+8
+10
+12
+14
+Po Candidates Per 3.2 ms
+214
+−
+Bi
+214
+Number of 
+0
+20
+40
+60
+80
+100
+120
+500
+1000
+1500
+2000
+2500
+3000
+3500
+4000
+4500
+Activity in TPC Active Volume [Bq]
+Filter-bypass
+Full-sized filter
+30%-sized filter
+MicroBooNE Data
+Figure 5. The average number of 214Bi–214Po coincident decays identiﬁed per readout (3.2 ms) versus time
+since that running condition was entered. This activity rate can also be expressed in terms of Bq in the TPC
+active volume, shown on the right 𝑦-axis. The leveling oﬀof the candidates observed during the ﬁlter-bypass
+run is a result of reduced selection eﬃciency brought on by increasing electronegative contamination.
+resulting spatial non-uniformities across drift distance complicate the analysis, and in particular,
+make it diﬃcult to directly establish the source activity since the true position of any given decay
+in the drift direction is unknown. The ﬁlter-bypass data was taken after the full-sized ﬁlter data and
+before the 30%-sized ﬁlter data. The argon electron lifetime was allowed to recover to within 2%
+of the nominal value before data-taking with the 30%-sized ﬁlter was started. Figure 5 shows the
+number of 214Bi–214Po candidates that were selected as a function of time for all three conﬁgurations
+studied. These distributions will be composed of a ﬂat distribution, that corresponds to the steady-
+state backgrounds (such as cosmic backgrounds, noise features, or radiological decays) for this
+analysis, and a rising component from the injected radon source, predicted by the distribution in
+ﬁgure 2. The analysis demonstrates that when employing either of the MicroBooNE ﬁlter skids, no
+appreciable activity from the 226Ra chain, up to and including 214Bi–214Po, made its way into the
+detector. The leveling oﬀof the 214Bi–214Po candidates observed at 40 h for the ﬁlter-bypass data
+observed in ﬁgure 5 is not a result of reaching secular equilibrium, as shown in ﬁgure 2, but instead
+results from the degradation of argon purity due to bypassing the ﬁlters.
+5
+Radiological Survey of Filters
+When the radon-doped LArTPC ﬂows through the full-sized ﬁlter skid, we observed no appreciable
+increase in the rate of radon decays in the TPC. To determine where the radon was residing, we
+performed a radiological survey using a µrem-sensitive survey meter. These data were collected
+during the full-sized skid data-taking period. The activity measured at the 226Ra source housing was
+15 µrem/h, relative to background readings of 1–3 µrem/h. In a complete survey of the cryogenic
+– 7 –
+3 μrem/hr
+3 μrem/hr
+12 μrem/hr
+12 μrem/hr
+12 μrem/hr
+8 μrem/hr
+3 μrem/hr
+8 μrem/hr
+3 μrem/hr
+3 μrem/hr
+3 μrem/hr
+1 μrem/hr
+166.5 cm
+Figure 6. An engineering drawing of the copper ﬁlter used in MicroBooNE, with the active copper volume
+shaded. The radon activity readings were taken with a µrem radiation detector taken at measured intervals
+down the ﬁlter. The readings are marked where they were taken and show stratiﬁcation in the copper. The
+liquid argon is pumped from the top of the ﬁlter to the bottom.
+system, background levels of radiation were observed in all components except the copper-based
+ﬁlter. Here, the activity measured was consistent with the source strength and showed a clear
+stratiﬁcation within the 77 L copper ﬁlter, as shown in ﬁgure 6. The mole sieve ﬁlter, located
+immediately upstream showed activity readings at background levels of radiation. After the LAr
+ﬂow through these ﬁlters was stopped, no activity was observed in the mole sieve ﬁlter, while the
+same stratiﬁcation shown in ﬁgure 6 was observed in the copper ﬁlter for several days. These
+ﬁndings suggest that the 222Rn was able to pass through the mole sieve while the copper ﬁlter
+eﬀectively removed the radon from the LAr ﬂow.
+After the radiological survey, we switched to using the 30%-sized ﬁlter skid since the distance
+at which radiation was measured in the 77 L copper ﬁlter exceeded the length of the 23.5 L of
+copper in the second ﬁlter system. Before switching to using this smaller ﬁlter skid we measured
+that both the copper and mole sieve ﬁlters were reading at background levels. When we switched to
+using the 30%-sized ﬁlter skid we saw no substantial increase in the amount of radon decays in the
+TPC, as shown in ﬁgure 5. Further, upon completing a subsequent radiological survey, we found
+– 8 –
+that the 25.2 L mole sieve continued to read at background levels and the 23.5 L copper ﬁlter read
+at activity levels similar to the 77 L copper ﬁlter.
+6
+Radon Filtration
+It is unclear from our data the speciﬁc mechanism by which the copper ﬁlter is blocking the 222Rn.
+The most likely mechanism would be that the 222Rn is being “slowed” and travels through the
+copper ﬁlter material with a reduced velocity relative to the argon. As the 222Rn travels through the
+ﬁlter it decays, and would eventually punch through the ﬁlter material with an activity suppressed
+by its transit time.
+Alternatively, the 222Rn could be being “captured” by the copper ﬁlter material via an undeter-
+mined mechanism, e.g. freeze out. If this were happening we would expect the 222Rn to be either
+captured in the ﬁlter material or to ﬂow through immediately. This would mean we would see an
+immediate turn on of radon entering the detector but with a source strength suppressed relative to
+our expectation from our 500 kBq source.
+While the slowing mechanism seems the most likely one to the authors, a few observations
+qualitatively do not appear to support that hypothesis. Any process that slows the ﬂow of radon
+relative to argon would likely be driven by the surface area of the material and the mole sieve ﬁlter
+material has greater than a factor of 4.5 more surface area per gram of ﬁlter material, but we did
+not observe any radiation from 222Rn emanating from the mole sieve. Second, over the course
+of 8 months, the stratiﬁcation observed in ﬁgure 6 remained unchanged. Finally, the 30%-sized
+ﬁlter is signiﬁcantly thinner than the stratiﬁcation observed in the full-sized ﬁlter, but no punch
+was observed in that ﬁlter. This modest yet potentially conﬂicting evidence causes us to maintain
+consideration of both a slowing and a trapping mechanism in the following analysis.
+6.1
+Eﬃcacy via Filter Slowing
+To assess the eﬃcacy of the ﬁlter at slowing the 222Rn through the ﬁlter material one needs to
+take data for a long period of time. For this study, we left the 222Rn source ﬂowing through the
+30%-sized ﬁlter skid for 500 hours. During this time there was a brief DAQ downtime where data
+was not recorded but the cryogenic and doping systems remained operable. Figure 7 shows the
+number of 214Bi–214Po candidates observed during this period. Diﬀerently from the capture model,
+we are searching for a delayed shift in the baseline at any point after the beginning of doping. For
+this reason, we need to verify the stability of our background rates over this period of data taking.
+To do this we went back to data taken in 2018, without any radon source and in a similar detector
+state and compared the background rates. We found that the backgrounds from 2018 and now are
+consistent to the level of 2% and use this as our systematic uncertainty on our background levels.
+We observed no signiﬁcant shift in baseline over these 500 hours of data taking. At 500 hours
+the remaining radon that could be traveling through the ﬁlter will have decayed to 2.3% of its
+original strength. This would be the equivalent of 11 kBq and we would observe a baseline shift up
+to (9.4 ± 2.9) events per 3.2 ms. Observing no shift in the baseline of this level we place a lower
+limit on the eﬃciency of our copper ﬁlter for “slowing” the radon of 97.7%. Data taken over a
+longer period of time could help further constrain this value.
+– 9 –
+0
+50
+100
+150
+200
+250
+300
+350
+400
+450
+500
+Time Since Start [hours]
+1
+2
+3
+4
+5
+6
+7
+8
+9
+Po Candidates Per 3.2 ms
+214
+−
+Bi
+214
+Number of 
+DAQ Downtime
+0
+50
+100
+150
+200
+250
+300
+350
+400
+450
+500
+500
+1000
+1500
+2000
+2500
+3000
+Activity in TPC Active Volume [Bq]
+MicroBooNE Data
+Figure 7. The average number of 214Bi–214Po coincident decays identiﬁed per readout (3.2 ms) versus time
+since radon was doped into the 30%-sized ﬁlter. This activity rate can also be expressed in terms of Bq in
+the TPC active volume, shown on the right 𝑦-axis. The period marked with gray the DAQ was disabled but
+radon doping continued throughout this period. The blue band designates the ﬁtted background level with
+its width including a 2% systematic uncertainty on the background rate.
+6.2
+Eﬃcacy via Filter Capture
+To determine the fraction of radon that is ﬁltered by the MicroBooNE ﬁltration system via capturing,
+a model of the expected activity as a function of time since the source was added, shown in ﬁgure 2,
+is given by:
+𝑑𝑁
+𝑑𝑡= 𝐵+ 𝑅eﬀ
+TPC ·
+𝜆Rn222
+𝜆Rn222 −𝜆Ra226
+(𝑒−𝜆Ra226𝑡−𝑒−𝜆Rn222𝑡) ≈𝐵+ 𝑅eﬀ
+TPC · (1 −𝑒−𝜆Rn222𝑡),
+(6.1)
+where 𝜆Rn222 and 𝜆Ra226 are the decay constants of 222Rn and 226Ra, respectively, 𝑡is the time
+since the source was added, 𝐵is the ﬂat background term, and 𝑅eﬀ
+TPC is the equilibrium activity in
+the TPC. Due to the size of 𝜆Ra226 = 1.3 × 10−11 s−1 relative to 𝜆Rn222 = 1.2 × 10−6 s−1, we can
+safely ignore the former. Due to the shape of the MicroBooNE TPC relative to the cryostat, only
+85 metric tons of LAr are within the TPC volume while the cryostat stores 175.2 metric tons of LAr,
+so the eﬀective activity in the cryostat is 𝑅eﬀ= 2.06 × 𝑅eﬀ
+TPC/𝜖, where 𝜖is the selection eﬃciency
+(discussed in section 3). The impact of the argon added to the cryostat as part of the doping has a
+negligible impact on the mass of LAr in the cryostat.
+Using the functional form of equation 6.1 we ﬁt the average number of measured 214Bi–
+214Po coincident decays as a function of time (𝑑𝑁/𝑑𝑡of equation 6.1) across the full range of time
+shown in ﬁgure 5 while ﬂoating the terms 𝐵and 𝑅eﬀ
+TPC. This procedure yields the eﬀective source
+– 10 –
+strength that we measure in the LArTPC active volume, which is then corrected by the selection
+eﬃciency and scaled from the LArTPC to the full cryostat, as discussed above. We marginalize over
+the background rate, which is treated as a nuisance parameter, and set a one-sided upper limit on
+𝑅eﬀ
+TPC. We then apply our eﬃciency correction, accounting for its uncertainty, to compute an upper
+limit on 𝑅eﬀ. The 2% systematic ﬂuctuations in the background rate over time, seen in ﬁgure 7, tend
+to pull the ﬁt to the full time series to very low signal rates. Thus for the 30% sized ﬁlter, we choose
+to conservatively ﬁt only the ﬁrst 120 hours, hence approximately half of the total source strength.
+Fitting the data taken during the full-sized ﬁlter and the 30%-sized ﬁlter data results in limits of
+𝑅eﬀ< 1.42 Bq and < 0.61 Bq, respectively. The resulting values of 𝑅eﬀcan then be compared to
+the 500 kBq source strength to estimate a lower bound on the fraction of radon that is removed by
+the ﬁltration system, via 1 −𝑅eﬀ/500 kBq. We ﬁnd that the MicroBooNE ﬁltration system, using
+the 77 L or 23.5 L copper ﬁlters, removes > 99.9997% and > 99.9999% of the radon introduced to
+the system, respectively.
+7
+Implications
+These results have implications on the radon backgrounds and mitigation strategies for large scale
+LArTPCs. From the above analyses we ﬁnd that our copper ﬁlter material successfully captures
+large fractions of the radon that is doped into the recirculated LAr. This would mean that placing
+a copper ﬁlter last in a ﬁltering scheme could reduce any radon that enters the system upstream of
+this ﬁlter, similar to other radon traps [33, 34]. An open question is whether or not the copper itself
+emanates any appreciable amount of radon, the analyses presented in this paper were insensitive
+to this. As a radon trap the copper ﬁlter could remove at least half the radon-based backgrounds,
+depending on where they originate from, if the ﬁltration system can ﬁlter a full cryostat volume on
+a time-scale of 5.5 days. More R&D into the radon mitigation mechanism, radon emanation, and
+ﬁltration eﬃcacy of copper ﬁlter material should be pursued to fully demonstrate the capabilities of
+copper as a radon mitigation system compatible with large liquid argon systems.
+8
+Conclusions
+We have tested the capability of the MicroBooNE ﬁltration system to mitigate 222Rn contamination,
+using a TPC-based topological reconstruction of 214Bi–214Po decay coincidences. Using recon-
+structed low-energy signatures in a single-phase LArTPC neutrino detector, we are able to identify
+the activity contributed by these radioactive decays. A 500 kBq 222Rn source was used to test the
+eﬃcacy of the MicroBooNE ﬁlter system to mitigate radon under two ﬁltration hypotheses. If the
+radon were being slowed by the ﬁlter we found a lower limit of a 97.7% reduction in the radon
+from the 23.5 L (20 kg) copper ﬁlter, with no observed radon appearing in the detector after 500 h.
+Alternatively, if the ﬁlter is capturing the radon we measured that > 99.9997% and > 99.9999%
+of the radon was removed by 77 L (65.5 kg) and 23.5 L (20 kg) copper ﬁlters, respectively. A
+follow-up radiological survey revealed the presence of 222Rn in the copper ﬁlter and the preceding
+mole sieve read at background radiation levels. This is the ﬁrst observation of radon mitigation
+in liquid argon with a large-scale copper-based ﬁlter. These ﬁndings oﬀer a potential solution for
+removing radon for future large LArTPCs.
+– 11 –
+Acknowledgements
+We gratefully acknowledge the discussions, feedback, and encouragement of Hugh Lippincott and
+Stephen Pordes throughout the course of the planning, execution, and analysis of our data.
+This document was prepared by the MicroBooNE collaboration using the resources of the Fermi
+National Accelerator Laboratory (Fermilab), a U.S. Department of Energy, Oﬃce of Science, HEP
+User Facility. Fermilab is managed by Fermi Research Alliance, LLC (FRA), acting under Contract
+No. DE-AC02-07CH11359. MicroBooNE is supported by the following: the U.S. Department of
+Energy, Oﬃce of Science, Oﬃces of High Energy Physics and Nuclear Physics; the U.S. National
+Science Foundation; the Swiss National Science Foundation; the Science and Technology Facilities
+Council (STFC), part of the United Kingdom Research and Innovation; the Royal Society (United
+Kingdom); and The European Union’s Horizon 2020 Marie Skłodowska-Curie Actions. Additional
+support for the laser calibration system and cosmic ray tagger was provided by the Albert Einstein
+Center for Fundamental Physics, Bern, Switzerland. We also acknowledge the contributions of
+technical and scientiﬁc staﬀto the design, construction, and operation of the MicroBooNE detector
+as well as the contributions of past collaborators to the development of MicroBooNE analyses,
+without whom this work would not have been possible.
+References
+[1] EXO-200 collaboration, Search for Neutrinoless Double-𝛽Decay with the Complete EXO-200
+Dataset, Phys. Rev. Lett. 123 (2019) 161802 [1906.02723].
+[2] DarkSide collaboration, First Results from the DarkSide-50 Dark Matter Experiment at Laboratori
+Nazionali del Gran Sasso, Phys. Lett. B 743 (2015) 456 [1410.0653].
+[3] GERDA collaboration, Final Results of GERDA on the Search for Neutrinoless Double-𝛽Decay,
+Phys. Rev. Lett. 125 (2020) 252502.
+[4] LEGEND collaboration, The large enriched germanium experiment for neutrinoless double beta
+decay, AIP Conference Proceedings 1894 (2017) 020027
+[https://aip.scitation.org/doi/pdf/10.1063/1.5007652].
+[5] ArgoNeuT collaboration, Demonstration of MeV-Scale Physics in Liquid Argon Time Projection
+Chambers Using ArgoNeuT, Phys. Rev. D99 (2019) 012002 [1810.06502].
+[6] W. Castiglioni, W. Foreman, I. Lepetic, B. R. Littlejohn, M. Malaker and A. Mastbaum, Beneﬁts of
+MeV-scale reconstruction capabilities in large liquid argon time projection chambers, Phys. Rev. D
+102 (2020) 092010 [2006.14675].
+[7] DEAP collaboration, First Direct Detection Constraints on Planck-Scale Mass Dark Matter with
+Multiple-Scatter Signatures Using the DEAP-3600 Detector, Phys. Rev. Lett. 128 (2022) 011801
+[2108.09405].
+[8] XENON collaboration, Search for inelastic scattering of WIMP dark matter in XENON1T, Phys. Rev.
+D 103 (2021) 063028 [2011.10431].
+[9] PandaX-II collaboration, Constraining self-interacting dark matter with the full dataset of PandaX-II,
+Sci. China Phys. Mech. Astron. 64 (2021) 111062 [2104.14724].
+[10] DarkSide collaboration, DarkSide-50 532-day Dark Matter Search with Low-Radioactivity Argon,
+Phys. Rev. D 98 (2018) 102006 [1802.07198].
+– 12 –
+[11] MicroBooNE collaboration, Design and Construction of the MicroBooNE Detector, JINST 12
+(2017) P02017 [1612.05824].
+[12] MicroBooNE collaboration, Measurement of space charge eﬀects in the MicroBooNE LArTPC using
+cosmic muons, JINST 15 (2020) P12037 [2008.09765].
+[13] MicroBooNE collaboration, A method to determine the electric ﬁeld of liquid argon time projection
+chambers using a UV laser system and its application in MicroBooNE, JINST 15 (2020) P07010
+[1910.01430].
+[14] MicroBooNE collaboration, Noise Characterization and Filtering in the MicroBooNE Liquid Argon
+TPC, JINST 12 (2017) P08003 [1705.07341].
+[15] MicroBooNE collaboration, Calibration of the charge and energy loss per unit length of the
+MicroBooNE liquid argon time projection chamber using muons and protons, JINST 15 (2020)
+P03022 [1907.11736].
+[16] DarkSide-20k collaboration, DarkSide-20k: A 20 tonne two-phase LAr TPC for direct dark matter
+detection at LNGS, Eur. Phys. J. Plus 133 (2018) 131 [1707.08145].
+[17] LUX collaboration, The Large Underground Xenon (LUX) Experiment, Nucl. Instrum. Meth. A 704
+(2013) 111 [1211.3788].
+[18] XENON collaboration, The XENON1T Dark Matter Experiment, Eur. Phys. J. C 77 (2017) 881
+[1708.07051].
+[19] XENON collaboration, Material radiopurity control in the XENONnT experiment, 2112.05629.
+[20] Sigma-Aldrich, P.O. Box 14508, St. Louis, MO 63178 USA.
+https://www.sigmaaldrich.com/US/en/product/sigald/208604.
+[21] BASF Corp., 100 Park Avenue, Florham Park, NJ 07932 USA.
+https://catalysts.basf.com/products/cu-0226-s-1.
+[22] Pylon Electronics, Inc., “Model 2000A Radioactive Source.”
+https://pylonelectronics-radon.com/radioactive-sources/.
+[23] https://nds.iaea.org/relnsd/vcharthtml/VChartHTML.htm.
+[24] D. M. Mei, Z. B. Yin, L. C. Stonehill and A. Hime, A Model of Nuclear Recoil Scintillation Eﬃciency
+in Noble Liquids, Astropart. Phys. 30 (2008) 12 [0712.2470].
+[25] NEST Collaboration, “Benchmark Plots for Argon.”
+https://nest.physics.ucdavis.edu/benchmark-plots-argon, 2022.
+[26] V. Tretyak, “DECAY0 event generator for initial kinematics of particles in alpha, beta and double beta
+decays.” https://agenda.infn.it/event/9358/, 2015.
+[27] O. A. Ponkratenko, V. I. Tretyak and Y. G. Zdesenko, Event generator DECAY4 for simulating
+double-beta processes and decays of radioactive nuclei, Physics of Atomic Nuclei 63 (2000) 1282
+[nucl-ex/0104018v1].
+[28] MicroBooNE collaboration, Ionization electron signal processing in single phase LArTPCs. Part I.
+Algorithm Description and quantitative evaluation with MicroBooNE simulation, JINST 13 (2018)
+P07006 [1802.08709].
+[29] MicroBooNE collaboration, Ionization electron signal processing in single phase LArTPCs. Part II.
+Data/simulation comparison and performance in MicroBooNE, JINST 13 (2018) P07007
+[1804.02583].
+– 13 –
+[30] A. Bhat, MeV Scale Physics in MicroBooNE, Ph.D. thesis, Syracuse University, 2021.
+[31] MicroBooNE collaboration, Measurement of the atmospheric muon rate with the MicroBooNE
+Liquid Argon TPC, JINST 16 (2021) P04004 [2012.14324].
+[32] MicroBooNE collaboration, Measurement of the longitudinal diﬀusion of ionization electrons in the
+MicroBooNE detector, JINST 16 (2021) P09025 [2104.06551].
+[33] M. Murra, D. Schulte, C. Huhmann and C. Weinheimer, Design, construction and commissioning of a
+high-ﬂow radon removal system for XENONnT, 2205.11492.
+[34] M. Arthurs, D. Q. Huang, C. Amarasinghe, E. Miller and W. Lorenzon, Performance Study of
+Charcoal-based Radon Reduction Systems for Ultraclean Rare Event Detectors, 2009.06069.
+– 14 –

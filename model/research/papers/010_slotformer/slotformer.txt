@@ -1,0 +1,2576 @@
+arXiv:2302.06109v2  [math.OA]  29 Mar 2023
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+AIDAN YOUNG1
+Abstract. We extend the theory of ergodic optimization and maximizing measures to the non-
+commutative ﬁeld of C*-dynamical systems. We then provide a result linking the ergodic opti-
+mizations of elements of a C*-dynamical system to the convergence of certain ergodic averages in a
+suitable seminorm. We also provide alternate proofs of several results in this article using the tools
+of nonstandard analysis.
+One of the guiding questions of the ﬁeld of ergodic optimization is the following: Given
+a topological dynamical system (X, G, U), and a real-valued continuous function f ∈C(X),
+what values can
+R
+fdµ take when µ is an invariant Borel probability measure on X, and in
+particular, what are the extreme values it can take? In a joint work with I. Assani [3, Section 3],
+and later in [21], we noticed that the ﬁeld of ergodic optimization was relevant to the study of
+certain temporo-spatial differentiation problems. Hoping to extend these tools to the study of
+temporo-spatial differentiation problems in the setting of operator-algebraic dynamical systems,
+this article develops an operator-algebraic formalization of this question of ergodic optimization,
+re-interpreting it as a question about the values of invariant states on a C*-dynamical system.
+Section 1 develops the theory of ergodic optimization in the context of C*-dynamical systems,
+where the role of “maximizing measures" is instead played by invariant states on a C*-algebra.
+The framework we adopt is in fact somewhat more general than the classical framework of
+maximizing measures, since we consider ergodic optimizations relative to a restricted class of
+invariant states, which we call relative ergodic optimizations. We also demonstrate that some
+of the basic results of that classical theory of ergodic optimization extend to the C*-dynamical
+setting.
+In Section 2, we deﬁne a value called the gauge of a singly generated C*-dynamical system, a
+non-commutative generalization of the functional of the same name deﬁned in [3], and describe
+its connections to questions of ergodic optimization, as well as the ways in which it can be
+used to “detect" the unique ergodicity of C*-dynamical systems under certain Choquet-theoretic
+assumptions.
+University of North Carolina at Chapel Hill
+E-mail address: 1aidanjy@live.unc.edu.
+1
+2
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+In Section 3, we extend the results of the previous section to the case where the phase group
+is a countable discrete amenable group. We also provide a characterization of uniquely ergodic
+C*-dynamical systems of countable discrete amenable groups in terms of various notions of
+convergence of ergodic averages.
+In Section 4, we extend some fundamental identities of ergodic optimization to the noncommu-
+tative and relative setting. We also relate the convergence properties of certain ergodic averages
+to relative ergodic optimizations.
+Finally, in Section 5, we provide alternate proofs of several results from this article using the
+toolbox of nonstandard analysis.
+1. Ergodic Optimization in C*-Dynamical Systems
+Given a unital C*-algebra A, let Aut(A) denote the family of all *-automorphisms of A. We
+endow Aut(A) with the point-norm topology, i.e. the topology induced by the pseudometrics
+(Φ, Ψ) 7→∥Φ(a) −Ψ(a)∥
+(a ∈A).
+This topology makes Aut(A) a topological group [6, II.5.5.4].
+We deﬁne a C*-dynamical system to be a triple (A, G, Θ) consisting of a unital C*-algebra A, a
+topological group G (called the phase group), and a point-continuous left group action Θ : G →
+Aut(A).
+Notation 1.1. Let (A, G, Θ) be a C*-dynamical system, and let F ⊆G be a nonempty ﬁnite subset.
+We deﬁne AvgF : A →A by
+AvgF x := 1
+|F| ∑
+g∈F
+Θga.
+Denote by S the family of all states on A endowed with the weak*-topology, and by T the
+subfamily of all tracial states on A. A state φ on A is called Θ-invariant (or simply invariant if the
+action Θ is understood in context) if φ = φ ◦Θg for all g ∈G. Denote by SG ⊆S the family of all
+Θ-invariant states on A, and by T G ⊆T the family of all Θ-invariant tracial states on A. The set
+SG (resp. T G) is weak*-compact in S (resp. in T ). Unless otherwise stated, whenever we deal
+with subspaces of S, we consider these subspaces equipped with the weak*-topology.
+We will assume for the remainder of this section that (A, G, Θ) is a C*-dynamical system such
+that A is separable, and also that SG ̸= ∅. This framework will include every system of the
+form (C(Y), G, Θ), where Y is a compact metrizable topological space, the group G is countable,
+discrete, and amenable, and Θ is of the form Θg : f 7→f ◦Ug for all g ∈G, where U : G ↷Y is a
+right action of G on Y by homeomorphisms. Because of the correspondence between topological
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+3
+dynamical systems as we’ve deﬁned them previously in Section ?? and C*-dynamical systems
+over commutative C*-algebras, it is customary to call a C*-dynamical system a “non-commutative
+topological dynamical systems."
+Before proceeding, we prove the following Krylov–Bogolyubov-type result, which will be use-
+ful to establish the Θ-invariance of certain states later.
+Lemma 1.2. Let (A, G, Θ) be a C*-dynamical system, and let G be an amenable group. If (φk)∞
+k=1 is
+a sequence in S, and F = (Fk)∞
+k=1 is a right Følner sequence for G, then any weak*-limit point of the
+sequence
+
+φk ◦AvgFk
+∞
+k=1 is Θ-invariant. In particular, if K is a nonempty, Θ-invariant, weak*-compact,
+convex subset of S, then K ∩SG ̸= ∅.
+Proof. Let (φk)∞
+k=1 be a sequence of states, and ﬁx g0 ∈G, x ∈A. Then
+φk
+
+AvgFk Θg0x
+
+−φk
+
+AvgFk x
+
+=
+
+1
+|Fk|
+"
+φk
+ 
+∑
+g∈Fkg0
+Θgx
+!
+−φk
+ 
+∑
+g∈Fk
+Θgx
+!#
+≤
+
+1
+|Fk|φk
+
+
+∑
+g∈Fkg0\Fk
+Θgx
+
+
+
++
+
+1
+|Fk|φk
+
+
+∑
+g∈Fk\Fkg0
+Θgx
+
+
+
+≤|Fkg0∆Fk|
+|Fk|
+∥x∥
+k→∞
+→0.
+Therefore, if k1 < k2 < · · · is such that ψ = limℓ→∞φkℓ◦AvgFkℓexists, then
+ψ(Θgx) −ψ(x)
+ ≤lim sup
+ℓ→∞
+Fkℓg0∆Fkℓ
+
+Fkℓ
+
+∥x∥= 0.
+Finally, let K be a nonempty, Θ-invariant, weak*-compact, convex subset of S. Let φ be any
+state in K, and consider the sequence
+
+φ ◦AvgFk
+∞
+k=1. By the convexity and Θ-invariance of K,
+every term of this sequence is an element of K, and since K is compact, there exists a subsequence
+of this sequence which converges in K. As has already been shown, that limit must be an element
+of SG.
+■
+Remark 1.3. Lemma 5.1 can be seen as a nonstandard-analytic analogue to Lemma 1.2.
+Although our manner of proof of Lemma 1.2 is scarcely novel, the result as we have stated it
+here can be used to ensure the existence of invariant states with speciﬁc properties that might
+4
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+interest us, as seen for example in Corollary 1.4 and Proposition 1.14. Our standing hypothesis
+that A be separable is not necessary for this proof of Lemma 1.2.
+Corollary 1.4. If T ̸= ∅, and G is amenable, then T G ̸= ∅.
+Proof. Apply Lemma 1.2 to the case where K = T .
+■
+Deﬁnition 1.5. We denote by R the real Banach space of all self-adjoint elements of A, and denote
+by R♮the space of all real self-adjoint bounded linear functionals on A.
+Deﬁnition 1.6. Let V be a locally convex topological real vector space, and let K be a compact
+subset of V which is contained in a hyperplane that does not contain the origin. We call K
+a simplex if the positive cone P = {ck : c ∈R≥0, k ∈K} deﬁnes a lattice ordering on P −P =
+{p1 −p2 : p1, p2 ∈P} ⊆V with respect to the partial order a ≤b ⇐⇒b −a ∈P.
+Remark 1.7. In Deﬁnition 1.6, the assumption that K lives in a hyperplane that does not contain
+the origin is technically superﬂuous, but simpliﬁes the theory somewhat (see [17, Section 10]),
+and is satisﬁed by all the simplices that interest us here. Speciﬁcally, we know that S (and by
+extension SG, T , T G) lives in the real hyperplane
+
+φ ∈R♮: φ(1) = 1
+	
+deﬁned by the evaluation
+at 1.
+We begin with the following lemma.
+Lemma 1.8.
+(i) The spaces S, SG, T , T G are compact and metrizable.
+(ii) If T ̸= ∅, then the space T G is a simplex.
+Before proving this lemma, we need to introduce some terminology. Let φ, ψ be two positive
+linear functionals on a unital C*-algebra A. We say that the two positive functionals are orthogonal,
+notated φ ⊥ψ, if they satisfy either of the following two equivalent conditions:
+(a) ∥φ + ψ∥= ∥φ∥+ ∥ψ∥.
+(b) For every ε > 0 exists positive z ∈A of norm ≤1 such that φ(1 −z) < ε, ψ(z) < ε.
+It is well-know that these conditions are equivalent [16, Lemma 3.2.3]. For every φ ∈R♮, there
+exist unique positive linear functionals φ+, φ−such that φ = φ+ −φ−, and φ+ ⊥φ−, called the
+Jordan decomposition of φ [6, II.6.3.4].
+Before proving Lemma 1.8, we demonstrate the following property of the Jordan decomposi-
+tion of a tracial functional.
+Lemma 1.9. Let A be a unital C*-algebra, and φ ∈R♮. Suppose that φ(xy) = φ(yx) for all x, y ∈A.
+Then φ±(xy) = φ±(yx) for all x, y ∈A.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+5
+Proof. Let U(A) denote the group of unitary elements in A. For a unitary element u ∈U(A), let
+Adu ∈Aut(A) denote the inner automorphism
+Adu x = uxu∗.
+Let ψ ∈A′. We claim that ψ is tracial if and only if ψ ◦Adu = ψ for all unitaries u ∈U(A).
+Let u ∈U(A) be unitary, and x ∈A an arbitrary element. Then
+φ(ux) = ψ (u(xu)u∗)
+= ψ(Adu(xu)).
+So ψ(ux) = ψ(xu) if and only if ψ(Adu(xu)) = ψ(xu).
+In one direction, suppose that ψ = ψ ◦Adu for all u ∈U(A). Fix x, y ∈A. Then we can write
+y = ∑4
+j=1 cjuj for some c1, . . . , c4 ∈C and unitaries u1, . . . , u4 ∈U(A) unitary. Then
+ψ(xy) = ψ
+ 
+x
+4
+∑
+j=1
+cjuj
+!
+=
+4
+∑
+j=1
+cjψ(xuj)
+=
+4
+∑
+j=1
+cjψ(Aduj(xuj))
+=
+4
+∑
+j=1
+cjψ(ujx)
+= ψ
+  
+4
+∑
+j=1
+cjuj
+!
+x
+!
+= ψ(yx).
+Thus ψ is tracial.
+In the other direction, suppose there exists u ∈U(A) such that ψ ◦Adu ̸= ψ. Let y ∈A such
+that ψ(y) ̸= ψ(Adu y), and let x = yu∗. Then
+ψ(xu) = ψ(y)
+̸= ψ(Adu y)
+= ψ (uyu∗)
+= ψ(ux).
+6
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Therefore ψ is not tracial.
+Now, if φ ∈R♮is tracial, then φ ◦Adu = φ for all u ∈U(A). Then φ = φ ◦Adu = (φ+ ◦Adu) −
+(φ−◦Adu). But ∥φ± ◦Adu∥= ∥φ±∥, so it follows that ∥φ∥= ∥φ+ ◦Adu∥+ ∥φ−◦Adu∥. There-
+fore φ = (φ+ ◦Adu) −(φ−◦Adu) is an orthogonal decomposition of φ, and so it is the Jordan
+decomposition. This means that φ± = φ± ◦Adu. Since this is true for all u ∈U(A), it follows
+that φ± are tracial.
+■
+Proof of Lemma 1.8.
+(i) This all follows because S is a weak*-closed real subspace of the unit
+ball in the continuous dual of the separable Banach space R, and the spaces SG, T , T G
+are all closed subspaces of S.
+(ii) It is a standard fact that if T ̸= ∅, then T is a simplex [6, II.6.8.11]. Let
+CG =
+n
+cφ : c ∈R≥0, φ ∈T Go
+be the positive cone of T G, and let R♮denote the (real) space of all bounded self-adjoint
+tracial linear functionals on A. Let EG denote the (real) space of all bounded self-adjoint
+Θ-invariant linear functionals on A. We already know that T lives in a hyperplane of
+R♮deﬁned by the evaluation functional φ 7→φ(1). It will therefore sufﬁce to show that
+EG = CG −CG, and that EG is a sub-lattice of R♮.
+Let φ+, φ−≥0 be positive functionals on A such that φ = φ+ −φ−is tracial, and
+φ+ ⊥φ−. By Lemma 1.9, we know that φ+, φ−are tracial. We claim that if φ ∈EG, then
+φ+, φ−∈CG. To prove this, let g ∈G, and consider that φ+ ◦Θg, φ−◦Θg are both positive
+linear functionals such that φ =
+ φ+ ◦Θg
+ −
+ φ−◦Θg
+
+.
+We claim that
+ φ+ ◦Θg
+ ⊥
+ φ−◦Θg
+
+. Fix ε > 0. We know that there exists z ∈A such
+that ∥z∥≤1, 0 ≤z, and such that φ+ (1 −z) < ε, φ−(z) < ε. Then Θg−1(z) is a positive
+element of norm ≤1 such that
+φ+ 
+Θg
+
+Θg−1(1 −z)
+
+= φ+(1 −z)
+< ε,
+φ−
+Θg
+
+Θg−1(z)
+
+= φ−(z)
+< ε.
+Therefore
+ φ+ ◦Θg
+ −
+ φ−◦Θg
+
+is a Jordan decomposition of φ, and since the Jordan
+decomposition is unique, it follows that φ+ = φ+ ◦Θg, φ−= φ−◦Θg, i.e. that φ+, φ−∈
+CG. This means that EG = CG −CG.
+We now want to show that EG = CG −CG is a sublattice of E, i.e. that it is closed under
+the lattice operations. Let φ, ψ ∈EG. For this calculation, we draw on the identities listed
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+7
+in [2, Theorem 1.3]. Then
+φ ∨ψ = (((φ −ψ) + ψ) ∨(0 + ψ))
+= ((φ −ψ) ∨0) + ψ
+= (φ −ψ)+ + ψ,
+φ ∧ψ = ((φ −ψ) + ψ) ∧(0 + ψ)
+= ((φ −ψ) ∧0) + ψ
+= −((−(φ −ψ)) ∨0) + ψ
+= −(ψ −φ)+ + ψ.
+Therefore, if EG is a real linear space and is closed under the operations φ 7→φ+, φ 7→φ−,
+then it is also closed under the lattice operations. Thus EG is a sublattice of R♮.
+Hence, the subset T G is a compact metrizable simplex.
+■
+In order to keep our treatment relatively self-contained, we deﬁne here several elementary
+concepts from Choquet theory that will be relevant in this section.
+Deﬁnition 1.10. Let S1, S2 be convex spaces. We call a map T : S1 →S2 an afﬁne map if for every
+v, w ∈S1; t ∈[0, 1], we have
+T(tv + (1 −t)w) = tT(v) + (1 −t)T(w).
+In the case where S2 ⊆R, we call T an afﬁne functional.
+Deﬁnition 1.11. Let K be a convex subset of a locally convex real topological vector space V.
+(a) A point k ∈K is called an extreme point of K if for every pair of points k1, k2 ∈K and pa-
+rameter t ∈[0, 1] such that k = tk1 + (1 −t)k2, either k1 = k2 or t ∈{0, 1}. In other words,
+we call k extreme if there is no nontrivial way of expressing k as a convex combination of
+elements of K.
+(b) The set of all extreme points of K is denoted ∂eK.
+(c) A subset F of K is called a face if for every pair k1, k2 ∈K, t ∈(0, 1) such that tk1 + (1 −
+t)k2 ∈F, we have that k1, k2 ∈F.
+(d) A face F of K is called an exposed face of K if there exists a continuous afﬁne functional
+ℓ: K →R such that ℓ(x) = 0 for all x ∈F, and ℓ(y) < 0 for all y ∈K \ F.
+(e) A point k ∈K is called an exposed point of K if {k} is an exposed face of K.
+8
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+(f) Given a subset E of K, the closed convex hull of E is written as co(E).
+We now introduce the basic concepts in our treatment of ergodic optimization.
+Deﬁnition 1.12. Let x ∈R be a self-adjoint element, and let K ⊆SG be a compact convex subset
+of SG. Deﬁne a value m (x|K) by
+m (x|K) := sup
+ψ∈K
+ψ(x).
+We say a state φ ∈K is (x|K)-maximizing if φ(x) = m(x|K). Let Kmax(x) ⊆K denote the set of all
+(x|K)-maximizing states. A state φ ∈K is called uniquely (x|K)-maximizing if Kmax(x) = {φ}.
+Remark 1.13. We note here a trivial inequality: If K1 ⊆K2 are compact convex subsets of SG,
+then m (x|K1) ≤m (x|K2), and in particular, we will always have m (x|K1) ≤m
+ x|SG
+.
+We will single out one type of compact convex subset of SG which will prove important later.
+Given a subset A ⊆A, set
+Ann(A) :=
+n
+φ ∈SG : A ⊆ker φ
+o
+.
+When I ⊆A is a Θ-invariant closed ideal of A, we have a bijective correspondence between
+the states in Ann(I) and the states on A/I invariant under the action induced by Θ. We will
+be referring to this set again in Sections 2 and 3, when values of the form m (a| Ann(A)) come
+up in reference to certain ergodic averages. We observe that Ann({0}) = SG, and that A ⊆
+B ⊆A ⇒Ann(A) ⊇Ann(B). There is also no a priori guarantee that Ann(A) ̸= ∅, since for
+example Ann({1}) = ∅. However, Proposition 1.14 gives sufﬁcient conditions for Ann(A) to be
+nonempty.
+Proposition 1.14. Let A ⊆A be such that ΘgA ⊆A for all g ∈G. Suppose there exists a state on A
+which vanishes on A. Then Ann(A) ̸= ∅. In particular, if I ⊊A is a proper closed two-sided ideal of A
+for which ΘgI = I for all g ∈G, then Ann(I) ̸= ∅.
+Proof. Let K ⊆S denote the family of all (not necessarily invariant) states on A which vanish on
+A. Then if φ ∈K and a ∈A, then Θga ∈A, so φ ◦Θg vanishes on A. Therefore ΘgK ⊆K for all
+g ∈G. It follows from Lemma 1.2 that K ∩SG = Ann(A) ̸= ∅.
+Suppose I ⊊A is a proper closed two-sided ideal of A for which ΘgI = I for all g ∈G, and let
+π : A ։ A/I be the canonical quotient map. Let ˜Θ : G →Aut(A/I) be the induced action of G
+on A/I by ˜Θg(a + I) = Θga + I. Let ψ be a ˜Θ-invariant state on A/I. Then ψ ◦π is a Θ-invariant
+state on A which vanishes on I, i.e. ψ ◦π ∈Ann(I).
+■
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+9
+Proposition 1.15. Let K ⊆SG be a nonempty compact convex subset of SG, and let x ∈R. Then
+Kmax(x) is a nonempty, compact, exposed face of K.
+Proof. To see that Kmax(x) is nonempty, for each n ∈N, let φn ∈K such that φn(x) ≥m(x|K) −1
+n.
+Then since K is compact, the sequence (φn)∞
+n=1 has a convergent subsequence. Let φ be the limit
+of a convergent subsequence of (φn)∞
+n=1. Then φ is (x|K)-maximizing.
+To see that Kmax(x) is compact, consider that
+Kmax(x) = {φ ∈K : φ(x) = m(x|K)} ,
+which is a closed subset of K. As for being an exposed face, consider the continuous afﬁne
+functional ℓ: K →R given by
+ℓ(φ) = φ(x) −m(x|K).
+Then the functional ℓexposes Kmax(x|K), since it is nonpositive on all of K and vanishes exactly
+on Kmax(x).
+■
+The following result describes the ways in which some ergodic optimizations interact with
+equivariant *-homomorphisms of C*-dynamical systems.
+Theorem 1.16. Let (A, G, Θ) ,
+  ˜A, G, ˜Θ
+
+be two C*-dynamical systems, and let π : A →˜A be a surjective
+*-homomorphism such that
+˜Θg ◦π = π ◦Θg
+(∀g ∈G).
+Let ˜SG denote the space of ˜Θ-invariant states on ˜Θ. Then m
+ π(a)| ˜SG = m (a| Ann(ker π)).
+Proof. Let ˜SG denote the space of ˜Θ-invariant states on ˜A. We claim that there is a natural bijective
+correspondence between ˜SG and Ann(ker π). If φ is a ˜Θ-invariant state on ˜A, then we can pull it
+back to a Θ-invariant state φ0 on A by
+φ0 = φ ◦π.
+This φ0 obviously vanishes on ker π, and is Θ-invariant by virtue of the equivariance property of
+π. Conversely, if we start with a Θ-invariant state ψ on A that vanishes on ker π, then we can
+push it to a ˜Θ-invariant state ˜ψ on ˜A by
+˜ψ ◦π = ψ.
+We claim now that
+m (a| Ann(ker π)) = m
+
+π(a)| ˜SG
+.
+10
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Let φ be a
+ π(a)| ˜SG
+-maximizing state on ˜A. Then φ ◦π ∈Ann(ker π), so
+m
+
+π(a)| ˜SG
+= φ(π(a)) ≤m (a| Ann(ker π)) .
+On the other hand, if ψ ∈Ann(ker π) is (a| Ann(ker π))-maximizing, then let ˜ψ be such that
+˜ψ ◦π = ψ. Then ˜ψ ∈˜SG, so
+m (a| Ann(ker π)) = ψ(a) = ˜ψ(π(a)) ≤m
+
+a| ˜SG
+.
+■
+The assumption in Theorem 1.16 that π is surjective is actually superﬂuous, as shown in
+Corollary 3.8. We will later provide a proof of this stronger claim that uses the gauge functional,
+introduced in the context of actions of Z in Section 2 and in the context of actions of amenable
+groups in Section 3.
+Moreover, the proof of Theorem 1.16 can be extended to establish a correspondence between
+ergodic optimization over certain compact convex subsets of ˜SG and certain compact convex
+subsets of Ann(ker π).
+For example under the same hypotheses, if T ̸= ∅, then the proof
+could be modiﬁed in a simple manner to establish that m
+ π(a)| ˜T G = m
+ a| Ann(ker π) ∩T G
+,
+where ˜T G denotes the ˜Θ-invariant tracial states on ˜A. In lieu of stating Theorem 1.16 in greater
+generality, we content ourselves to state this special case (which we will use in future sections)
+and remark that the argument can be generalized further.
+The following characterization of exposed faces in compact metrizable simplices will prove
+useful.
+Lemma 1.17. Let K be a compact metrizable simplex. Then every closed face of K is exposed.
+Proof. See [8, Theorem 7.4].
+■
+The theorem we are building to in this section is as follows.
+Theorem 1.18. Let K ⊆SG be a compact simplex. Then the closed faces of K are exactly the sets of the
+form Kmax(x) for some x ∈R.
+Before we can prove our main theorem of this section, we will need to prove the following
+result, which gives us a means by which to build an important linear functional.
+Theorem 1.19. Let K ⊆SG be a compact simplex, and let ℓ: K →R be a continuous afﬁne functional.
+Then there exists a continuous linear functional ˜ℓ: spanR(K) →R such that ˜ℓ|K = ℓ.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+11
+To prove this theorem, we break it up into several parts, attaining the extension ˜ℓas the ﬁnal
+step of a few subsequent extensions of ℓ.
+Lemma 1.20. Let K ⊆SG be a compact metrizable simplex, and let ℓ: K →R be a continuous afﬁne
+functional. Let P = {cφ : c ∈R≥0, φ ∈K}. Then there exists a continuous functional ℓ1 : P →R
+satisfying the following conditions for all f1, f2 ∈P; c ∈R≥0:
+(a) ℓ1(c f1) = cℓ1( f1),
+(b) ℓ1( f1 + f2) = ℓ1( f1) + ℓ2( f2),
+(c) ℓ1|K = ℓ.
+Proof. Note that every nonzero element of P can be expressed uniquely as cφ for some c ∈
+R≥0 \ {0}, φ ∈K. As such we deﬁne
+ℓ1(cφ) =
+
+
+
+
+
+cℓ(φ)
+c > 0
+0
+c = 0
+It is immediately clear that this ℓ1 satisﬁes conditions (a) and (c), leaving only (b) to check.
+Now, suppose that f1 = c1φ1, f2 = c2φ2 for some φ1, φ2 ∈K; c1, c2 ∈R≥0. Consider ﬁrst the
+case where at least one of c1, c2 are nonzero. Then
+f1 + f2 = c1φ1 + c2φ2
+= (c1 + c2)
+
+c1
+c1 + c2
+φ1 +
+c2
+c1 + c2
+φ2
+
+⇒ℓ1( f1 + f2) = ℓ1 (c1φ1 + c2φ2)
+= (c1 + c2)ℓ
+
+c1
+c1 + c2
+φ1 +
+c2
+c1 + c2
+φ2
+
+[because ℓis afﬁne] = (c1 + c2)
+
+c1
+c1 + c2
+ℓ(φ1) +
+c2
+c1 + c2
+ℓ(φ2)
+
+= c1ℓ(φ1) + c2ℓ(φ2)
+= ℓ1(c1φ1) + ℓ1(c2φ2)
+= ℓ1( f1) + ℓ1( f2).
+In the event that c1 = c2 = 0, then the additivity property attains trivially.
+It remains now to show that ℓ1 is continuous. We will check continuity at nonzero points in P,
+and then at 0 ∈P. First, consider the case where cφ ∈P \ {0}, and c ∈R≥0, φ ∈K. Suppose that
+(cnφn)n is a sequence in P converging in the weak*-topology to cφ. We claim that cn →c in R,
+and φn →φ in the weak*-topology.
+12
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+We ﬁrst observe that (cnφn)(1) = cn, so (cn)n converges in R≥0 to c, meaning in particular that
+for sufﬁciently large n, we have that cn ∈
+ c
+2, 3c
+2
+
+. Now, if λ : R →R is a norm-continuous linear
+functional, then
+λ(φn) = 1
+cn
+λ(cnφn)
+→1
+c λ(cφ)
+= λ(φ).
+Therefore cn →c, φn →φ. Thus we can compute
+|ℓ1(cφ) −ℓ1(cnφn)| ≤|ℓ1(cφ) −ℓ1(cnφ)| + |ℓ1(cnφ) −ℓ1(cnφn)|
+= |c −cn| · |ℓ(φ)| + |cn| · |ℓ(φ) −ℓ(φn)|
+≤|c −cn|
+ 
+sup
+φ∈K
+|ℓ(φ)|
+!
++ 3c
+2 |ℓ(φ) −ℓ(φn)|
+n→∞
+→0,
+where supφ∈K |ℓ(φ)| must be ﬁnite because K is weak*-compact, and |ℓ(φ) −ℓ(φn)| n→∞
+→0 because
+ℓis weak*-continuous.
+Now, suppose that (cnφn)∞
+n=1 converges to 0. Then again we have that cn →0 by the same
+argument used above (i.e. cn = (cnφn)(1)). Therefore
+|ℓ1(cnφn)| = |cn| · |ℓ(φn)| ≤|cn|
+ 
+sup
+φ∈K
+|ℓ(φ)|
+!
+n→∞
+→0.
+We can thus conclude that ℓ1 is weak*-continuous.
+■
+Lemma 1.21. Let ℓ1, P be as in Lemma 1.20, and let V = P −P. Then there exists a continuous linear
+functional ˜ℓ: V →R such that ˜ℓ|P = ℓ1.
+Proof. Deﬁne ˜ℓ: V →R by
+˜ℓ(v) = ℓ1
+ v+ −ℓ1
+ v−
+,
+where v+, v−are meant in the sense of the lattice structure V possesses by virtue of K being a
+simplex.
+Our ﬁrst claim is that if f, g ∈P such that v = f −g, then ˜ℓ(v) = ℓ1( f) −ℓ1(g). To see this, we
+observe that f + v−= g + v+ ∈P. Therefore
+ℓ1
+ f + v− = ℓ1
+ g + v+
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+13
+= ℓ1( f) + ℓ1
+ v− = ℓ1(g) + ℓ1
+ v+
+⇒ℓ1( f) −ℓ1(g) = ℓ1
+ v+ −ℓ1
+ v−
+= ˜ℓ(v).
+This makes linearity fairly straightforward to check. First, to conﬁrm additivity, let v, w ∈V.
+Then v + w = (v+ + w+) −(v−+ w−), where v+ + w+, v−+ w−∈P. Thus
+˜ℓ(v + w) = ℓ1
+ v+ + w+ −ℓ1
+ v−+ w−
+= ℓ1
+ v+ + ℓ1
+ w+ −ℓ1
+ v− −ℓ1
+ w−
+= ℓ1
+ v+ −ℓ1
+ v− + ℓ1
+ w+ −ℓ1
+ w−
+= ˜ℓ(v) + ˜ℓ(w).
+To check homogeneity, let c ∈R. If c ≥0, then cv+, cv−∈P, and cv+ −cv−= cv; on the other
+hand, if c ≤0, then −cv−, −cv+ ∈P, and cv = −cv−+ cv+. In both cases, homogeneity is
+straightforward to show. This proves that ˜ℓis linear.
+It is also quick to show that ˜ℓ|P = ℓ1, since if v ∈P, then v = v+, so ˜ℓ(v) = ℓ1 (v+) −0 = ℓ1(v).
+It remains now to show that ˜ℓis continuous. By [18, Theorem 1.18], it will sufﬁce to show
+that ker ˜ℓis weak*-closed.
+To prove the kernel is closed, let (vn)∞
+n=1 be a sequence in ker ˜ℓ
+converging in the weak*-topology to v ∈V. By the Uniform Boundedness Principle, it follows
+that supn ∥vn∥< ∞. By rescaling, we can assume without loss of generality that ∥vn∥≤1 for
+all n ∈N, and since the unit ball B ⊆V is weak*-closed by Banach-Alaoglu, we can infer that
+∥v∥≤1.
+Since the unit ball B is weak*-compact, it follows that the sequences (v+
+n )∞
+n=1 , (v−
+n )∞
+n=1 have
+convergent subsequences. Let (nj)∞
+j=1 be a subsequence along which v+
+nj →m1 ∈P, v−
+nj →m2 ∈P.
+Then if x ∈R, then
+v(x) = lim
+n→∞vn(x)
+= lim
+n→∞
+ v+
+n (x) −v−
+n (x)
+
+= lim
+j→∞
+
+v+
+nj(x) −v−
+nj(x)
+
+=
+
+lim
+j→∞v+
+nj(x)
+
+−
+
+lim
+j→∞v−
+nj(x)
+
+= m1(x) −m2(x).
+14
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Therefore v = m1 −m2, so
+˜ℓ(v) = ˜ℓ(m1) −˜ℓ(m2)
+=
+
+lim
+j→∞
+˜ℓ
+
+v+
+nj
+
+−
+
+lim
+j→∞
+˜ℓ
+
+v−
+nj
+
+= lim
+j→∞
+
+˜ℓ
+
+v+
+nj
+
+−˜ℓ
+
+v−
+nj
+
+= lim
+j→∞
+˜ℓ
+
+vnj
+
+= lim
+j→∞0
+= 0.
+Therefore, we can conclude that ˜ℓis weak*-continuous.
+■
+Proof of Theorem 1.19. This follows from Lemmas 1.20 and 1.21.
+■
+Proof of Theorem 1.18. Let F ⊆K be a closed face of K. By Lemma 1.17, the face F is exposed, so
+let ℓ: K →R be a weak*-continuous afﬁne functional such that
+ℓ(k) = 0
+(∀k ∈F),
+ℓ(k) < 0
+(∀k ∈K \ F).
+Set
+V = {c1φ1 −c2φ2 : c1, c2 ∈R≥0; φ1, φ2 ∈K} ,
+and let ˜ℓ: V →R be a continuous linear extension of ℓto V whose existence is promised by
+Theorem 1.19. We can then extend ˜ℓ: V →R to a weak*-continuous linear functional ℓ′ : R♮→R
+[2, Theorem 3.6]. There thus exists some x ∈R such that ℓ′(φ) = φ(x) for all φ ∈R♮[4, Theorem
+5.2]. In particular, we have ℓ′(v) = v(x) for all v ∈V. Therefore F = Kmax(x).
+The converse is contained in Proposition 1.15.
+■
+In particular, we can recover the following corollary.
+Corollary 1.22. If φ ∈∂eK, then there exists x ∈R such that φ is uniquely (x|K)-maximizing, i.e. such
+that {φ} = Kmax(x).
+Proof. The singleton {φ} is a closed face, and by Lemma 1.17 is therefore an exposed face. Apply
+Theorem 1.18.
+■
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+15
+We have developed the language of ergodic optimization here in a somewhat atypical way,
+where we speak not of x-maximizing states simpliciter, but of a state that is maximizing relative
+to a compact convex subset K of SG, especially a compact simplex K. This notion of relative
+ergodic optimization has precedent in [22]. For our purposes, this relative ergodic optimization
+means we can consider ergodic optimization problems over different types of states. In Section 4,
+we will broaden our scope somewhat to consider ergodic optimization in the noncommutative
+setting relative to a set of states that aren’t necessarily Θ-invariant.
+Since Theorem 1.18 applies in cases where K is a simplex, we will conclude this section by
+describing some situations where SG is a compact metrizable simplex.
+For each φ ∈SG, let πφ : A →B(Hφ) be the GNS representation corresponding to φ. Deﬁne
+a unitary representation uφ : G →U(Hφ) of G by
+uφ(g)πφ(a) = πφ
+
+Θg−1(a)
+
+,
+extending this from πφ(A) to Hφ. Set
+Eφ =
+
+v ∈Hφ : uφ(v) = v for all g ∈G
+	
+.
+Let Pφ : Hφ ։ Eφ be the orthogonal projection (in the functional-analytic sense) of Hφ onto Eφ.
+We call the C*-dynamical system (A, G, Θ) a G-abelian system if for every φ ∈SG, the family of
+operators
+
+Pφπφ(a)Pφ ∈B(Hφ) : a ∈A
+	
+is mutually commutative.
+We record here a handful of germane facts about G-abelian systems.
+Proposition 1.23. If (A, G, Θ) is G-abelian, then SG is a simplex.
+Proof. See [19, Theorem 3.1.14].
+■
+Deﬁnition 1.24. We call a system (A, G, Θ) asymptotically abelian if there exists a sequence (gn)∞
+n=1
+in G such that
+
+Θgna, b
+ n→∞
+→0
+for all a, b ∈A, where [·, ·] is the Lie bracket [x, y] = xy −yx on A.
+Proposition 1.25. If (A, G, Θ) is asymptotically abelian, then it is also G-abelian.
+Proof. See [19, Proposition 3.1.16].
+■
+2. Unique ergodicity and gauges: the singly generated setting
+So far we have spoken about C*-dynamical systems, a noncommutative analog of a topological
+dynamical systems. But just as classical ergodic theory is often interested in the interplay between
+16
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+topological dynamical systems and the measure-theoretic dynamical systems they can be realized
+in, we are interested in questions about the interplay between C*-dynamical systems and the non-
+commutative measure-theoretic dynamical systems they can be realized in. To make this more
+precise, we introduce the notion of a W*-dynamical system.
+A W*-probability space is a pair (M, ρ) consisting of a von Neumann algebra M and a faith-
+ful tracial normal state ρ on M.
+An automorphism of a W*-probability space (M, ρ) is a *-
+automorphism T : M →M such that ρ ◦T = ρ, i.e. an automorphism of M which preserves ρ.
+A W*-dynamical system is a quadruple (M, ρ, G, Ξ), where (M, ρ) is a W*-probability space, and
+Ξ : G →Aut(M, ρ) is a left action of a discrete topological group G (called the phase group) on M
+by ρ-preserving automorphisms of M, i.e. such that ρ(Ξgx) = ρ(x) for all g ∈G, x ∈M. Impor-
+tantly, if (M, ρ, G, Ξ) is a W*-dynamical system, then (M, G, Ξ) is automatically a W*-dynamical
+system.
+Remark 2.1. In the literature, the term “W*-dynamical system" is sometimes used to refer to a
+more general construction, where the group G is assumed to satisfy some topological conditions,
+and the action is assumed to be continuous in the strong operator topology, e.g. [5]. Other
+authors use a yet more general deﬁnition, e.g. [6, III.3.2]. Since we are only interested in actions
+of discrete groups, we adopt a narrower deﬁnition.
+Deﬁnition 2.2. Given a W*-probability space, we deﬁne L2(M, ρ) to be the Hilbert space deﬁned
+by completing M with respect to the inner product ⟨x, y⟩ρ = ρ (y∗x), i.e.
+the Hilbert space
+associated with the faithful GNS representation of M induced by ρ.
+Finally, we introduce the notion of a C*-model, intending to generalize the notion of a topo-
+logical model from classical ergodic theory to this noncommutative setting.
+Deﬁnition 2.3. Let (M, ρ, G, Ξ) be a W*-dynamical system. A C*-model of (M, ρ, G, Ξ) is a quadru-
+ple (A, G, Θ; ι) consisting of a C*-dynamical system (A, G, Θ) and a *-homomorphism ι : A →M
+such that
+(a) ι(A) is dense in the weak operator topology of M,
+(b) Ξg (ι(A)) = ι(A) for all g ∈G, and
+(c) Ξg ◦ι = ι ◦Θg for all g ∈G.
+We call the C*-model (A, G, Θ; ι) faithful if ι is also injective.
+We remark that we can turn any C*-model into a faithful C*-model through a quotienting
+process. If ι was not injective, then we could instead consider ˜ι : A/ ker ι ֒→M. In the case where
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+17
+A is commutative, this quotienting process corresponds (via the Gelfand-Naimark Theorem)
+to taking a measure-theoretic dynamical system and restricting to the support of the resident
+probability measure. To see this, let A = C(X), where X is a compact metrizable topological
+space, and let M = L∞(X, µ) for some Borel probability measure µ. Let ι : C(X) →L∞(X, µ)
+be the (not necessarily injective) map that maps a continuous function on X to its equivalence
+class in L∞(X, µ). It can be seen that f ∈ker ι if and only if the open set {x ∈X : f(x) ̸= 0}
+is of measure 0, or equivalently if f|supp(µ) = 0, and in particular that ι is injective if and only
+if µ is strictly positive (i.e. µ assigns positive measure to all nonempty open sets). As such, we
+can identify C(X)/ ker ι with C(supp(µ)). Let Y = supp(µ) denote the support of µ on X, and
+let π : C(X) ։ C(Y) be the quotient map (which corresponds to a restriction from X to Y, i.e.
+π f = f|Y). Then algebraically, we have a commutative diagram
+C(X)
+C(Y)
+L∞(X, µ)
+π
+ι
+˜ι
+So in the commutative case, we can make ι : C(X) →L∞(X, µ) injective by looking at ˜ι : C(Y) →
+L∞(Y, µ) ∼= L∞(X, µ), i.e. by using the support Y to model (Y, µ) ∼= (X, µ).
+Importantly, so long as L2(M, ρ) is separable, any W*-dynamical system (M, ρ, G, Ξ) will admit
+a faithful separable C*-model. To construct such a C*-model, it sufﬁces to take some separable
+C*-subalgebra B ⊆M which is dense in M with respect to the weak operator topology, then let
+A be the norm-closure of the span of S
+g∈G
+ ΞgB
+
+. We then deﬁne Θg = Ξg|A and let ι : A ֒→M
+be the inclusion map.
+One last important concept in this section and the next will be unique ergodicity.
+A C*-
+dynamical system (A, G, Θ) is called uniquely ergodic if SG is a singleton. As in the commutative
+setting, unique ergodicity can be equivalently characterized in terms of convergence properties
+of ergodic averages. To our knowledge, the strongest such characterization of unique ergodicity
+for singly generated C*-dynamical systems can be found in [1, Theorem 3.2], which describes
+unique ergodicity relative to the ﬁxed point subalgebra. This characterization was then gener-
+alized to characterize unique ergodicity relative to the ﬁxed point subalgebra for C*-dynamical
+systems over amenable phase groups in [10, Theorem 5.2]; however, in Corollary 3.6, we provide
+a characterization of uniquely ergodic C*-dynamical systems in terms of ergodic averages that is
+not encompassed by [10, Theorem 5.2].
+18
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Given a C*-dynamical system (A, Z, Θ), let a ∈A be a positive element. We deﬁne the gauge
+of a to be
+Γ(a) := lim
+k→∞
+1
+k
+
+k−1
+∑
+j=0
+Θja
+ .
+To prove this limit exists, it sufﬁces to observe that the sequence
+∑k−1
+j=0 Θja
+
+∞
+k=1 is subadditive,
+since
+
+k+ℓ−1
+∑
+j=0
+Θja
+ ≤
+
+k−1
+∑
+j=0
+Θja
+ +
+
+k+ℓ−1
+∑
+j=k
+Θja
+
+=
+
+k−1
+∑
+j=0
+Θja
+ +
+Θk
+ℓ−1
+∑
+j=0
+Θja
+
+=
+
+k−1
+∑
+j=0
+Θja
+ +
+
+ℓ−1
+∑
+j=0
+Θja
+ .
+Therefore, by the Subadditivity Lemma, the sequence
+
+1
+k
+∑k−1
+j=0 Θja
+
+∞
+k=1 converges, and we have
+the equality
+lim
+k→∞
+1
+k
+
+k−1
+∑
+j=0
+Θja
+ = inf
+k∈N
+1
+k
+
+k−1
+∑
+j=0
+Θja
+ .
+We have the following characterization of Γ in the language of ergodic optimization.
+Theorem 2.4. Let (A, Z, Θ) be a C*-dynamical system.
+Then if a ∈A is a positive element, then
+Γ(a) = m
+ a|SG
+.
+Proof. For each k ∈N, choose a state σk on A such that
+σk
+ 
+1
+k
+k−1
+∑
+j=0
+Θja
+!
+=
+
+1
+k
+k−1
+∑
+j=0
+Θja
+ .
+Let ωk = 1
+k ∑k−1
+j=0 σk ◦Θj, so
+ωk(x) = 1
+k
+k−1
+∑
+j=0
+σk
+ Θjx
+
+= σk
+ 
+1
+k
+k−1
+∑
+j=0
+Θjx
+!
+,
+ωk(a) = σk
+ 
+1
+k
+k−1
+∑
+j=0
+Θja
+!
+=
+
+1
+k
+k−1
+∑
+j=0
+Θja
+ .
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+19
+Let ω ∈S be a weak*-limit point of (ωk : k ∈N), and let k1 < k2 < · · · be a subsequence such
+that ωkn
+n→∞
+→ω in the weak*-topology. By Lemma 1.2, we know that ω is Θ-invariant. Therefore
+ω(a) = Γ(a), and ω is a Θ-invariant state on A, so
+Γ(a) = ω(a) ≤m
+
+a|SZ
+.
+Now, we prove the opposite inequality. Let φ ∈SZ. Then
+φ(a) = φ (Avgk a)
+≤∥Avgk a∥
+= 1
+k
+
+k−1
+∑
+j=0
+Θja
+
+= 1
+k
+
+k−1
+∑
+j=0
+Θja
+
+(∀k ∈N)
+⇒φ(a) ≤inf
+k∈N
+1
+k
+
+k−1
+∑
+j=0
+Θja
+
+= Γ(a)
+⇒sup
+ψ∈SZ
+ψ(a) ≤Γ(a).
+Therefore
+m
+
+a|SZ
+= sup
+ψ∈SZ
+ψ(a) ≤Γ(a).
+This establishes the identity.
+■
+Corollary 2.5. Let (M, ρ, Z, Ξ) be a W*-dynamical system, and let (A, Z, Θ; ι) be a C*-model of (M, ρ, Z, Ξ).
+If a ∈A is a positive element, then
+Γ(ι(a)) = m (a| Ann(ker ι)) .
+Proof. Write ˜A = ι(A) ⊆M, and let ˜Θ : Z →Aut
+  ˜A
+
+be the action ˜Θn = Ξn| ˜A obtained by
+restricting Ξ to ˜A. Write ˜SZ for the space of ˜Θ-invariant states on ˜A.
+We can write ΓM(ι(a)) = Γ ˜A(ι(a)). By Theorem 2.4, we know that Γ ˜A(ι(a)) = m
+ ι(a)| ˜SZ
+, and
+by Theorem 1.16, we know that m
+ ι(a)| ˜SZ = m (a| Ann(ker ι)).
+■
+Remark 2.6. Corollary 2.5 can be regarded as an operator-algebraic extension of Lemma 2.3 from
+[3]. The assumption that (A, G, Θ; ι) is faithful can be understood as analogous to the assumption
+of strict positivity in that paper.
+20
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+This Γ value provides an alternative characterization of unique ergodicity, at least under some
+additional Choquet-theoretic hypotheses.
+Theorem 2.7. Let (M, ρ, Z, Ξ) be a W*-dynamical system, and let (A, Z, Θ; ι) be a faithful C*-model of
+(M, ρ, Z, Ξ). Then the following conditions are related by the implications (i) ⇐⇒(ii)⇒(iii).
+(i) The C*-dynamical system (A, Z, Θ) is uniquely ergodic.
+(ii) The C*-dynamical system (A, Z, Θ) is strictly ergodic.
+(iii) Γ(ι(a)) = ρ(ι(a)) for all positive a ∈A.
+Further, if SZ is a simplex, then (iii)⇒(i).
+Proof. (i)⇒(ii) Suppose that (A, Z, Θ) is uniquely ergodic. Then ρ ◦ι is an invariant state on A,
+so it follows that ρ ◦ι is the unique invariant state on A. But ρ ◦ι is also a faithful state on A, so
+it follows that (A, Z, Θ) is strictly ergodic.
+(ii)⇒(i) Trivial.
+(i)⇒(iii) Suppose that (A, Z, Θ) is uniquely ergodic, and let a ∈A be positive. Let φ be a
+SZ-maximizing state for a. Then φ = ρ ◦ι, since both φ and ρ ◦ι are invariant states on A, and
+(A, Z, Θ) is uniquely ergodic. Thus φ = ρ ◦ι, so Γ(ι(a)) = φ(a) = ρ(ι(a)).
+(iii)⇒(i) Suppose that SZ is a simplex, but that (A, Z, Θ) is not uniquely ergodic. By the Krein-
+Milman Theorem, there exists two distinct extreme points of SZ, and in particular there exists
+an extreme point φ ∈SZ of SZ distinct from ρ ◦ι. Then by Corollary 1.22, there exists a ∈A
+self-adjoint such that {φ} = SZ
+max(a). We can assume that a is positive, since otherwise we could
+replace a with a + r for a sufﬁciently large positive real number r > 0, and SZ
+max(a) = SZ
+max(a + r).
+Then Γ(ι(a)) = φ(a). But by the assumption that φ is uniquely
+ a|SZ
+-maximizing, it follows
+that ρ(ι(a)) < φ(a). Therefore Γ(ι(a)) ̸= ρ(ι(a)), meaning that (iii) does not attain. Thus ¬(i)⇒
+¬(iii).
+■
+3. Unique ergodicity and gauge: the amenable setting
+For the duration of this section, we assume that (M, ρ, G, Ξ) is a W*-dynamical system with
+L2(M, ρ) separable.
+Assume further that (A, G, Θ) is a C*-dynamical system such that A is
+separable, and that G is amenable. It follows from Corollary 1.4 that SG ̸= ∅.
+In this section, we expand upon some of the ideas presented in Section 2, generalizing from
+the case of actions of Z to actions of a countable discrete amenable group G. We separate these
+two sections because our treatment of the more general amenable setting has some additional
+nuances to it.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+21
+Our ﬁrst result of this section is a generalization of a classical result from ergodic theory
+regarding unique ergodicity, which is that a (singly generated) topological dynamical system is
+uniquely ergodic if and only if the averages of the continuous functions converge to a constant.
+This classical result is well-known, and can be found in many standard texts on ergodic theory,
+e.g. [7, Thm 6.2.1], [11, Thm 10.6], [20, Thm 5.17], but the earliest example of a result like this
+that we could ﬁnd was [15, 5.3]. Theorem 3.1 generalizes this classical result not only to the
+noncommutative setting, but to the setting where the phase group G is amenable.
+We deﬁne the weak topology on a C*-algebra A to be the topology generated by the states on A,
+i.e.
+x 7→ψ(x)
+(ψ ∈S).
+In other words, the weak topology is the topology in which a net (xi)i∈I converges to x if and
+only if (ψ(xi))i∈I converges to ψ(x) for every state ψ on A. We say the net (xi)i∈I converges
+weakly to x if it converges in the weak topology.
+Theorem 3.1. Let (A, G, Θ) be a C*-dynamical system. Then the following conditions are equivalent.
+(i) (A, G, Θ) is uniquely ergodic.
+(ii) There exists a right Følner sequences (Fk)∞
+k=1 for G and a linear functional φ : A →C such that
+for all x ∈A, the sequence
+
+AvgFk x
+∞
+k=1 converges in norm to φ(x)1 ∈C1.
+(iii) There exists a left Følner sequences (Fk)∞
+k=1 for G and a linear functional φ : A →C such that for
+all x ∈A, the sequence
+
+AvgFk x
+∞
+k=1 converges weakly to φ(x)1 ∈C1.
+(iv) There exists a state φ on A such that for every right Følner sequence (Fk)∞
+k=1 for G, the sequence
+
+AvgFk x
+∞
+k=1 converges in norm to φ(x)1 ∈C1.
+(v) There exists a state φ on A such that for every left Følner sequence (Fk)∞
+k=1 for G, the sequence
+
+AvgFk x
+∞
+k=1 converges weakly to φ(x)1 ∈C1.
+Proof. Assume throughout that any x ∈A is nonzero.
+(ii)⇒(iii) Follows from the existence of two-sided Følner sequence.
+(iv)⇒(v) Follows from the existence of two-sided Følner sequence.
+(iv)⇒(ii) Trivial.
+(v)⇒(iii) Trivial.
+(iii)⇒(i) Suppose that AvgFk x →φ(x)1 ∈C1 weakly for all x ∈A. We claim that φ is the
+unique invariant state of (A, G, Θ). First, we demonstrate that φ is Θ-invariant. Fix g0 ∈G, and
+22
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+ﬁx ε > 0. Choose K1, K2, K3 ∈N such that
+k ≥K1
+⇒
+φ(φ(x)1) −φ
+
+AvgFk x
+ < ε
+3,
+k ≥K2
+⇒
+φ(Θg0φ(x)1) −φ(Θg0 AvgFk x)
+ < ε
+3,
+k ≥K3
+⇒|g0Fk∆Fk|
+|Fk|
+<
+ε
+3∥x∥.
+The K1, K2 exist because we know that in the weak topology, the functionals φ, φ ◦Θg0 are both
+continuous, and K3 exists by the amenability of G. Let K = max{K1, K2, K3}. Then if k ≥K, then
+φ(Θg0x) −φ(x)
+ ≤
+φ(Θg0x) −φ(Θg0 AvgFk x)
+
++
+φ(Θg0 AvgFk x) −φ(AvgFk x)
+ +
+φ(AvgFk x) −φ(x)
+
+≤ε
+3 +
+φ(Θg0 AvgFk x) −φ(AvgFk x)
+ + ε
+3
+=2ε
+3 +
+φ(Θg0 AvgFk x) −φ(AvgFk x)
+
+=2ε
+3 +
+φ
+ 
+1
+|Fk|
+ 
+∑
+g∈Fk
+Θg0gx
+!
+−
+ 
+1
+|Fk| ∑
+g∈Fk
+Θgx
+!!
+=2ε
+3 +
+φ
+ 
+1
+|Fk|
+ 
+∑
+g∈g0Fk
+Θgx
+!
+−
+ 
+1
+|Fk| ∑
+g∈Fk
+Θgx
+!!
+=2ε
+3 +
+
+φ
+
+1
+|Fk|
+
+
+∑
+g∈g0Fk\Fk
+Θgx
+
+−
+
+1
+|Fk|
+∑
+g∈Fk\g0Fk
+Θgx
+
+
+
+
+
+≤2ε
+3 +
+
+φ
+
+1
+|Fk|
+∑
+g∈g0Fk\Fk
+Θgx
+
+
+
++
+
+φ
+
+1
+|Fk|
+∑
+g∈Fk\g0Fk
+Θgx
+
+
+
+<2ε
+3 + |g0Fk∆Fk|
+|Fk|
+∥x∥
+=ε.
+Therefore φ is Θ-invariant. To see that it is positive, it sufﬁces to observe that x ≥0 ⇒AvgFk x ≥
+0, meaning that φ(x) = limk→∞φ(AvgFk x) ≥0. To see that φ(1) = 1, we just observe that
+AvgFk 1 = 1 for all k ∈N.
+Now we show that φ is the unique Θ-invariant state. Let ψ be any invariant state. Then
+ψ(x) = ψ(AvgFk x)
+k→∞
+→ψ(φ(x)1)
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+23
+= φ(x)ψ(1)
+= φ(x).
+Therefore ψ = φ, and so (A, G, Θ) is uniquely ergodic.
+(i)⇒(iv) Fix a right Følner sequence (Fk)∞
+k=1, and assume for contradiction that (A, G, Θ) is
+uniquely ergodic with Θ-invariant state φ, but that there exists x ∈A such that
+
+AvgFk x
+∞
+k=1 does
+not converge in norm to a scalar, and in particular does not converge in norm to φ(x)1. Since we
+can decompose x into its real and imaginary parts, we can assume that x ∈Asa. Fix ε0 > 0 for
+which there exists an inﬁnite sequence k1 < k2 < · · · such that
+AvgFkn x −φ(x)1
+ ≥ε0. Then
+for each n ∈N exists a state ψn on A such that
+ψn
+
+AvgFkn x −φ(x)1
+ =
+AvgFkn x −φ(x)1
+.
+Set
+ωn = ψn ◦AvgFkn,
+so ωn(x −φ(x)1) = ψn
+
+AvgFkn x −φ(x)1
+
+. Then (ωn)∞
+n=1 has a subsequence, call it (ωnj)∞
+j=1
+which converges in the weak*-topology to some ω. This ω is also a state on A, and by Lemma
+1.2, we know ω is Θ-invariant. But ω ̸= φ, since
+|ω(x) −φ(x)| = lim
+j→∞
+ωnj(x) −φ(x)
+
+= lim
+j→∞
+ωnj(x −φ(x)1)
+
+= lim
+j→∞
+ψnj(AvgFknj x −φ(x)1)
+
+= lim
+j→∞
+AvgFknj x −φ(x)1
+
+≥ε0.
+This contradicts (A, G, Θ) being uniquely ergodic.
+■
+Remark 3.2. Although [10, Theorem 5.2] describes conditions under which unique ergodicity of
+an action of an amenable group on a C*-algebra can be related to the convergence of ergodic
+averages, that result is not a direct generalization of our Theorem 3.1.
+In order to develop the gauge machinery from the previous section in the context of actions of
+amenable groups, we will need to use slightly different techniques, since we do not have access to
+the Subadditivity Lemma. The main results of the remainder of this section can be summarized
+as follows.
+Main results 3.3. Let F = (Fk)∞
+k=1 be a right Følner sequence.
+24
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+(a) Let (A, G, Θ) be a C*-dynamical system, and let F = (Fk)∞
+k=1 be a right Følner sequence for
+G. Then if a ∈A is a positive element, then the sequence
+ 1
+|Fk| ∑g∈Fk Θga
+
+∞
+k=1 converges to
+m
+ a|SG
+.
+(b) Let (A, G, Θ; ι) be a faithful C*-model of (M, ρ, G, Ξ). Then the following conditions are related
+by the implications (i) ⇐⇒(ii)⇒(iii).
+(i) The C*-dynamical system (A, G, Θ) is uniquely ergodic.
+(ii) The C*-dynamical system (A, G, Θ) is strictly ergodic.
+(iii) Γ(ι(a)) = ρ(ι(a)) for all positive a ∈A.
+Further, if SG is a simplex, then (iii)⇒(i).
+Theorem 3.4. Let (A, G, Θ) be a C*-dynamical system, and let F = (Fk)∞
+k=1 be a right Følner sequence for
+G. Then if a ∈A is a positive element, then the sequence
+ 1
+|Fk| ∑g∈Fk Θga
+
+∞
+k=1 converges to m
+ a|SG
+.
+Proof. For each k ∈N, choose a state σk on A such that
+σk
+ 
+1
+|Fk| ∑
+g∈Fk
+Θga
+!
+=
+
+1
+|Fk| ∑
+g∈Fk
+Θga
+ .
+Let ωk =
+1
+|Fk| ∑g∈Fk σk ◦Θg, so
+ωk(x) =
+1
+|Fk| ∑
+g∈Fk
+σk(Θgx)
+= σk
+ 
+1
+|Fk| ∑
+g∈Fk
+Θgx
+!
+,
+ωk(a) = σk
+ 
+1
+|Fk| ∑
+g∈Fk
+Θga
+!
+=
+
+1
+|Fk| ∑
+g∈Fk
+Θga
+ .
+This means that in order to show that
+ 1
+|Fk| ∑g∈G Θga
+
+∞
+k=1 converges to m
+ a|SG
+, it sufﬁces to
+show that ωk(a) k→∞
+→m
+ a|SG
+. So for the remainder of this proof, we are going to be looking
+instead at the sequence (ωk)∞
+k=1.
+Let k1 < k2 < · · · be some sequence such that (ωkn)∞
+n=1 converges in the weak*-topology to
+some
+ω.
+It
+follows
+from
+Lemma
+1.2
+that
+ω
+is
+Θ-invariant.
+To
+see
+that
+(ωk(a)∞
+k=1 =
+ 1
+|Fk| ∑g∈G Θgι(a)
+
+∞
+k=1 converges to m
+ a|SG
+, it will sufﬁce to show that every
+limit point ω of (ωk : k ∈N) satisﬁes
+ω ∈SG
+max(a).
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+25
+This follows because if there existed a subsequence k1 < k2 < · · · of (ωk)∞
+k=1 such that ωkn(a) n→∞
+→
+z ̸= m
+ a|SG
+, then by compactness, that subsequence (ωkn : n ∈N) would have some subse-
+quence converging to some ω′ for which ω′(a) = z ̸= m
+ a|SG
+, meaning in particular that
+ω′ ̸∈SG
+max(a).
+So let k1 < k2 < · · · be some sequence such that (ωkn)∞
+n=1 converges in the weak*-topology to
+some ω. As has already been remarked, we have that ω ∈SG, so ω(a) ≤m
+ a|SG
+. We prove
+the opposite inequality. Let φ ∈SG. Then
+φ(a) = φ
+ 
+1
+|Fkn| ∑
+g∈Fkn
+Θga
+!
+(φ is Θ-invariant)
+≤
+
+1
+|Fkn| ∑
+g∈Fkn
+Θga
+
+= ωkn(a)
+⇒φ(a) ≤lim
+n→∞ωkn(a)
+= ω(a).
+Therefore ω(a) ≥supψ∈SG ψ(a) = m
+ a|SG
+. This establishes the desired identity.
+■
+Remark 3.5. An alternate proof of Theorem 3.4 using nonstandard analysis is presented in Sec-
+tion 5.
+Corollary 3.6. Let (A, G, Θ) be a C*-dynamical system, and let F = (Fk)∞
+k=1 be a right Følner sequence
+for G. Let φ ∈SG. Then (A, G, Θ) is uniquely ergodic if and only if for every positive element a ∈A, the
+sequence
+ 1
+|Fk| ∑g∈Fk Θga
+
+∞
+k=1 converges to φ(a).
+Proof. (⇒) Suppose (A, G, Θ) is uniquely ergodic. Then φ(a) = m
+ a|SG
+for all positive a ∈A,
+so by Theorem 3.4
+ 1
+|Fk| ∑g∈Fk Θga
+
+k→∞
+→φ(a).
+(⇐) We’ll prove the contrapositive. Suppose (A, G, Θ) is not uniquely ergodic. Then there
+exists an extreme point ψ of SG different from φ. By Corollary 1.22, there exists a ∈A self-adjoint
+such that {φ} = SG
+max(a). We can assume that a is positive, replacing a by a + r for a sufﬁciently
+large positive real number r > 0 otherwise. Thus limk→∞
+ 1
+|Fk| ∑g∈Fk Θga
+ = ψ(a) > φ(a).
+■
+Deﬁnition 3.7. Given a C*-dynamical system (A, G, Θ), a positive element a ∈A, and a right
+Følner sequence F = (Fk)∞
+k=1 for G, we deﬁne the gauge of a to be the limit
+Γ(x) := lim
+k→∞
+
+1
+|Fk| ∑
+g∈Fk
+Θgx
+ .
+26
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Theorem 3.4 shows that the gauge exists, but Theorem 3.9 demonstrates the way that the gauge
+interacts with a W*-dynamical system and a C*-model. Moreover, the gauge is dependent only
+on (A, G, Θ), and independent of the right Følner sequence F = (Fk)∞
+k=1. As such, even though
+the gauge as we have described it is computed using a right Følner sequence F = (Fk)∞
+k=1, we do
+not need to include F in our notation for Γ.
+Corollary 3.8. Let (A, G, Θ) ,
+  ˜A, G, ˜Θ
+
+be two C*-dynamical systems, and let π : A →˜A be a *-
+homomorphism (not necessarily surjective) such that
+˜Θg ◦π = π ◦Θg
+(∀g ∈G).
+Let ˜SG denote the space of ˜Θ-invariant states on ˜Θ. Then m
+ π(a)| ˜SG = m (a| Ann(ker π)).
+Proof. Let B = π(A), and let H : G →Aut(B) be the action Hg = ˜Θg|B. Let K denote the space
+of all H-invariant states on B. Then
+m
+
+π(a)| ˜SG
+= Γ ˜A(π(a))
+(Theorem 3.4)
+= ΓB(π(a))
+= m (π(a)|K)
+(Theorem 3.4)
+= m (a| Ann(ker π))
+(Theorem 1.16) .
+■
+Corollary 3.9. Let (M, ρ, G, Ξ) be a W*-dynamical system, and let (A, G, Θ; ι) be a C*-model of (M, ρ, Z, Ξ).
+Then if a ∈A is a positive element, then
+Γ(ι(a)) = m (a| Ann(ker ι)) .
+Proof. Write ˜A = ι(A) ⊆M, and let ˜Θ : G →Aut
+  ˜A
+
+be the action ˜Θg = Ξg| ˜A obtained by
+restricting Ξ to ˜A. Write ˜SG for the space of ˜Θ-invariant states on ˜A.
+We know ΓM(ι(a)) = Γ ˜A(ι(a)). By Theorem 3.4, we know that Γ ˜A(ι(a)) = m
+ ι(a)| ˜SG
+, and by
+Theorem 1.16, we know that
+m
+
+ι(a)| ˜SG
+= m (a| Ann(ker ι)) .
+■
+This brings us to our characterization of unique ergodicity with respect to the gauge for C*-
+models.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+27
+Theorem 3.10. Let (M, ρ, G, Ξ) be a W*-dynamical system, and let (A, G, Θ; ι) be a faithful C*-model of
+(M, ρ, G, Ξ). Then the following conditions are related by the implications (i) ⇐⇒(ii)⇒(iii).
+(i) The C*-dynamical system (A, G, Θ) is uniquely ergodic.
+(ii) The C*-dynamical system (A, G, Θ) is strictly ergodic.
+(iii) Γ(a) = ρ(ι(a)) for all positive a ∈A.
+Further, if SG is a simplex, then (iii)⇒(i).
+Proof. (i)⇒(ii) Suppose that (A, G, Θ) is uniquely ergodic. Then ρ ◦ι is an invariant state on A,
+so it follows that ρ ◦ι is the unique invariant state. But ρ ◦ι is also faithful, so it follows that
+(A, G, Θ) is strictly ergodic.
+(ii)⇒(i) Trivial.
+(i)⇒(iii) Suppose that (A, G, Θ) is uniquely ergodic, and let a ∈A be positive. Let φ be an
+ a|SG
+-maximizing state on A. Then φ = ρ ◦ι, since both are invariant states and (A, G, Θ) is
+uniquely ergodic. Then φ = ρ ◦ι, so Γ(a) = φ(a) = ρ(ι(a)).
+(iii)⇒(i) Suppose that SG is a simplex, but that (A, G, Θ) is not uniquely ergodic. Let φ ∈SG be
+an extreme point of SG different from ρ ◦ι. Then by Corollary 1.22, there exists a ∈A self-adjoint
+such that {φ} = SG
+max(a). We can assume that a is positive, since otherwise we could replace
+a with a + r for a sufﬁciently large positive real number r > 0, and SZ
+max(a) = SZ
+max(a + r).
+Then Γ(a) = φ(a). But by the assumption that φ is uniquely
+ a|SG
+-maximizing, it follows
+that ρ(ι(a)) < φ(a). Therefore Γ(a) ̸= ρ(ι(a)), meaning that (iii) does not attain. Thus ¬(i)⇒
+¬(iii).
+■
+4. A noncommutative Herman ergodic theorem
+For the duration of this section, we assume that (A, G, Θ) is a C*-dynamical system such that
+A is separable, and that G is amenable.
+Let F = (Fk)∞
+k=1 be a right Følner sequence for G. Write PF(S) to denote the set of all limit
+points of sequences of the form
+
+φk ◦AvgFk
+∞
+k=1, where φk ∈S for all k ∈N. Because F is right
+Følner, we know from Lemma 1.2 that if S is nonempty, then PF(S) will be a nonempty compact
+subset of SG. In particular, if S ⊇SG, then PF(S) = SG for any choice of F. Moreover, if S is
+convex and Θ-invariant, then PF(S) = S.
+Question 4.1. Is PF(S) dependent on F in general?
+We now deﬁne two quantities.
+28
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Notation 4.2. Let F be a right Følner sequence for G, and S a nonempty subset of S. Let x ∈R.
+Deﬁne
+aF,S(x) := sup
+
+ψ(x) : ψ ∈PF(x)
+	
+,
+aF,S(x) := inf
+
+ψ(x) : ψ ∈PF(x)
+	
+,
+dF,S(x) := lim
+k→∞
+
+sup
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+,
+dF,S(x) := lim
+k→∞
+
+inf
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+.
+The values aF,S, dF,S can be compared to the α and δ quantities presented in Section 2 of [14],
+respectively. Ergodic optimization is concerned with ﬁnding the extrema of sequences of ergodic
+averages of real-valued functions, but there are several ways we might attempt to formalize
+what an “extremum" of a sequence of ergodic averages would be. In [14], O. Jenkinson proposes
+several different ways we might formalize this notion, then demonstrates that they are equivalent
+under reasonable conditions [14, Proposition 2.1]. Our Proposition 4.3 is an attempt to extend
+some part of this result to the noncommutative and relative setting.
+Proposition 4.3. The quantities dF,S(x), dF,S(x) are well-deﬁned when S ⊆SG is compact, convex, and
+Θ-invariant. Moreover, they satisfy
+aF,S(x) = dF,S(x),
+aF,S(x) = dF,S(x).
+Proof. We’ll prove that aF,S(x) = dF,S(x), as the proof that aF,S(x) = dF,S(x) is very similar. We
+know a priori that PF(S) = S.
+Let (φk)∞
+k=1 be a sequence in S such that for each k ∈N, we have
+sup
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+−1/k ≤φk(AvgFk x) ≤sup
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+.
+We know that any limit point of
+
+φk ◦AvgFk
+∞
+k=1 is in S. Let k1 < k2 < · · · be chosen such
+that limℓ→∞φkℓ
+
+AvgFkℓx
+
+= lim supk→∞φk
+
+AvgFk x
+
+. We can assume that
+
+φkℓ◦AvgFkℓ
+∞
+ℓ=1 is
+weak*-convergent to a state ψ ∈S, passing to a subsequence if necessary. Then
+lim sup
+k→∞
+φk
+
+AvgFk x
+
+= lim
+ℓ→∞φkℓ
+
+AvgFkℓx
+
+= ψ(x) ≤aF,S(x).
+Assume for contradiction that lim infk→∞φk
+
+AvgFk x
+
+< aF,S(x). Let ψ′ ∈PF(S) be such that
+ψ′(x) > lim infk→∞φk
+
+AvgFk x
+
+. Then
+ψ′(x) = ψ′ 
+AvgFk x
+
+≤φk
+
+AvgFk x
+
+−1/k.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+29
+Let k′
+1 < k′
+2 < · · · such that
+
+φk′
+ℓ
+
+AvgF′
+kℓx
+∞
+ℓ=1
+converges to lim infk→∞φk
+
+AvgFk x
+
+. Then
+ψ′(x) ≤lim
+ℓ→∞φk′
+ℓ
+
+AvgFk′
+ℓ
+x
+
+= lim inf
+k→∞φk
+
+AvgFk x
+
+< ψ(x),
+a contradiction. Therefore we conclude that lim infk→∞φk
+
+AvgFk x
+
+≥aF,S(x). Thus
+aF,S(x) ≤lim inf
+k→∞φk
+
+AvgFk x
+
+≤lim sup
+k→∞
+φk
+
+AvgFk x
+
+≤aF,S(x).
+Thus we can conclude that dF,S(x) is well-deﬁned and equal to dF,S(x).
+■
+Remark 4.4. An alternate proof of Proposition 4.3 using nonstandard analysis is presented in
+Section 5.
+To our knowledge, the ﬁrst result like Theorem 4.5 is [13, Lemme on pg. 487]. Herman’s result
+can be understood as an extension of the classical result that a topological dynamical system
+is uniquely ergodic if and only if the ergodic averages of all continuous functions converge
+uniformly to a constant. To our knowledge, the ﬁrst record of this classical result is [15, (5.3)].
+If Oxtoby’s result can be understood as relating the uniform convergence properties of ergodic
+averages of all continuous functions to the ergodic optimization of all continuous functions,
+then Herman’s result relates the uniform convergence properties of ergodic averages of a single
+continuous function to its ergodic optimization. Our result extends Herman’s in a few directions.
+First, it extends Herman’s result to the setting of actions of amenable groups other than Z.
+Moreover, it extends the result to C*-dynamical systems. Finally, it allows us to relate convergence
+in certain seminorms to relative ergodic optimizations.
+Let (A, G, Θ) be a C*-dynamical system, where G is an amenable group. Given a nonempty
+subset S of S, deﬁne the seminorm ∥· ∥S on A by
+∥x∥S := sup
+φ∈S
+|ψ(x)| .
+Theorem 4.5. Let F be a right Følner sequence for G, and S ⊆S. Let x ∈R, and λ ∈R. Then the
+following are equivalent.
+(i)
+
+ψ(x) : ψ ∈PF(S)
+	 = {λ}.
+(ii) limk→∞
+AvgFk x −λ
+
+S = 0.
+30
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Proof. (i)⇒(ii): We prove the contrapositive. Suppose there exists ε0 > 0 and k1 < k2 < · · · such
+that
+AvgFkℓx −λ
+
+S > ε0
+(∀ℓ∈N).
+For each k ∈N, choose φk ∈S such that
+φk
+
+AvgFk x −λ
+ ≥1
+2
+AvgFk x −λ
+
+S. Then in particu-
+lar we know that
+φkℓ
+
+AvgFkℓx −λ
+ > ε0/2
+(∀ℓ∈N).
+By the weak*-compactness of S,
+there must exist a weak*-convergent subsequence of
+
+φkℓ◦Avgkℓ
+∞
+ℓ=1. Assume without loss of generality that
+
+φkℓ◦Avgkℓ
+∞
+ℓ=1 converges in the weak*
+topology, and write ψ = limℓ→∞φkℓ◦Avgkℓ. Then
+|ψ(x −λ)| =
+ lim
+ℓ→∞φkℓ
+
+AvgFkℓx −λ
+
+= lim
+ℓ→∞
+φkℓ
+
+AvgFkℓx −λ
+
+≥ε0/2.
+Therefore ψ(x) ̸= λ, meaning that
+
+ψ(x) : ψ ∈PF(S)
+	 ̸= {λ}.
+(ii)⇒(i): Suppose that limk→∞
+AvgFk x −λ
+
+S = 0. Let (φk)∞
+k=1 be a sequence in S, and let
+
+φkℓ◦AvgFkℓ
+∞
+ℓ=1 be a weak*-convergent subsequence of
+
+φk ◦AvgFk
+∞
+k=1 with limit ψ. Then
+|ψ(x −λ)| =
+ lim
+ℓ→∞φkℓ
+
+AvgFkℓx −λ
+
+= lim
+ℓ→∞
+φkℓ
+
+AvgFkℓx −λ
+
+≤lim sup
+ℓ→∞
+AvgFk x −λ
+
+S
+= 0.
+Therefore
+
+ψ(x) : ψ ∈PF(S)
+	 = {λ}.
+■
+Remark 4.6. An alternate proof of Theorem 4.5 using nonstandard analysis is presented in Sec-
+tion 5.
+Corollary 4.7. Let F be a right Følner sequence for G. Let x ∈R, and λ ∈R. Then the following are
+equivalent.
+(i)
+
+ψ(x) : ψ ∈SG	 = {λ}.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+31
+(ii) limk→∞
+AvgFk x −λ
+ = 0.
+Proof. Apply Theorem 4.5 in the case where S = S, implying that ∥· ∥S = ∥· ∥and PF(S) =
+SG.
+■
+Corollary 4.7 strengthens the noncommutative analogue of Oxtoby’s characterization of unique
+ergodicity, as we see below.
+Corollary 4.8 (A noncommutative extension of Oxtoby’s characterization of unique ergodicity).
+Let F = (Fk)∞
+k=1 be a right Følner sequence for G. A C*-dynamical system (A, G, Θ) is uniquely ergodic
+if and only if
+
+AvgFk x
+∞
+k=1 converges in norm to an element of C1 ⊆A for all x ∈A.
+Proof. (⇒): By taking real and imaginary parts, we can reduce to the case where x is self-
+adjoint. If (A, G, Θ) is uniquely ergodic, then
+
+ψ(x) : ψ ∈SG	
+is singleton, so by Corollary 4.7
+the averages will converge to a scalar.
+(⇐): Conversely, if (A, G, Θ) is not uniquely ergodic, then there exist two states ψ1, ψ2 ∈SG
+for which there exists y ∈R such that ψ1(y) ̸= ψ2(y), implying that
+
+ψ(y) : ψ ∈SG	
+is not
+singleton. Corollary 4.7 then tells us that
+
+AvgFk x
+∞
+k=1 doesn’t converge in norm.
+■
+5. Applications of nonstandard analysis to noncommutative ergodic optimization
+The tools of nonstandard analysis can be used to provide alternate proofs of some results
+in this article. In this section, we assume that the reader is familiar with the basic tools and
+vocabulary of nonstandard analysis. See [12] for references. Since some of the terminology of
+the ﬁeld is not entirely universal, we deﬁne some of the less universal terms here.
+We will assume throughout this section that (A, G, Θ) is a C*-dynamical system, and that U
+is a universe that contains A, G, C. Assume that ∗: U 7→U′ is a countably saturated universe
+embedding. We say that x ∈∗C is unlimited if |x| > n for all n ∈N, and limited otherwise. Let
+L = S
+n∈N {z ∈∗C : ∥z∥≤n} denote the external ring of limited elements of ∗C. For z, w ∈∗C,
+we write z ≃w if |z −w| < 1/n for all n ∈N. This ≃is an equivalence relation on ∗C. We deﬁne
+the shadow sh : L ։ C to be the C-linear functional mapping z ∈L to the unique (standard)
+complex number w ∈C for which z ≃w. The shadow is also order-preserving on L ∩∗R. Let
+∗N∞:= {K ∈∗N : ∀k ∈N (K ≥k)} = ∗N \ N denote the unlimited hypernaturals.
+We have the following nonstandard analogue of Lemma 1.2.
+Lemma 5.1. Let (A, G, Θ) be a C*-dynamical system, and let G be an amenable group.
+Consider a
+sequence in (φk)∞
+k=1 in S, and a right Følner sequence F = (Fk)∞
+k=1 for G. Let K ∈∗N∞be an unlimited
+32
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+hypernatural, and deﬁne a state ω : A →C by
+ω(x) = sh
+∗
+φK
+
+AvgFK x
+
+.
+Then ω is a well-deﬁned Θ-invariant state, and is a limit point of the sequence
+
+φk ◦AvgFk
+∞
+k=1.
+Proof. First, we take up the well-deﬁnedness of ω. If x ∈A, then
+∀k ∈N
+φk
+
+AvgFk x
+ ≤∥x∥
+
+,
+and so by the Transfer Principle
+∀k ∈∗N
+∗φk
+
+AvgFk x
+ ≤∥x∥
+
+.
+In particular, it follows that
+
+∗
+φK
+
+AvgFK x
+ ≤∥x∥, meaning that
+∗
+φK
+
+AvgFK x
+
+∈L. Thus ω(x)
+is well-deﬁned. We can similarly prove that ω is positive and unital by applying the Transfer
+Principle to the sentences
+∀k ∈N ∀x ∈A
+
+φk
+
+AvgFk (x∗x)
+
+≥0
+
+,
+∀k ∈N
+
+φk
+
+AvgFk 1
+
+= 1
+
+.
+To prove the Θ-invariance of ω, we recall from a familiar argument (see proof of Lemma 1.2) that
+if g0 ∈G, x ∈A, then
+φk
+
+AvgFk Θg0x
+
+−φk
+
+AvgFk x
+ ≤|Fkg0∆Fk|
+|Fk|
+∥x∥
+k→∞
+→0.
+It
+follows
+from
+a
+classical
+result
+of
+nonstandard
+analysis
+[12,
+Theorem
+6.1.1]
+that
+∗φK
+
+AvgFK Θg0x
+
+−∗φK
+
+AvgFK x
+ ≤|FKg0∆FK|
+|FK|
+∥x∥≃0, meaning that ω(x) = ω
+ Θg0x
+
+.
+Finally, we argue that ω is a limit point of
+
+φk ◦AvgFk
+∞
+k=1. For n, ℓ, k0 ∈N; x1, . . . , xℓ∈A,
+consider the sentence σx1,...,xℓ;n,k0 given by
+∃k ∈N
+
+(k ≥k0) ∧
+
+min
+1≤j≤ℓ
+ω(xj) −φk
+
+AvgFk xj
+ < 1/n
+
+.
+Then ∗σx1,...,xℓ;n,k0 is true for all n, ℓ, k0 ∈N; x1, . . . , xℓ∈A, witnessed by K. Therefore, it follows
+from the Transfer Principle that σx1,...,xℓ;n,k0 is true for all n, ℓ, k0 ∈N; x1, . . . , xℓ∈A. We know
+that
+
+ψ ∈S : min
+1≤j≤ℓ|ω(xj) −ψ(xj)| < 1/n
+
+: n, ℓ∈N; x1, . . . , xℓ∈A
+
+is a neighborhood basis for ω in the weak* topology. Thus we have shown that ω is a limit point
+of the sequence
+
+φk ◦AvgFk
+∞
+k=1.
+■
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+33
+We might ask whether Lemma 5.1 is strictly weaker than Lemma 1.2, since Lemma 5.1 also
+asserts that the state it describes is a limit point of the sequence that generates it. In fact, the
+two lemmas are equivalent in the sense that for a sequence (φk)∞
+k=1 in S, every limit point of
+the sequence
+
+φk ◦AvgFk
+∞
+k=1 can be written as sh
+∗
+φK
+
+AvgFK x
+
+for some K ∈∗N∞. To see
+this, choose k1 < k2 < · · · such that ψ = limℓ→∞φkℓ◦AvgFkℓexists. Let N be a countable
+neighborhood basis for ψ in the weak*-topology, and for each U ∈N , k ∈N, let SU,k be the set
+SU,k =
+n
+k′ ∈N :
+ k′ ≥k
+ ∧
+
+φk′ ◦AvgFk′ ∈U
+o
+.
+Then {SU,k}U∈N ,k∈N has the ﬁnite intersection property, and so by the countable saturation of
+our universe embedding, it follows that there exists K ∈∗N such that
+K ∈
+\
+U∈N ,k∈N
+∗SU,k,
+which is necessarily unlimited. Then for any x ∈A, we have that
+∗φK
+
+AvgFK x
+
+−ψ(x)
+ < 1/n
+for all n ∈N, so
+sh
+
+∗φK
+
+AvgFK x
+
+= ψ(x).
+This correspondence can be generalized in the following result.
+Proposition 5.2. Let Ω= (Ω, τ) be a compact Hausdorff topological space, and let ∗: U →U′ be a
+countably saturated extension of a universe U containing Ωand N. Let ≃be the equivalence relation on
+∗Ωdeﬁned by
+x ≃y
+⇐⇒
+∀U ∈τ (x ∈∗U ↔y ∈∗U) .
+Deﬁne a map sh : ∗Ω→Ωthat sends x ∈∗Ωto the unique y ∈Ωsuch that x ≃y, and let (xk)∞
+k=1 be a
+sequence in Ω. Then the map sh is well-deﬁned.
+Further, set
+LS ((xk)∞
+k=1)
+=
+
+ω ∈Ω: ∀U ∈τ ∀k ∈N
+(ω ∈U) →
+ ∃k′ ∈N
+  k′ ≥K
+ ∧(xk′ ∈U)
+	
+.
+Then
+{sh (∗xK) : K ∈∗N∞} ⊆LS ((xk)∞
+k=1) .
+In addition, if ∗is κ-saturated for some uncountable cardinal κ > |B|, where B is some topological basis
+B of τ, then {sh (∗xK) : K ∈∗N∞} = LS
+ (xk)∞
+k=1
+
+.
+34
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Proof. The fact that in a compact topological space, for every x ∈∗Ωexists some y ∈Ωsuch
+that x ≃y can be found in [9, Theorem 1.6 of Chapter 3]. As for the uniqueness, assume for
+contradiction that there existed y, z ∈Ωsuch that x ≃y ≃z, y ̸= z.
+Using the Hausdorff
+property, choose open neighborhoods U, V such that y ∈U, z ∈V, U ∩V = ∅. Then y ∈U, so
+by the Transfer Principle y ∈∗U. Thus z ∈∗U, because y ≃z. Therefore z ∈U by the Transfer
+Principle, a contradiction. Thus sh : ∗Ω→Ωis well-deﬁned.
+Let K ∈∗N∞, and consider y = sh (∗xK). Let Ny = {U ∈B : y ∈U}, where B is a topological
+basis for τ, and consider for k ∈N, U ∈Ny the sentence σU,k deﬁned by
+∃k′ ∈N
+ k′ ≥k
+ ∧(xk ∈U)
+
+.
+Then ∗σk,U is true for all k ∈N, U ∈Ny, since ∗xK ∈∗U and K ≥k for all k ∈N, so it follows
+that σk,U is true for all k ∈N, U ∈Ny. Since Ny forms a neighborhood basis for y, it follows that
+y ∈LS
+ (xk)∞
+k=1
+
+.
+Now suppose that ∗is κ-saturated for some uncountable cardinal κ > |B|, and let ω ∈
+LS
+ (xk)∞
+k=1
+
+. Let Nω = {U ∈B : ω ∈U}. For k ∈N, U ∈Nω, consider the set
+Sk,U =
+
+k′ ∈N :
+ k′ ≥k
+ ∧(xk′ ∈U)
+	
+.
+Then {Sk,U : k ∈N, U ∈Nω} has the ﬁnite intersection property, and thus there exists K ∈
+T
+k∈N,U∈Nω
+∗Sk,U. Thus ∗xK ∈∗U for all U ∈Nω, and K ∈∗N∞. Thus ω = sh (∗xK).
+■
+Remark 5.3. Our deﬁnitions of ≃and sh in the statement of Proposition 5.2 is consistent with
+our deﬁnition of ≃on L in the following sense. We can write L = S
+n∈N
+∗{z ∈C : |z| ≤n}. If
+x, y ∈L, then there exists n ∈N such that max{|x|, |y|} ≤n. Then x, y ∈∗{z ∈C : |z| ≤n}. The
+set {z ∈C : |z| ≤n} is compact, and the deﬁnition of ≃on that compact space in the sense of
+Proposition 5.2 will agree with our deﬁnition of ≃on L from the start of this section.
+In light of Theorem 5.2, several compactness arguments in this article can be proven alterna-
+tively in the language of nonstandard analysis. Here we provide a few examples.
+Proof of Theorem 3.4 using nonstandard analysis. For each k ∈N, choose a state φk on A such that
+φk
+
+AvgFk a
+
+=
+AvgFk a
+ .
+Fix K ∈∗N∞, and let ω : A →C be the state
+ω(x) = sh
+
+∗φK
+
+AvgFK x
+
+.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+35
+Lemma 5.1 tells us that ω is Θ-invariant. We argue now that ω(a) = m
+ a|SG
+. This follows
+because if ψ ∈SG, then
+ψ(a) = ψ
+
+AvgFk a
+
+≤
+AvgFk a
+ = φk
+
+AvgFk a
+
+for
+all
+k
+∈
+N,
+and
+thus
+we
+can
+apply
+the
+Transfer
+Principle
+to
+the
+sentence
+∀k ∈N
+
+ψ(a) ≤φk
+
+AvgFk a
+
+to infer
+ψ(a) ≤∗φK
+
+AvgFK a
+
+⇒ψ(a) ≤ω(a).
+Therefore, we’ve proven that
+∗AvgFK a
+ ≃m
+ a|SG
+for all K ∈∗N∞. Therefore by a classical
+result of nonstandard analysis [12, Theorem 6.1.1], it follows that limk→∞
+AvgFk a
+ = m
+ a|SG
+.
+■
+Proof of Proposition 4.3 using nonstandard analysis. We’ll prove that aF,S(x) = dF,S(x), as the proof
+that aF,S(x) = dF,S(x) is very similar. We know a priori that PF(S) = S.
+Let (φk)∞
+k=1 be a sequence in S such that for each k ∈N, we have
+sup
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+−1/k ≤φk(AvgFk x) ≤sup
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+.
+Let K ∈∗N∞, and let ω : A →C be the state ω(y) = sh
+
+∗φK
+
+AvgFK y
+
+. Then ω ∈PF(S), so
+ω(x) ≤aF,S(x).
+To prove the opposite inequality, let ψ ∈PF(S) = S. Then
+ψ(x) = ψ
+
+AvgFk x
+
+≤sup
+n
+φ
+
+AvgFk x
+
+: φ ∈S
+o
+≤φk
+
+AvgFk x
+
++ 1/k
+(∀k ∈N).
+Thus the sentence
+∀k ∈N
+
+ψ(x) ≤φk
+
+AvgFk x
+
++ 1/k
+
+is true. Applying the Transfer Principle then tells us that ψ(x) ≤∗φK
+
+AvgFK x
+
++ 1/K, implying
+that ψ(x) ≤ω(x). Taking a supremum over ψ ∈S = PF(S) tells us that
+aF,S(x) ≤ω(x).
+Therefore ∗φK(x) ≃aF,S(x) for all K ∈∗N. Thus, by a classical result of nonstandard analysis
+[12, Theorem 6.1.1], it follows that limk→∞
+AvgFk a
+ = aF,S(x).
+■
+36
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+Proof of Theorem 4.5 using nonstandard analysis. (i)⇒(ii): Suppose
+
+ψ(x) : ψ ∈PF(S)
+	 = {λ}. For
+each k ∈N, choose φk ∈S such that
+φk
+
+AvgFk x −λ
+ ≥1
+2
+AvgFk x −λ
+
+S. Fix K ∈∗N, and let
+ω : A →C be the state
+ω(y) = sh
+
+∗φK
+
+AvgFK y
+
+.
+Lemma 5.1 tells us that ω ∈PF(S). Thus ω(x) = λ. Therefore
+∗φK
+
+AvgFK x
+
+−λ
+ ≃0 for
+all K ∈∗N∞, meaning a classical result of nonstandard analysis [12, Theorem 6.1.1] tells us that
+limk→∞
+φk
+
+AvgFk x
+
+−λ
+ = 0. But because
+AvgFk x −λ
+
+S ≤2
+φk
+
+AvgFk x
+
+−λ
+ for all k ∈N,
+we can conclude that limk→∞
+AvgFk x −λ
+
+S = 0.
+(ii)⇒(i): Suppose that limk→∞
+AvgFk x −λ
+
+S = 0. Let (φk)∞
+k=1 be a sequence in S, and let
+ω : A →C be the state
+ω(y) = sh
+
+∗φK
+
+AvgFK y
+
+.
+Then
+|ω(x −λ)| ≃
+∗φK
+
+AvgFK x −λ
+ ≤∥∗AvgFKx −λ∥S ≃0.
+Therefore ω(x) = λ. We can then take a supremum to get
+sup
+(φk)∞
+k=1∈SN,K∈∗N∞
+sh
+
+∗φK
+
+AvgFK x
+
+−λ
+ = 0.
+But in light of Proposition 5.2, we know that
+PF(S) =
+n
+y 7→sh
+
+∗φK
+
+AvgFK y
+
+: (φk)∞
+k=1 ∈SN, K ∈∗N∞
+o
+,
+so this shows that ψ(x) = λ for all ψ ∈PF(S).
+■
+Acknowledgments
+This paper is written as part of the author’s graduate studies. He is grateful to his beneﬁcent
+advisor, professor Idris Assani, for no shortage of helpful guidance.
+An earlier version of this paper referred to “tempero-spatial differentiations." Professor Mark
+Williams pointed out that the more correct portmanteau would be “temporo-spatial." We thank
+Professor Williams for this observation.
+References
+[1] Beatriz Abadie and Ken Dykema, Unique ergodicity of free shifts and some other automorphisms of c*-algebras, Journal
+of Operator Theory (2009), 279–294.
+[2] Charalambos D Aliprantis and Owen Burkinshaw, Positive operators, Vol. 119, Springer Science & Business Media,
+2006.
+NONCOMMUTATIVE ERGODIC OPTIMIZATION
+37
+[3] Idris Assani and Aidan Young, Spatial-temporal differentiation theorems, Acta Mathematica Hungarica 168 (2022),
+301–344.
+[4] Lawrence W Baggett, Functional analysis: a primer, Dekker, 1992.
+[5] Jon P Bannon, Jan Cameron, and Kunal Mukherjee, On noncommutative joinings, International Mathematics Re-
+search Notices 2018 (2018), no. 15, 4734–4779.
+[6] Bruce Blackadar, Operator algebras: theory of c*-algebras and von neumann algebras, Vol. 122, Springer Science &
+Business Media, 2006.
+[7] Karma Dajani and Sjoerd Dirksin, A simple introduction to ergodic theory, University of Utrecht, Lecture notes in
+Ergodic Theory (2008).
+[8] EB Davies, A generalized theory of convexity, Proceedings of the London Mathematical Society 3 (1967), no. 4, 644–
+652.
+[9] Martin Davis, Applied nonstandard analysis, Wiley, 1977.
+[10] Rocco Duvenhage and Anton Stroh, Unique ergodicity and disjointness of c*-dynamical systems, arXiv preprint
+arXiv:1102.4243 (2011).
+[11] Tanja Eisner, Bálint Farkas, Markus Haase, and Rainer Nagel, Operator theoretic aspects of ergodic theory, Vol. 272,
+Springer, 2015.
+[12] Robert Goldblatt, Lectures on the hyperreals: an introduction to nonstandard analysis, Vol. 188, Springer Science &
+Business Media, 2012.
+[13] Michael R Herman, Une méthode pour minorer les exposants de lyapounov et quelques exemples montrant le caractere
+local d’un théoreme d’arnold et de moser sur le tore de dimension 2, Commentarii Mathematici Helvetici 58 (1983),
+no. 1, 453–502.
+[14] Oliver Jenkinson, Ergodic optimization, Discrete & Continuous Dynamical Systems-A 15 (2006), no. 1, 197.
+[15] John C Oxtoby, Ergodic sets, Bulletin of the American Mathematical Society 58 (1952), no. 2, 116–136.
+[16] GK Pedersen, C*-algebras and their automorphism groups, Soc. Monogr. Ser. Academic Press, London (1979).
+[17] Robert R Phelps, Lectures on choquet’s theorem, Springer Science & Business Media, 2001.
+[18] Walter Rudin, Functional analysis, McGraw-Hill, Inc., 1991.
+[19] Shôichirô Sakai, C*-algebras and w*-algebras, Springer Science & Business Media, 2012.
+[20] Peter Walters, Ergodic theory—introductory lectures, Vol. 458, Springer, 2007.
+[21] Aidan Young, Temporo-spatial differentiations with respect to ﬁnite unions of balls, arXiv preprint arXiv:2302.06076
+(2023).
+[22] Yun Zhao, Maximal integral over observable measures, Acta Mathematica Sinica. English Series 32 (2016), no. 5, 571–
+578.

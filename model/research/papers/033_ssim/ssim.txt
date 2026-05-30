@@ -1,0 +1,4065 @@
+arXiv:2107.03430v1  [stat.ME]  7 Jul 2021
+ENNS: Variable Selection, Regression, Classiﬁcation and
+Deep Neural Network for High-Dimensional Data
+Kaixu Yang and Tapabrata Maiti
+yangkaix@msu.edu
+maiti@msu.edu
+619 Red Cedar Rd.
+Department of Statistics and Probability
+Michigan State University
+East Lansing, MI, 48824
+July 9, 2021
+Abstract
+High-dimensional, low sample-size (HDLSS) data problems have been a topic of
+immense importance for the last couple of decades. There is a vast literature that
+proposed a wide variety of approaches to deal with this situation, among which variable
+selection was a compelling idea. On the other hand, a deep neural network has been
+used to model complicated relationships and interactions among responses and features,
+which is hard to capture using a linear or an additive model. In this paper, we discuss
+the current status of variable selection techniques with the neural network models.
+We show that the stage-wise algorithm with neural network suﬀers from disadvantages
+such as the variables entering into the model later may not be consistent. We then
+propose an ensemble method to achieve better variable selection and prove that it has
+probability tending to zero that a false variable is selected. Then, we discuss additional
+regularization to deal with over-ﬁtting and make better regression and classiﬁcation.
+We study various statistical properties of our proposed method. Extensive simulations
+and real data examples are provided to support the theory and methodology.
+Keywords: Bootstrap, Deep Neural Network, Ensemble, High-dimensional, Penalization,
+Stage-wise selection.
+1
+Introduction
+High-dimensional data modeling in statistics has been popular for decades, [8]. Consider
+a high-dimensional regression or a binary classiﬁcation problem. Let x ∈Rp be the fea-
+ture vector, and let y ∈R for regression problem and y ∈{0, 1} for classiﬁcation problem
+be the response. Our goal is to build a parsimonious model based on the training sample
+1
+{(x1, y1), ..., (xn, yn)}. We have more features than the sample size, i.e., p > n. Moreover,
+many data have a complicated relationship among diﬀerent variables, which is hard to cap-
+ture through explicit modeling. Neural network modeling is one of the best ways of capturing
+complex relationships among variables with minimal mathematical assumptions. Thus, it is
+interesting to consider a neural network structure between x and y.
+In general, high-dimensional model does not have consistent estimations since we have less
+number of observations than the number of variables without any assumptions. Two major
+approaches can be used to deal with the high-dimensionality. The ﬁrst major approach is to
+assume that the feature space is sparse, i.e., only a small fraction of variables are eﬀectively
+included in modeling with y. A model with only a fraction of the original features enjoys
+simplicity and interpretability.
+Sparse solutions can be obtained using soft-thresholding
+methods [22] or regularization [63, 35] or stage-wise algorithms [24]. Regularization obtains
+a sparse solution by shrinking the unimportant features’ coeﬃcients to zero. The estimated
+coeﬃcients are shrinkage estimators and thus have smaller variance [17]. However, regular-
+ization with multiple tuning parameters takes longer to run and maybe sensitive in tuning
+the parameters in practice. Stage-wise algorithms add variables one by one and stop at a
+preferred stopping time.
+The second dominant approach is projection-based. One ﬁnds a lower-dimensional rep-
+resentation of the original feature space. Linear projection methods include the PCA [34] in
+the low dimensional case and some of its variants [37, 78] in the high-dimensional case. Ker-
+nel PCA [55] performs PCA on a reproducing kernel Hilbert space to achieve non-linearity.
+Manifold learning, [41] embeds the original feature space to a low-dimensional manifold.
+Except for the manifold learning algorithms that reduce the original dimensionality to two
+or three dimension for visualization, a few manifolding learning including the multidimen-
+sional sacling (MDS) by [65], the local linear embedding (LLE) by [54], and the Isomap by
+[61] are applied to low-dimensional dimensionality reduction. Applications of the manifold
+learning algorithms in the high-dimensional set up is studied for speciﬁc ﬁelds, but a general
+framework is not available. The current manifold learning algorithms focus more on data
+visualization, which reduces the dimensionality to two or three, see, for example, [67]. An-
+other popular dimension reduction technique is the auto-encoder [40], which uses a neural
+network to encode the feature space and decode the representation to be as close to the
+original feature space as possible. All of the above methods are unsupervised, and the lower-
+dimensional representation is no longer preserves any of the original features. Therefore, we
+lose interpretability by adopting this approach. Thus, these applications are not useful in
+building regression models.
+On the other hand, neural networks have been utilized to model complicated relationship
+since 1940s [39], and gained much more attention since the great improvements in computer
+hardware in this century. Speciﬁcally, [50] showed that the computation of neural networks
+could be greatly improved by GPU (graphics computing unit) acceleration than purely run-
+ning on CPU (central processing unit), this makes it easy to train deeper network structures.
+Nowadays, variants of neural networks are being applied world-wide, including the convolu-
+tional neural network (CNN), recurrent neural network (RNN), residual network (ResNet),
+etc. In theory, a neural network works in representing complicated relationships, mainly lies
+on the universal approximation theorem [18, 4, 1, 58]. The theorem states that a shallow
+neural network (neural network with one hidden layer) is able to approximate any contin-
+2
+uous function with an arbitrarily small error given a large number of hidden nodes, under
+mild assumptions. In practice, to achieve this good approximation, usually, a massive set of
+training data is needed, since the number of parameters in a neural network is much more
+than that in other conventional statistical models. Moreover, the non-convexity of a neural
+network structure makes it impossible to obtain a global optimum. Luckily, a local optimum
+of the neural network provides a good approximation in a reasonable practical sense.
+Deep Neural Network (DNN) is a neural network with a deep structure of hidden layers,
+which has better performance than the shallow neural network (neural network with only
+one hidden layer) in many aspects in a broad ﬁeld of applications such as pattern recognition,
+speech recognition and computer vision, see for example [48, 43, 36]. The deep structure has
+a greater approximation power than a shallow neural network. There have been a few works
+regarding the approximation power of deep neural networks [5, 53, 57, 25].
+The results
+suggest that using a deep neural network helps reduce the approximation error, which is
+useful in the cases where the approximation error dominates the total error. Therefore, it’s
+necessary to consider a deep neural network model over a shallow model. However, ﬁnding a
+way to make the deep neural network well trained (statistically consistent) on small sample
+size is necessary.
+In this paper, we discuss the stage-wise variable selection algorithm with neural networks.
+We show that the existing stage-wise algorithm performs well at the beginning and selects
+the correct variables. However, at the later steps, the probability that it selects a correct
+variable decreases. Thus we propose an ensemble algorithm embedded with the stage-wise
+variable selection algorithm, named ensemble neural network selection (ENNS) algorithm.
+We show that the new algorithm selects all correct variables with high probability and its
+false positive rate converges to zero. Moreover, instead of a regular neural network trained
+on the selected variables, we propose a few methods to further reduce the variance of the
+ﬁnal model. We provide some theoretical developments for statistical properties. Then we
+conduct an extensive numerical study to support our theoretical claims and validation of the
+proposed methodology. In the sequel, we propose an algorithm for the l1 penalized neural
+network with soft-thresholding operators that addresses over-ﬁtting issues.
+The article is organized as follows: In section 2, we discuss some major related works
+and the intrinsic dimensionality of a complex model. In section 3, we present the ideas and
+algorithms behind the ENNS algorithm and the methods of increasing stability during the
+estimation step. In section 4, we provide the theory for supporting the methodology. In
+section 5, we present our numeric study to support our claims. Section 7 concludes the
+article with some future directions.
+2
+Related works
+In this section, we discuss some important related works.
+2.1
+The regularization approach
+There is a considerable amount of literature that have discussed achieving sparsity via regu-
+larization [63, 26, 76, 73, 45, 27, 35, 47]. Let θ be the parameters of a model. A direct method
+3
+is to add a zero norm of the parameters ∥θ∥0 to the loss function. However, optimizing a
+loss function with zero norms has been proved to be a non-deterministic polynomial-time
+hardness (NP-hard) problem, which requires exponential time to solve, [49]. However, it
+has been proved that instead of directly penalizing the number of nonzero coeﬃcients by
+l0 norm, l1 type penalty is able to shrink some coeﬃcients to zero, and thus the features
+corresponding to these zero coeﬃcients are not included in the model, [63]. A great number
+of work has been done with the lasso estimator. Adaptive methods ([76]) assigns diﬀerent
+weights to diﬀerent coeﬃcients using a data-driven way, which obtains oracle solutions. [13]
+studied the bootstrap lasso estimator and its variations, and showed the strong consistency
+of the estimator. [12] studies the consistency properties in the bootstrap adaptive lasso.
+[19] proposed a modiﬁed perturbation bootstrap adaptive lasso estimator and showed its
+higher order consistency in the high-dimensional set up. The lasso penalty can be extended
+to adopt group-wise penalization, [73, 35], commonly known as group lasso. The power of
+regularization is decided through the hyperparameter, which is also called the tuning pa-
+rameter, by checking some criteria, such as, BIC ([56]), EBIC ([14]), GIC ([75, 28]) or by
+cross-validations.
+Variations of the l1 norm regularization are also widely used. It’s known that l1 norm reg-
+ularization yields sparse solution ([63]), while l2 norm regularization controls the magnitude
+of coeﬃcients, eases multicolinearity and overﬁtting. The l1 + l2 norm regularization both
+yields sparse solution and encourages group eﬀects ([77]). The lp,1 norm penalization ([73],
+[2]), where p = 2 matches the group lasso penalty, yields group sparsity. The lp,1, l1 norm
+penalty, known as the sparse group lasso penalty, yields both group sparsity and in-group
+sparsity solutions, ([59]). Some variation of the norm regularization methods include the
+Dantzig selector [10], which is a variation of the lasso. The SCAD [26] is deﬁned from the
+derivative, instead of directly deﬁned from the penalty term.
+The regularization approach requires the assumption that only a few features are relevant
+in predicting the response, all other features either have exactly zero coeﬃcients (strong
+sparsity assumption), for example, in the linear regression set up
+βj = 0,
+for j ∈A0 ⊂{1, ..., p}
+and
+#{βj, j /∈A0} = s << p,
+or the coeﬃcients of irrelevant features are bounded from above by a negligible term (weak
+sparsity assumption)
+X
+j∈A0
+|βj| ≤η
+and
+#{βj, j /∈A0} = s << p
+(for example, see [74]). If the sparsity assumption is satisﬁed, the regularization approach
+with proper penalty yields a sparse solution with high probability (that the true subset
+of relevant features is selected ) under some common mild conditions.
+An advantage of
+this approach is that we know which features are selected, and thus the model has better
+interpretability.
+2.2
+Deep neural network approximation
+It’s well known, the universal approximation theorem [18], that a shallow neural network
+with k hidden nodes, denoted as SNk(x) can be used to approximate any continuous function
+4
+f(x) deﬁned in a bounded domain with arbitrarily small error
+|SNk(x) −f(x)| < ǫ
+for all x in the bounded domain with a big enough k. This pioneering theorem encourages
+neural network to be used widely. Later as the development of deep neural networks, re-
+searchers found the limitations of shallow neural network such that the number of neurons
+needed to achieve a desire error increases as fast as exponentially [15, 16]. Later, they found
+that “the two hidden layer model may be signiﬁcantly more promising than the single hidden
+layer model” [52]. Sum neural networks, or equivalently, polynomial neural networks have
+been studied [20, 46], and universal approximation property has been established recently
+by [25] that a continuous function in F n
+d can be approximated with error ǫ by a quadratic
+network that has depth
+O
+
+log(log(1
+ǫ)) + log(1
+ǫ)
+
+and number of weights
+O
+
+log(log(1
+ǫ))(1
+ǫ)d/n + log(1
+ǫ)(1
+ǫ)d/n
+
+where d is the dimension of domain.
+The approximation theory for regular deep neural
+networks have also been established recently. [53] showed that a deep network need
+O
+
+(n −1)
+ ǫ
+L
+−2
+model complexity to approximate a L-Lipshitz continuous function of n variables instead of
+O
+ ǫ
+L
+−n
+in a shallow neural network. [57] and [58] provide much detail mathematical treatment for
+the deep neural network approximation power.
+2.3
+Variable selection and regularization in neural networks
+In terms of variable selection in neural networks, [11] proposes an algorithm to prune hidden
+nodes in low-dimensional setup, while [60] proposes a dropout technique to eliminate hidden
+nodes randomly. These methods set coeﬃcients to zero and thus reduce the generalization
+variance, but do not help in the high-dimensional setup, where one needs to eliminate the
+unimportant input features.
+In the high-dimensional setup, a neural network has even many more parameters and thus
+is harder to train compared to its low-dimensional setup. When we have a relatively smaller
+sample size compared to the huge number of parameters, a neural network usually having
+high variance. A few researchers have studied this property [29, 44, 72, 42]. By applying the
+group lasso regularization [73], one can shrink the whole connections of a speciﬁc variable
+to exact zero, and thus performs variable selection.
+However, regularization methods in
+5
+neural networks involve too many tuning parameters and therefore make the neural network
+sensitive to a small change in the tuning parameters in practice. [44] also presents a stage-
+wise variable selection algorithm with neural networks, called deep neural pursuit (DNP),
+which uses correlation to add new variables and enjoys faster speed. These methods are
+extensions of the high-dimensional linear models or additive models, which act as pioneers
+of this emerging topic.
+2.4
+Algorithms
+The regularization methods usually involve l1 norm penalty term, which is not easy to solve
+using regular gradient descent algorithms, see, for example, [68]. This issue is general for all
+models with l1 penalty. The regularization path for generalized linear models can be easily
+obtained from coordinate descent algorithms [69, 30].
+Various algorithms are used to obtain a path selection. The least angle regression provides
+a forward algorithm to add new features by looking at the correlation, [24]. The LARS
+algorithm with simple modiﬁcation can be used to obtain the lasso solution path.
+[64]
+provides a stage-wise algorithm, which provides a very close solution path to the lasso solution
+path. [51] studied a stage-wise algorithm to incorporate the l2, l1 and l0 norm penalty with
+gradients with respect to the input weights. The gradient has implicit connections with the
+correlation studied by [24].
+For the other penalties, [62] shows that there is an equivalence between using the stage-
+wise algorithm and the group lasso penalty. [44] applies deep artiﬁcial neural networks to
+perform feature selection.
+3
+Proposed Methodology: Two-step variable selection
+and estimation
+In this section, we propose a two-step variable selection and estimation approach with deep
+neural networks. We discuss the methodology in the following subsections.
+Just to recap, we replicate the data structure again. Consider a feature vector x ∈Rp
+and a response y ∈R for the regression set up and y ∈{0, 1} in the classiﬁcation set
+up. We have data {(x1, y1), ..., (xn, yn)} consisting of independent observations. Denote the
+design matrix X = (x1, ..., xn)T ∈Rn×p and the response vector y = (y1, ..., yn)T. As we
+mentioned before, we have more variables than observations, i.e., p > n. According to the
+previous discussion, variable selection is an important step in high-dimensional modeling.
+If one includes all variables in the model, there will be at least p parameters to estimate,
+which can not be done consistently with the n observations. If a more complicated model is
+needed, the number of parameters will be tremendous, which will cause severe over-ﬁtting
+and high variance with a small training sample size.
+Therefore, we hope a feature selection step at ﬁrst can help pick the import variables,
+and another estimation step could build a more accurate model based on the selected vari-
+ables. Moreover, we will use deep neural networks as the structure, since it will be able
+to capture the complicated relationships. We will consider a stage-wise algorithm in the
+variable selection step, which operates similarly to the DNP model, [44]. However, we will
+6
+show that the stage-wise algorithm in DNP suﬀers from some disadvantage and propose an
+ensemble algorithm to relieve this situation. In the second step, we will discuss the methods
+of variance reduction and prevent over-ﬁtting, since a deep neural network with only a few
+input variables can still have a huge number of parameters.
+3.1
+The ensemble neural network selection (ENNS) algorithm
+Consider the feature selection approach in [44]. Let D : Rp →R be a deep neural network
+function that maps the original feature space to the output space. We don’t speciﬁcally
+mark the number of hidden layers and hidden node sizes in notation, but simply assume the
+deep neural network has m hidden layers with sizes h1, ..., hm. Denote the weight matrices
+in each layer to be W 0, ..., W m, where W 0 ∈Rp×h1, W i ∈Rhi×hi+1 for i = 1, ..., m −1 and
+W m ∈Rhm×1. Denote ti the intercept for the ith hidden layer and b the intercept of the
+output layer. Let θ = (W 0, ..., W m, t1, ..., tm, b) be the parameters in the neural network
+model. For an input x ∈Rp, denote the output
+ηθ,x = Dθ(x)
+(1)
+where in the regression set up, the output is from a linear layer and η ∈R, while in the
+classiﬁcation, an extra sigmoid layer is added and η ∈(0, 1). Moreover, we assume sparse
+feature, i.e., only a small fraction of the variables are signiﬁcantly related to the response.
+Without loss of generality, we assume
+S0 = {1, ..., s}
+of the variables are truly nonzero variables.
+Deﬁne the loss function for regression to be the squared error loss
+l(θ) = E
+
+(y −η)2
+(2)
+In practice, we work with the empirical loss
+l(θ; X, y) = 1
+n∥y −η∥2
+2
+(3)
+where η ∈Rn with ηi = ηθ,xi, i = 1, ..., n. Deﬁne the loss function for classiﬁcation to be
+the negative log-likelihood, which is known as the cross-entropy loss
+l(θ) = E [y log η + (1 −y) log(1 −η)]
+(4)
+In practice, we work with the empirical loss
+l(θ; X, y) = 1
+n
+n
+X
+i=1
+[yi log ηi + (1 −yi) log(1 −ηi)]
+(5)
+Let Gi be the gradient of the loss function with respect to W i in the back propagation
+process for i = 0, ..., m, i.e.,
+Gi =
+∂
+∂W i
+l(θ; X, y),
+i = 0, ..., m
+(6)
+7
+The DNP algorithm starts with the null model and adds one variable at a time. Let S be
+the selected set and C be the candidate set. At the beginning, we have
+S = {intercept}
+and
+C = {1, ..., p}
+(7)
+The model is trained on S only and the submatrix of W 0 corresponding to the features in
+C is kept zero. After the training done, one chooses a lq norm (usually with q = 2) and
+compute the gradient’ norm for each j ∈C of W 0.
+G0j =
+∂
+∂W 0j
+l(θ; X, y),
+j ∈C
+(8)
+The next variable that enters the model, j+ is
+j+ = arg max
+j∈C
+∥G0j∥q
+(9)
+Then S = S ∪{j+} and C = C/{j+}. To increase the stability, instead of computing G0j
+directly, the DNP algorithm computes G0j through the average over multiple dropouts. Let
+B1 be the number of dropouts, the next variable is
+j+ = arg max
+j∈C
+1
+B1
+B1
+X
+b=1
+∥Gb0j∥q
+(10)
+where Gb0j denotes the gradient of the loss function with respect to the ﬁrst layer’s jth weight
+vector after the bth random dropout.
+The algorithm works because ∥G0j∥q describes how much the loss function will change
+when the next update on the corresponding variable’s weight is performed, [51]. [62] also
+indicates that selecting variable by comparing ∥G0j∥q has an equivalence to applying the
+group lasso penalization, see also [45].
+The algorithm works well at the very beginning, which is described by proposition A.1
+and proposition A.2 in section 4. However, it suﬀers from a few disadvantages. First, as we
+include more correct variables in the model, the probability that we select another correct
+variable decreases. A simulation study in section 5 also provides numeric support for this
+argument. Second, one needs to pre-specify how many variables need to be selected before
+stopping, denoted s0. If this number is chosen to be more than the number of true variables,
+denoted s, there will be s0−s additional variables that should not have been included, i.e., the
+false positive rate could be high. Finally, the model does not use dropout or regularization
+during prediction, which has potential over-ﬁtting risk. Here we propose the ensemble neural
+network selection (ENNS) algorithm to remove these issues, and we discuss possible solutions
+in preventing over-ﬁtting at the regression or classiﬁcation step.
+One could observe that when a fraction of S0 are already involved in the model, i.e.,
+in S, the model is trained such that these variables are used to explain the variations by
+all variables in S0. This weakens the eﬀect of those truly nonzero variables in C. These
+variables become less important than when there’s no variable in S. Moreover, there are
+less true nonzero and zero variables in C than at the very beginning, the probability that we
+select a correct variable in the next step is
+P(jnext ∈S0) =
+X
+j∈S0∩C
+P(jnext = j)
+(11)
+8
+which will be sequentially lower as |S0 ∩C| decreases. Therefore, there will be a nonzero
+probability that at one stage the selected variable does not belong to S0. We consider an
+ensemble method to overcome this issue.
+The idea behind this ensemble method is motivated by bagging, ([7, 9]). Assume that
+we want to add sj variables in one step. Consider a bootstrap sample of size nb from the
+original sample. The DNP with random initialization is trained on this sample, which yields
+a selection set S1 = {j1, ..., jsj}. Instead of just doing one pass, we propose that for b2
+in 1, ..., B2 and a bootstrap sample size nr, we perform the feature selection on a random
+selection of nr observations. Denote the features being selected in all B2 rounds as
+J1 = {j11, ..., j1sj}, ..., JB2 = {jB21, ..., jB2sj}
+We will only allow a variable to enter the model if it appears at least [B2ps] times in the B2
+rounds, for a ﬁxed proportion ps. Mathematically,
+J = {j in at least [B2ps] of J1, ..., JB2}
+is the set of variables that will actually enter the model in this step.
+The reason that this ensemble improves the selection, lies on three points. First, the
+algorithm is an averaging of diﬀerent bootstrapping results, thus the eﬀect of some extreme
+observations could be averaged out. The ﬁnal selection result represents the common part
+of the whole sample. Second, the neural network uses random initialization. In two diﬀerent
+training, though the predictions seem similar, the estimated parameters are actually from
+diﬀerent local minimums of the loss function.
+Therefore, these diﬀerent training results
+represent diﬀerent aspects of the model. Combining the two reasons, if we select a smaller
+nr compared to n, the selection results are closer to independent. However, nr can not be
+too small to avoid misleading the neural network. Finally, if a variable is selected by mistake
+in some round, this is possibly due to the speciﬁc bootstrap sample making the relationship
+between the variable and the response stronger, which is not general in all bootstrap samples.
+In practice, one will observe that though false selection happens, those false variables are
+diﬀerent in diﬀerent rounds. Therefore, this ensemble will actually make the probability
+of false selection tend to zero. This observation is supported by theorem 4.1 in section 4.
+Moreover, if two variables’ interaction eﬀect is important in the model, they are likely to be
+included in the model at the same step.
+It’s possible that the proposed method selects less or more variables than the number of
+variables we speciﬁed, sj. If the sample is not enough to represent the true relationship be-
+tween the variables and the response, it’s very possible that the number of selected variables,
+denoted ˆsj, is less than sj. In this case, we exclude the variables that are already in C from
+the neural network and perform another round of variable selection with S = {1, ..., p}/C and
+then C = {intercept}. The number of variables to be selected in this round will be sj −ˆsj.
+On the other hand, ˆsj being more than sj happens when the selection proportion ps is spec-
+iﬁed too small. In this case, one would sort the variables by their appearing proportions and
+only select the ﬁrst sj variables in the list.
+In summary, we specify a number s0 at the very beginning, which mean the ﬁnal model
+will include s0 variables. In the jth iteration, let sj be the number of variables to be selected.
+Right now there are |Sj| variables in the model, denoted Sj. Let X−n be the sub-matrix of
+9
+X where the columns with indices in Sj removed. Train the ensemble on X−n and obtain se-
+lection result ˆSj. Let sj+1 = sj −| ˆSj|. The algorithm is repeated until the model has selected
+s0 variables. An algorithm is given in Algorithm 1. Under mild assumptions, the algorithm
+ﬁnally reaches selection consistency. This argument has been justiﬁed mathematically in
+theorem 4.2, section 4. Moreover, a comparison of the variable selection performances of
+diﬀerent modeling is also presented in section 5.
+Initialize number of selected variables S = ∅, s = 0 and target s0;
+while |S| < s0 do
+for b = 1, ..., B do
+Bootstrap sampling;
+Random initialization with zero feature;
+Run the DNP algorithm and obtain selection set Jb;
+end
+Obtain J = SB
+b=1 Jb;
+Compute JT by ﬁltering number of appearance;
+if JT <= s0 −|S| then
+S = S ∪JT;
+Remove the columns in JT from training data;
+else
+JT is the m −s elements with highest number of appearance;
+S = S ∪JT;
+end
+end
+Algorithm 1: Algorithm for feature selection ENNS
+The computation complexity of the ENNS algorithm on a single machine is the number of
+bagged neural networks times the computation complexity of training a single neural network,
+which is equal to O(Bhsnp). Here B is the number of bagged neural networks, h is the neural
+network structure complexity, s is the number of variables to be selected, n is the sample
+size and p is the variable dimension. However, since bagging algorithm has independent
+elements, it’s easy to parallelize the bagged neural networks by submitting diﬀerent jobs. In
+this case, the computation complexity reduces to O(hsnp), which is the same as that of DNP
+in [44]. As a comparison, [44] also mentioned the computation complexity of HSIC-Lasso in
+[70], which grows cubicly with the sample size as O(sn3p).
+Moreover, the algorithm is less sensitive to the choice of s0 compared to the DNP (without
+ensemble) given that it is suﬃciently large, . The ENNS algorithm will be more likely stopped
+when an appropriate number of variables enter. Specifying a too small s0 will harm both
+the algorithms, since one forces the algorithm to stop before the correct number of variables
+enter. In practice, specifying a large s0 to ENNS or tune s0 with cross-validation works well.
+In detail, the cross-validation can be performed on the ENNS with a few pre-speciﬁed s0’s
+and then the second stage estimation can be performed as described in the next subsection.
+10
+3.2
+Estimation with regularization
+In this subsection ,we will discuss possible procedures to prevent over-ﬁtting. After feature
+selection, the deep neural network can be trained on the selected features. However, the
+number of parameters in the neural network model is still huge. For example, a neural net-
+work with four hidden layers consist of h1, · · · , h4 nodes respectively and s selected variables
+has sh1 +h1h2 +h2h3 +h3h4 +h4 parameters (without counting the intercepts). Thus, if one
+uses the hidden layer sizes as [50, 30, 15, 10] with the number of selected variables being ﬁve,
+that brings 2466 parameters. As a comparison, the linear model will have only six param-
+eters, while a GAM with four knots and degree three will have 36 parameters. Therefore,
+ﬁtting a deep network with a small sample size still face challenging issues. One has to be
+careful of training the neural network on the selected variables. A few possible methods are
+discussed below. The Xavier initialization is used here to assure that the initial weights are
+in a proper range, [32].
+3.2.1
+Dropping out and bagging
+During the variable selection step, over-ﬁtting is overcome by dropout layers, where we
+randomly set parameters to zero in the later layers. However, dropout layers in prediction
+is risky, since we are not able to measure the prediction quality when performing a random
+dropout.
+One way out is, use bagging again in this step.
+First, the connections in the
+estimated neural network, denoted N is randomly cut oﬀ, i.e., the weights are set to zero. By
+doing this we obtain a model Nr, where r stands for reduced connections. Then a prediction
+is made on model Nr, denoted ˆyr. This process is repeated for K times. Denote the reduced
+neural networks to be Nkr and the associated predictions are ˆykr. In the regression set up,
+the ﬁnal prediction is deﬁned as
+ˆy = 1
+K
+K
+X
+k=1
+ˆykr
+In the classiﬁcation set up, the ﬁnal prediction is deﬁned as
+ˆyi =
+(
+1,
+if ˆpi > pc
+0,
+if ˆpi < pc
+,
+for i = 1, ..., n
+where pc is some pre-speciﬁed threshold. In practice, a typical choice is pc = 1/2.
+ˆp = 1
+K
+K
+X
+k=1
+ˆykr
+and ˆpi is the ith element of ˆp. A simulation study is performed to show its eﬃcacy in Section
+5.
+3.2.2
+Stage-wise training
+The stage-wise training idea comes from [44], where the authors used it as a step-wise
+variable selection technique. However, here we adopt the idea to train the ﬁnal model on
+11
+the selected variables. The intuition behind this is that at each step, the information that
+is already trained remains in the training process. Therefore, adding a new variable adjusts
+the previous trained weights. Moreover, training with adaptive gradient algorithm (Adagrad,
+[23]) allows adaptive learning rates for diﬀerent parameters and thus ensures faster and more
+accurate convergence. In detail, assume that we have selected m variables J from the ENNS
+algorithm. Let XJ be the sub-matrix of X whose columns’ indices are in J . Then the
+DNP algorithm in [44] is trained on XJ with |J | being the target number of variables. The
+performance is assessed through the simulation study reported in Section 5.
+3.2.3
+l1 norm regularization
+As mentioned in section 2 that l1 regularization produces sparse neural network and controls
+over-ﬁtting by shrinking parameters towards zero, and some parameters can be shrunk to
+exact zero. Therefore, we choose to use l1 norm regularization to control the parameter size
+and the number of nonzero parameters.
+Let ˆS be the set of indices of the variables that are selected from the ﬁrst step. Let
+W = W 1, ..., W L be the hidden layer weights and t = t1, ..., tL be the hidden layer intercepts
+(including the output layer).
+Let f(x; W , t) be the neural network structure with such
+parameters that maps the original input to the output. In the regression problem, deﬁne
+ˆ
+W ,ˆt = arg min
+W ,t
+1
+n
+n
+X
+i=1
+h
+yi −f(x ˆS,i)
+i2
++
+L
+X
+l=1
+λnl|W l|,
+(12)
+and in the classiﬁcation problem, deﬁne
+ˆ
+W ,ˆt = arg min
+W ,t
+−1
+n
+n
+X
+i=1
+h
+yif(x ˆS,i) −log(1 + exp(f(x ˆS,i)))
+i
++
+L
+X
+l=1
+λnl|W l|,
+(13)
+where x ˆS,i denotes the ith observation with only the selected variables.
+A direct training of the loss function (13) with the built-in l1 loss penalty directly added
+to the cross-entropy loss does not work well in the current neural network libraries includ-
+ing tensorﬂow and pytorch. Therefore, a coordinate descent algorithm is needed to obtain
+sparsity in the neural network. Deﬁne the soft-thresholding operator S(·, ·) : Rd × R →Rd
+as
+(S(x, c))j = sign(xj)(|xj| −c)+,
+j = 1, ..., d.
+(14)
+The algorithm consists an iterative process of updating the neural network weights with-
+out the l1 penalty and then applying the soft-thresholding operator 14.
+The number of
+epochs is pre-speciﬁed. However, the performance on the validation set can be monitored
+and an early-stopping criterion can be speciﬁed. The training will be stopped if the perfor-
+mance on the validation set does not improve for a pre-speciﬁed number of patience level. It
+worth noting that instead of selecting the tuning parameter, a sparsity level of each layer can
+be speciﬁed. Assuming there are M hidden layers with sizes h1, h2, ..., hM. One may specify
+percentile pm for m = 1, ..., M. Denote Wm the weight of layer m and Wpm the pth
+m percentile
+of Wpm. Then for layer m, the soft-thresholding operator can be applied as S(Wm, Wpm).
+For example, choosing a percentile of 50 will make a layer having 50% sparsity level. An
+12
+algorithm is given in Algorithm 2. A simulation that compares the built-in l1 penalty and
+the soft-thresholding operator is provided is Section 5.
+Initialize the weights with Xavier initialization;
+while Early stopping False OR epochs < k do
+One step gradient descent for the neural network part;
+for weights in layers do
+Apply the soft-thresholding function with a pre-speciﬁed percentile;
+end
+Check early stopping criterion;
+end
+Algorithm 2: Algorithm for l1 norm estimation using coordinate descent
+4
+Theoretical Guarantee
+In this section, we develop theoretical supports for the proposed methodology and associated
+intuitions.
+A few assumptions are made in the derivations of theoretical results.
+These
+assumptions along with two propositions can be found in the appendix A.
+Proposition A.1 and A.2 describe the behavior of neural network stage-wise algorithm
+at the very beginning. The probability that we select one predictor over another depends
+on the sum or the diﬀerence of their signal strengths. The greater the diﬀerence, the higher
+probability that we select the predictor with higher signal strength. The probability that
+we select a correct predictor at the very beginning is described by the error function and
+standard normal density functions. Though the form of the probability looks complicated,
+the error function can be approximated by an exponential function with proper constants.
+Then the proposition shows that there is situation under which a non-zero variable entering
+into the model with the stage-wise selection algorithm is not guaranteed with probability 1.
+Speciﬁcally, this happens when we have a low signal strength or a huge number of candidate
+variables.
+So there is a concern that a wrong variable will mistakenly enter into the model due to a
+special training case of the neural network model, as shown in the previous proposition. With
+the bagging algorithm, we are able to eliminate the false positive selections with probability
+tending to 1. The intuition is that the false positive selection of a certain predictor happens
+due to a speciﬁc observation of the design matrix, which appears to be more correlated to
+the response or residual. However, with diﬀerent sub-samplings, it’s very unlikely that they
+yield the same wrong selection. This property is captured by the following theorem.
+Theorem 4.1 Under the assumptions 2 3, 4 and 5, and also assume that
+s0 ≤C · s = o(p)
+and
+p −s0
+s
+e−nγn →0 as n →∞.
+Let Kn be the estimated parameters’ l1 norm, which is assumed to satisfy
+K2
+n
+r
+log(nKn)
+n
+→∞
+as n →∞,
+13
+then in each selection step of the ENNS algorithm, the probability of false positive converges
+to zero, i.e.
+P(j ∈ˆS and j /∈S) →0
+as n →∞and B2 →∞
+(15)
+A proof is given in Appendix C. In this variable selection algorithms, the most important
+property is ability of selecting the correct predictors consistently. Here we show that ENNS
+enjoys this property in the following theorem.
+Theorem 4.2 Under assumptions 2, 3, 4 and 5, let Kn be the upper bound of the norm of
+the best parameters in the neural network model when S is included, and K be the size of
+the ﬁrst hidden layer, with the ensemble, if γn satisﬁes
+K log(p −s)
+n
+log
+
+1 −1
+2e−cγ2
+n
+
+→0
+as n →∞
+for some constant c, and
+K2
+n
+r
+log(nKn)
+n
+→∞
+as n →∞
+the probability that all nonzero variables are selected converges to 1, i.e.,
+P( ˆS = S) →1
+as n →∞and B2 →∞
+(16)
+A proof is given in Appendix C. The theorem 4.2 shows that the true nonzero variables with
+strong enough signal, the algorithm is able to select all of them with probability tending to
+1. The conditions are not veriﬁable in practice, however, extensive numerical examples in
+section 5 show that the ENNS algorithm reaches selection consistency easier than the other
+algorithms.
+For the estimation step, there has been a few theoretical works about the asymptotic
+properties, e.g., [29, 72], where the results under sparse group lasso penalty are derived. The
+l1 norm penalty in the estimation step is actually a special case of the sparse group lasso [59]
+with the lasso weight α = 1 and the group lasso weight 1 −α = 0. Therefore, the results of
+these papers hold as long as we have ˆS = S0, which has probability tending to 1 by theorem
+4.2. Here we adapt [33] and provide the following result.
+Theorem 4.3 Assume the assumptions 2, 3, 4 and 5, consider the variables selected by the
+ENNS algorithm and the estimation with l1 regularization method. Denote the l1 regulariza-
+tion tuning parameter by λn and the corresponding Lagrangian parameter Kn. Denote the
+hidden layer size with kn. In the regression set up, assume E(Y 2) < ∞, if Kn →∞, kn →∞
+and kns2K4
+n log(knsK2
+n)/n →0, we have
+lim
+n→∞,B2→∞P
+
+E
+Z
+|fn(x) −f(x)|2µ(dx) →0
+
+= 1
+where fn is the estimated neural network and f is the true function. In the classiﬁcation
+set up, assuming that the probability of response being 1 is bounded away from 0 and 1
+14
+by ˜ǫ, denote with Q, the maximum number of equivalent neural network classes, choos-
+ing tuning parameter λn ≥c
+p
+kn log n/n(√log Q + √kn log s log(nkn), if log(n)/(n˜ǫ2) →0,
+s2knλ2
+n/(n˜ǫ2) →0 and n−1k9/2
+n s5/2p
+log(sn) →0 as n →∞, we have
+lim
+n→∞,B2→∞P (R(fn) −R(f ∗) →0) = 1
+where R(fn) is the risk of neural network classiﬁer and R(f ∗) is the risk of Bayes classiﬁer.
+Theorem 4.3 states that under the previously discussed conditions, the regression reaches
+weak estimation consistency of the non-parametric function deﬁned in [33]. For the clas-
+siﬁcation, the neural network classiﬁer’s risk tends to the optimal risk, Bayes risk, see for
+example [21]. The theorem is a direct result from the existing results of the low dimension
+neural network regression model and classiﬁers, [29, 72]. Conditioning on the fact that we
+can select all correct variables with probability tending to 1, applying the full probability
+formula, the consistency of the two-step approach can be derived with the low dimensional
+consistency plus the probability of non-selection-consistency.
+The consistency error comes from two aspects: the variable selection error and the esti-
+mation error. The intuition behind this is that with a wrong selection result, the estimation
+error may be big, however, this happens with probability tending to zero. With a correct
+selection result, the estimation error behaves the same as in the low dimensional case, which
+converges to zero.
+5
+Simulation study
+In this section, we use a few examples as numerical supports to our arguments in the previous
+sections. The code for DNP is composed according to the algorithm outline in [44], and the
+code of ENNS is composed according to the algorithm in this paper. Both codes can be
+found at https://github.com/KaixuYang/ENNS .
+5.1
+Stage-wise correct selection probability decreasing study
+In this subsection, we use an example to demonstrate that the chance of selecting a correct
+variable in a stage-wise neural network decreases as we have more correct variables entering
+into the model. Consider a design matrix X that is drawn from a uniform distribution
+(−1, 1). The sample size is set to n = 1000 and the number of predictors is set to p = 10000.
+Let s = 5 of the predictors are related with the response. We consider three diﬀerent true
+structures of the relationship between the predictors and the response: linear, additive non-
+linear and neural network.
+For the response, we consider two diﬀerent cases: regression
+and classiﬁcation. In the linear case, the coeﬃcients are drawn from a standard normal
+distribution. In the additive non-linear case, the functions are set to
+η = sin(x1) + x2 + exp(x3) + x2
+4 + log(x5 + 2) −2
+(17)
+where y = η + ǫ in the linear case and prob = σ(η) in the classiﬁcation case.
+In the
+neural network case, we set hidden layers as [50, 30, 15, 10] and weights from standard normal
+distribution.
+15
+Table 1: The proportion of correct variable selection after 0-4 correct variables in the model,
+for diﬀerent cases over 1000 repetitions. The results show the mean.
+Response
+structure
+0 variable
+1 variable
+2 variables
+3 variables
+4 variables
+Regression
+Linear
+0.995(0.002)
+0.952(0.006)
+0.863(0.010)
+0.774(0.013)
+0.430(0.016)
+Additive
+0.993(0.003)
+0.847(0.011)
+0.905(0.009)
+0.794(0.012)
+0.531(0.016)
+NN
+0.998(0.001)
+0.971(0.005)
+0.932(0.007)
+0.788(0.013)
+0.574(0.016)
+Classiﬁcation
+Linear
+0.989(0.003)
+0.918(0.009)
+0.873(0.009)
+0.813(0.011)
+0.552(0.016)
+Additive
+0.992(0.003)
+0.957(0.006)
+0.911(0.009)
+0.706(0.014)
+0.633(0.015)
+NN
+0.994(0.002)
+0.968(0.006)
+0.947(0.004)
+0.895(0.009)
+0.762(0.013)
+For each of the cases, we test with starting from 0 to 4 correct predictors. In order to
+eliminate the eﬀect of diﬀerent signal strength from diﬀerent predictors, we randomly sample
+j indices from 1, ..., 5 as the selected variables, for j = 0, ..., 4, and include those j indices
+predictors as the initially selected variables. We repeat the process 1000 times and report
+the proportion that the next variable that enters the model is a correct predictor. The result
+is summarized in table 1.
+From the table 1, we see that the probability of selecting a correct predictor decreases
+as correct predictors enter into the model stage-wise, in all cases. The only exception is in
+the regression set up with additive non-linear structure from 1 variable to 2 variables, which
+could be due to random error.
+5.2
+False positive rate study
+In this subsection, we demonstrate empirically that the false positive rate of the proposed
+ENNS (the probability of selecting a wrong variable) is superior than the pure stage-wise
+algorithm. Note that if one ﬁxes the number of variables to be s, stage wise algorithm al-
+ways select s variables, while ENNS will stop if there isn’t any new variable that satisfy the
+condition to be added. Therefore, it’s possible that ENNS selects less number of variables
+and avoid wrong selection. We use the same setup as [44] to generate responses. Two diﬀer-
+ent types of responses including regression and classiﬁcation are considered here. The input
+variable X is drawn from U(−1, 1), where the feature dimension p is ﬁxed at 10, 000. The
+corresponding labels are obtained by passing X into the feed forward neural network with
+hidden layer sizes {50, 30, 15, 10} and ReLU activation functions. Input weights connecting
+the ﬁrst s inputs are randomly sampled from N(1, 1) for regression and N(0, 1) for classi-
+ﬁcation. The remaining input weights are kept at zero. For each s = 2, 5, 10, we generate
+1000 training samples. In table 2, we report the false positive rate for the ENNS algorithm
+and the neural network stage-wise algorithm.
+Note that the ENNS’s false positive rate is signiﬁcantly less than that of DNP under
+signiﬁcance level α = 0.05 (using the two-proportion Z test). The results provides strong
+evidence that the ENNS is eﬀective in reducing the probability of selecting an incorrect
+variable.
+16
+Table 2: Selection false positive rate average of the ENNS and DNP under diﬀerent number
+of true variables in 101 repetitions. Standard deviations are given in parenthesis.
+Response
+Method
+s=2
+s=5
+s=10
+Regression
+ENNS
+10.4%(21.5%)
+11.5%(22.1%)
+12.8%(23.6%)
+DNP
+22.5%(29.5%)
+30.2%(28.7%)
+41.4%(33.2%)
+Classiﬁcation
+ENNS
+4.7%(17.9%)
+7.4%(18.6%)
+9.8%(20.3%)
+DNP
+16.5%(24.4%)
+24.8%(29.7%)
+40.5%(32.8%)
+Table 3: Variable selection capacity of ENNS and other methods with low signal strength
+in the regression (top) and classiﬁcation (bottom) set up. The numbers reported are the
+average number of selected variables which are truly nonzero. The standard errors are given
+in parenthesis.
+Response
+Method
+s=2
+s=5
+s=10
+Regression
+ENNS
+1.73(0.52)
+4.21(0.56)
+9.25(1.11)
+DNP
+1.61(0.50)
+3.92(0.56)
+8.77(1.13)
+LASSO
+1.65(0.57)
+3.87(0.62)
+9.62(1.38)
+HSIC-LASSO
+1.67(0.47)
+3.80(0.66)
+3.61(1.17)
+Classiﬁcation
+ENNS
+1.81(0.49)
+4.24(0.87)
+8.04(1.25)
+DNP
+1.67(0.76)
+3.76(1.06)
+5.95(1.29)
+LASSO
+1.67(0.56)
+3.76(0.75)
+5.76(1.38)
+HSIC-LASSO
+1.67(0.47)
+2.80(0.91)
+3.61(1.17)
+5.3
+Variable selection simulation study
+In this subsection, we study the variable selection capability of our ensemble neural network
+selection (ENNS) algorithm in complex modelling. We retain similar setup as in the last
+subsection to generate responses. A slight diﬀerence is that the input weights connecting the
+ﬁrst s inputs are randomly sampled from N(0, 2) for regression and N(0, 1) for classiﬁcation.
+The diﬀerence in the normal distribution parameters is to ensure similar signal-to-noise ratio
+(SNR) and ensures the signal strengths are in proper ranges for demonstration. The LASSO
+[63] is implemented by the scikit learn library, and the HSIC lasso [70] is implemented using
+the HSICLasso library. In all four algorithms, the number of selected variables are strictly
+restricted to the true number of variables. In ENNS, we run a bagging of 10 rounds with
+selection proportion 0.3. The Table 3 reports the average number of correct variables that
+are selected on 101 repetitions of the data.
+We observe that the ENNS outperforms the other variable selection algorithms in all
+three cases, and the diﬀerence is signiﬁcant when s = 10 under a t-test. The ENNS performs
+better when there are more nonzero variables. None of the algorithms were able to recon-
+struct the original feature indices due to a few reasons: the sample size is relatively small
+compared to the number of variables; the data generation through neural network structures
+is complicated; the signal strength is relatively low.
+To fully study the variable selection power of the ENNS algorithm, we implemented
+another simulation in classiﬁcation using higher signal strengths while keeping all other
+17
+Table 4: Variable selection capacity of ENNS and other methods with normal and high
+signal strength. The numbers reported are the average number of selected variables which
+are truly nonzero. The standard errors are given in parenthesis.
+Normal Signal Strength
+High Signal Strength
+Method
+s=2
+s=5
+s=10
+s=2
+s=5
+s=10
+ENNS
+2.00(0.00)
+4.71(0.55)
+8.38(2.06)
+2.00(0.00)
+5.00(0.00)
+9.90(0.29)
+DNP
+1.86(0.35)
+4.38(0.84)
+7.43(2.36)
+2.00(0.00)
+5.00(0.00)
+9.47(1.10)
+LASSO
+1.81(0.39)
+4.19(1.01)
+7.47(2.40)
+2.00(0.00)
+4.90(0.29)
+9.23(1.74)
+HSIC-LASSO
+1.71(0.45)
+3.71(1.12)
+4.95(2.13)
+2.00(0.00)
+4.62(0.84)
+7.76(2.76)
+conditions the same. In the simulation study, we increase the mean weights of the nonzero
+variables to 3.5 and 10. With same implementations, we summarize the results in Table 4.
+The ENNS reaches selection consistency when s = 2, while the other competitive algo-
+rithms still do not have selection consistency. However, all algorithms have obvious improve-
+ments in all cases under strong signals. We have to admit that selecting the correct subset of
+variables in all 101 repetitions is extremely challenging, since the data have great variability
+in diﬀerent repetitions. Moreover, when s becomes larger, the importance of a few variables
+are less likely to be observed from the data.
+We like to reiterate that the bagging algorithm can be paralyzed since diﬀerent runs are
+independent to each other. Therefore, the computational eﬃciency of this variable selection
+algorithm is almost the same as the computation eﬃciency of a single run.
+6
+Real data examples
+In this section, we evaluate the performance of the two-step model on real-world data sets.
+6.1
+Regression: riboﬂavin production data
+In this example, we consider the riboﬂavin production with bacillus subtilis data, which is
+publicly available in the ‘hdi’ package in R. The data set contains a continuous response,
+which is the logarithm of the riboﬂavin production rate, and p = 4088 predictors which are
+the logarithm of the expression level of 4088 genes. There are n = 71 observations available.
+All predictors are continuous with positive values.
+We perform 50 repetitions of the following actions. The data is split into training (56)
+and testing (15) observations.
+The training data is further split into training (49) and
+validation (7). The training data is normalized with mean zero and standard deviation one.
+We train the ENNS algorithm to select variables and perform the l1 neural network to make
+a prediction. Along with our proposed algorithms, we compare the performance with the
+lasso penalized linear regression, which is implemented by the scikit-learn library in python;
+the group lasso penalized generalized additive model in [71], where the code can be found
+at https://github.com/KaixuYang/PenalizedGAM ; and the sparse group lasso penalized
+neural network in [29]. Figure (1) shows the average testing mean squared error (MSE)
+along with the number of selected features for diﬀerent models. Our proposed algorithm
+18
+Table 5: Test MSE with standard error in parentheses and median of number of features for
+diﬀerent models in the riboﬂavin gene data example.
+Model
+Test MSE
+Number of features
+ENNS+l1 neural network
+0.268(0.115)
+42
+Regularized neural network
+0.273(0.135)
+44
+Linear model with LASSO
+0.286(0.124)
+38
+Generalized additive model with group lasso
+0.282(0.136)
+46
+converges fast and produces competitive performance. Table 5 shows the average prediction
+accuracy with standard error in parentheses and the median number of variables selected.
+Our proposed method has mean competitive performance but lowers standard errors.
+The ﬁnal model of small sample utilizes only two hidden layers, with over 90% sparsity
+to prevent over-ﬁtting, which is necessary for this small training sample size, 49. Training
+with large batch size, small learning rate, a huge number of epochs and early stopping help
+the model learn better and prevent over-ﬁtting. We admit that tuning the network structure
+and learning parameters are hard, but we obtain better and stable results once we have the
+right numbers.
+6.2
+Classiﬁcation: prostate cancer data
+In this example, we consider a prostate cancer gene expression data, which is publicly avail-
+able at http://featureselection.asu.edu/datasets.php. The data set contains a binary
+response with 102 observations on 5966 predictor variables. Clearly, the data set is really a
+high dimensional data set. The responses have values 1 (50 sample points) and 2 (52 sam-
+ple points), where 1 indicates normal and 2 indicates tumor. All predictors are continuous
+predictors, with positive values.
+We perform 50 repetitions of the following actions. The data is split into training (81)
+and testing (21) observations.
+The training data is further split into training (70) and
+validation data (11). In each split, the number of class 0 observations and number of class
+1 observations are kept roughly the same. We train the ENNS algorithm to select variables
+and perform the l1 neural network to make predictions. Along with our proposed algorithms,
+we compare the performance with the l1 norm penalized logistic regression; the l1 support
+vector machine (SVM), both of which are implemented with the scikit-learn library in python;
+the group lasso penalized generalized additive model in [71], where the code can be found
+at https://github.com/KaixuYang/PenalizedGAM ; and the sparse group lasso penalized
+neural network of [29]. Figure (1) shows the average testing accuracy over the 20 repetitions
+along with the number of selected features for diﬀerent models. Our proposed algorithm
+converges fast and performs competitively. Table 6 shows the average prediction accuracy
+with standard error in parentheses, and the median number of selected variables.
+Our
+proposed method has competitive mean performance but lower standard error. One needs
+to notice that the mean performance is hard to improve further, since the results are already
+good and reach the bottleneck of the current explanatory power. The reason that GAM
+performs worse than the other models is that the range of predictor variables are relatively
+19
+Figure 1: Testing mean squared error (MSE) for diﬀerent models on the riboﬂavin data (left)
+and testing accuracy for diﬀerent models on the prostate cancer data (right).
+Table 6: Test accuracy with standard error in parentheses and median of number of features
+for diﬀerent classiﬁers in the Prostate gene data example.
+Classiﬁer
+Test accuracy
+Number of features
+ENNS+l1 neural network
+0.956(0.053)
+15
+Regularized neural network
+0.955(0.066)
+18
+Logistic Regression with Lasso
+0.933(0.058)
+36
+l1 penalized Linear SVM
+0.950(0.052)
+16
+Generalized additive model with group lasso
+0.918(0.061)
+5
+small and skewed, thus the basis expansion on GAM does not work well.
+7
+Conclusion
+In this paper, we discussed the existing methods to deal with high-dimensional data and
+how to apply the stage-wise algorithm with neural networks. We discussed the shortcomings
+of the current stage-wise neural network variable selection algorithms and proposed a new
+algorithm, ENNS to overcome these issues.
+We also compared diﬀerent methods to fur-
+ther reduce the over-ﬁtting problem after the variable selection is done. Various theoretical
+derivations were provided to support the methodology, intuition, new algorithms, and exten-
+sive simulation studies were presented as empirical evidence that the methodology works in
+practice. f Though there’s a few algorithmic and methodology studies with neural network
+variable selection, the theory for a neural network still deserves much more investigations.
+We hope this paper could work as a pioneer and attracts more attention to the theory and
+methodology for high dimensional neural network models.
+20
+8
+Acknowledgement
+This research is partially supported by NSF-DMS 1945824.
+References
+[1] M. Anthony and P. L. Bartlett.
+Neural network learning: Theoretical foundations.
+cambridge university press, 2009.
+[2] A. Argyriou, T. Evgeniou, and M. Pontil. Multi-task feature learning. In Advances in
+neural information processing systems, pages 41–48, 2007.
+[3] R. Arratia and L. Gordon. Tutorial on large deviations for the binomial distribution.
+Bulletin of mathematical biology, 51(1):125–131, 1989.
+[4] A. R. Barron. Universal approximation bounds for superpositions of a sigmoidal func-
+tion. IEEE Transactions on Information theory, 39(3):930–945, 1993.
+[5] M. Bianchini and F. Scarselli. On the complexity of neural network classiﬁers: A com-
+parison between shallow and deep architectures. IEEE transactions on neural networks
+and learning systems, 25(8):1553–1565, 2014.
+[6] G. Biau, L. Devroye, and G. Lugosi. Consistency of random forests and other averaging
+classiﬁers. Journal of Machine Learning Research, 9(Sep):2015–2033, 2008.
+[7] L. Breiman. Bagging predictors. Machine learning, 24(2):123–140, 1996.
+[8] P. B¨uhlmann and S. Van De Geer. Statistics for high-dimensional data: methods, theory
+and applications. Springer Science & Business Media, 2011.
+[9] P. B¨uhlmann, B. Yu, et al. Analyzing bagging. The Annals of Statistics, 30(4):927–961,
+2002.
+[10] E. Candes, T. Tao, et al. The dantzig selector: Statistical estimation when p is much
+larger than n. The annals of Statistics, 35(6):2313–2351, 2007.
+[11] G. Castellano and A. M. Fanelli. Variable selection using neural-network models. Neu-
+rocomputing, 31(1-4):1–13, 2000.
+[12] A. Chatterjee and S. Lahiri. Rates of convergence of the adaptive lasso estimators to
+the oracle distribution and higher order reﬁnements by the bootstrap. The Annals of
+Statistics, 41(3):1232–1259, 2013.
+[13] A. Chatterjee and S. N. Lahiri. Bootstrapping lasso estimators. Journal of the American
+Statistical Association, 106(494):608–625, 2011.
+[14] J. Chen and Z. Chen. Extended bayesian information criteria for model selection with
+large model spaces. Biometrika, 95(3):759–771, 2008.
+21
+[15] C. Chui, X. Li, and H. N. Mhaskar.
+Neural networks for localized approximation.
+Mathematics of Computation, 63(208):607–623, 1994.
+[16] C. K. Chui, X. Li, and H. N. Mhaskar. Limitations of the approximation capabilities
+of neural networks with one hidden layer. Advances in Computational Mathematics,
+5(1):233–243, 1996.
+[17] J. B. Copas. Regression, prediction and shrinkage. Journal of the Royal Statistical
+Society: Series B (Methodological), 45(3):311–335, 1983.
+[18] G. Cybenko. Approximation by superpositions of a sigmoidal function. Mathematics of
+control, signals and systems, 2(4):303–314, 1989.
+[19] D. Das, K. Gregory, S. Lahiri, et al. Perturbation bootstrap in adaptive lasso. The
+Annals of Statistics, 47(4):2080–2116, 2019.
+[20] O. Delalleau and Y. Bengio. Shallow vs. deep sum-product networks. In Advances in
+neural information processing systems, pages 666–674, 2011.
+[21] L. Devroye, L. Gy¨orﬁ, and G. Lugosi.
+A probabilistic theory of pattern recognition,
+volume 31. Springer Science & Business Media, 2013.
+[22] D. L. Donoho.
+De-noising by soft-thresholding.
+IEEE transactions on information
+theory, 41(3):613–627, 1995.
+[23] J. Duchi, E. Hazan, and Y. Singer. Adaptive subgradient methods for online learning
+and stochastic optimization. Journal of machine learning research, 12(Jul):2121–2159,
+2011.
+[24] B. Efron, T. Hastie, I. Johnstone, R. Tibshirani, et al. Least angle regression. The
+Annals of statistics, 32(2):407–499, 2004.
+[25] F. Fan, J. Xiong, and G. Wang. Universal approximation with quadratic deep networks.
+Neural Networks, 124:383–392, 2020.
+[26] J. Fan and R. Li. Variable selection via nonconcave penalized likelihood and its oracle
+properties. Journal of the American statistical Association, 96(456):1348–1360, 2001.
+[27] J. Fan and J. Lv. Sure independence screening for ultrahigh dimensional feature space.
+Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70(5):849–
+911, 2008.
+[28] Y. Fan and C. Y. Tang.
+Tuning parameter selection in high dimensional penalized
+likelihood. Journal of the Royal Statistical Society: Series B (Statistical Methodology),
+75(3):531–552, 2013.
+[29] J. Feng and N. Simon. Sparse-input neural networks for high-dimensional nonparametric
+regression and classiﬁcation. arXiv preprint arXiv:1711.07592, 2017.
+22
+[30] J. Friedman, T. Hastie, and R. Tibshirani. Regularization paths for generalized linear
+models via coordinate descent. Journal of statistical software, 33(1):1, 2010.
+[31] E. Gin´e and J. Zinn. Bootstrapping general empirical measures. The Annals of Proba-
+bility, pages 851–869, 1990.
+[32] X. Glorot and Y. Bengio. Understanding the diﬃculty of training deep feedforward
+neural networks. In Proceedings of the thirteenth international conference on artiﬁcial
+intelligence and statistics, pages 249–256, 2010.
+[33] L. Gy¨orﬁ, M. Kohler, A. Krzyzak, and H. Walk. A distribution-free theory of nonpara-
+metric regression. Springer Science & Business Media, 2006.
+[34] H. Hotelling. Analysis of a complex of statistical variables into principal components.
+Journal of educational psychology, 24(6):417, 1933.
+[35] J. Huang, J. L. Horowitz, and F. Wei. Variable selection in nonparametric additive
+models. Annals of statistics, 38(4):2282, 2010.
+[36] B. Jiang, T. O’Donnell, and M. Clayards. A deep neural network approach to investigate
+tone space in languages. The Journal of the Acoustical Society of America, 145(3):1913–
+1913, 2019.
+[37] I. T. Jolliﬀe, N. T. Trendaﬁlov, and M. Uddin. A modiﬁed principal component tech-
+nique based on the lasso. Journal of computational and Graphical Statistics, 12(3):531–
+547, 2003.
+[38] H.-J. Kim.
+On the ratio of two folded normal distributions.
+Communications in
+Statistics-Theory and Methods, 35(6):965–977, 2006.
+[39] S. C. Kleene. Representation of events in nerve nets and ﬁnite automata. Technical
+report, RAND PROJECT AIR FORCE SANTA MONICA CA, 1951.
+[40] M. A. Kramer. Nonlinear principal component analysis using autoassociative neural
+networks. AIChE journal, 37(2):233–243, 1991.
+[41] N. D. Lawrence. A unifying probabilistic perspective for spectral dimensionality reduc-
+tion: Insights and new models. Journal of Machine Learning Research, 13(May):1609–
+1638, 2012.
+[42] I. Lemhadri, F. Ruan, and R. Tibshirani. A neural network with feature sparsity. arXiv
+preprint arXiv:1907.12207, 2019.
+[43] Y. L. Li, J. Ducey-Wysling, A. D’Hondt, D. Hyun, B. Patel, and J. J. Dahl. Vector ﬂow
+imaging using a deep neural network. The Journal of the Acoustical Society of America,
+146(4):2901–2902, 2019.
+[44] B. Liu, Y. Wei, Y. Zhang, and Q. Yang. Deep neural networks for high dimension, low
+sample size data. In IJCAI, pages 2287–2293, 2017.
+23
+[45] Y. Liu and Y. Wu. Variable selection via a combination of the l 0 and l 1 penalties.
+Journal of Computational and Graphical Statistics, 16(4):782–798, 2007.
+[46] R. Livni, S. Shalev-Shwartz, and O. Shamir. A provably eﬃcient algorithm for training
+deep networks. CoRR, vol. abs/1304.7045, 2013.
+[47] G. Marra and S. N. Wood. Practical variable selection for generalized additive models.
+Computational Statistics & Data Analysis, 55(7):2372–2387, 2011.
+[48] M. Mizumachi and M. Origuchi.
+Superdirective non-linear beamforming with deep
+neural network. The Journal of the Acoustical Society of America, 140(4):3167–3167,
+2016.
+[49] B. K. Natarajan. Sparse approximate solutions to linear systems. SIAM journal on
+computing, 24(2):227–234, 1995.
+[50] K.-S. Oh and K. Jung. Gpu implementation of neural networks. Pattern Recognition,
+37(6):1311–1314, 2004.
+[51] S. Perkins, K. Lacker, and J. Theiler. Grafting: Fast, incremental feature selection by
+gradient descent in function space. Journal of machine learning research, 3(Mar):1333–
+1356, 2003.
+[52] A. Pinkus. Approximation theory of the mlp model in neural networks. Acta numerica,
+8:143–195, 1999.
+[53] T. Poggio, H. Mhaskar, L. Rosasco, B. Miranda, and Q. Liao. Why and when can deep-
+but not shallow-networks avoid the curse of dimensionality: a review. International
+Journal of Automation and Computing, 14(5):503–519, 2017.
+[54] S. T. Roweis and L. K. Saul.
+Nonlinear dimensionality reduction by locally linear
+embedding. science, 290(5500):2323–2326, 2000.
+[55] B. Sch¨olkopf, A. Smola, and K.-R. M¨uller. Nonlinear component analysis as a kernel
+eigenvalue problem. Neural computation, 10(5):1299–1319, 1998.
+[56] G. Schwarz et al.
+Estimating the dimension of a model.
+The annals of statistics,
+6(2):461–464, 1978.
+[57] U. Shaham, A. Cloninger, and R. R. Coifman. Provable approximation properties for
+deep neural networks. Applied and Computational Harmonic Analysis, 44(3):537–557,
+2018.
+[58] J. W. Siegel and J. Xu. On the approximation properties of neural networks. arXiv
+preprint arXiv:1904.02311, 2019.
+[59] N. Simon, J. Friedman, T. Hastie, and R. Tibshirani. A sparse-group lasso. Journal of
+Computational and Graphical Statistics, 22(2):231–245, 2013.
+24
+[60] N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, and R. Salakhutdinov. Dropout:
+a simple way to prevent neural networks from overﬁtting.
+The journal of machine
+learning research, 15(1):1929–1958, 2014.
+[61] J. B. Tenenbaum, V. De Silva, and J. C. Langford. A global geometric framework for
+nonlinear dimensionality reduction. science, 290(5500):2319–2323, 2000.
+[62] A. Tewari, P. K. Ravikumar, and I. S. Dhillon.
+Greedy algorithms for structurally
+constrained high dimensional problems. In Advances in Neural Information Processing
+Systems, pages 882–890, 2011.
+[63] R. Tibshirani. Regression shrinkage and selection via the lasso. Journal of the Royal
+Statistical Society: Series B (Methodological), 58(1):267–288, 1996.
+[64] R. J. Tibshirani. A general framework for fast stagewise algorithms. The Journal of
+Machine Learning Research, 16(1):2543–2588, 2015.
+[65] W. S. Torgerson.
+Multidimensional scaling: I. theory and method.
+Psychometrika,
+17(4):401–419, 1952.
+[66] W.-J. Tsay, C. J. Huang, T.-T. Fu, and I.-L. Ho. A simple closed-form approximation
+for the cumulative distribution function of the composite error of stochastic frontier
+models. Journal of Productivity Analysis, 39(3):259–269, 2013.
+[67] R. Wang and X. Zhang. Capacity preserving mapping for high-dimensional data visu-
+alization. arXiv preprint arXiv:1909.13322, 2019.
+[68] S. J. Wright. Coordinate descent algorithms. Mathematical Programming, 151(1):3–34,
+2015.
+[69] T. T. Wu, K. Lange, et al. Coordinate descent algorithms for lasso penalized regression.
+The Annals of Applied Statistics, 2(1):224–244, 2008.
+[70] M. Yamada, W. Jitkrittum, L. Sigal, E. P. Xing, and M. Sugiyama. High-dimensional
+feature selection by feature-wise kernelized lasso. Neural computation, 26(1):185–207,
+2014.
+[71] K. Yang and T. Maiti. Ultra high-dimensional generalized additive model: consistency
+and tuning parameter selection. Technical report, Michigan State University, 2018.
+[72] K. Yang and T. Maiti. Statistical aspects of high-dimensional sparse artiﬁcial neural
+network models. Machine learning and knowledge extraction, 2(1):1–19, 2020.
+[73] M. Yuan and Y. Lin. Model selection and estimation in regression with grouped vari-
+ables.
+Journal of the Royal Statistical Society: Series B (Statistical Methodology),
+68(1):49–67, 2006.
+[74] C.-H. Zhang and J. Huang.
+The sparsity and bias of the lasso selection in high-
+dimensional linear regression. The Annals of Statistics, pages 1567–1594, 2008.
+25
+[75] Y. Zhang, R. Li, and C.-L. Tsai. Regularization parameter selections via generalized
+information criterion. Journal of the American Statistical Association, 105(489):312–
+323, 2010.
+[76] H. Zou. The adaptive lasso and its oracle properties. Journal of the American statistical
+association, 101(476):1418–1429, 2006.
+[77] H. Zou and T. Hastie. Regularization and variable selection via the elastic net. Journal
+of the royal statistical society: series B (statistical methodology), 67(2):301–320, 2005.
+[78] H. Zou, T. Hastie, and R. Tibshirani. Sparse principal component analysis. Journal of
+computational and graphical statistics, 15(2):265–286, 2006.
+26
+Supplementary material: ENNS: Variable Selection,
+Regression, Classiﬁcation and Deep Neural Network for
+High-Dimensional Data
+A
+Assumptions and propositions
+A.1
+Assumptions
+The ﬁrst well-known assumption in high-dimensional modeling is sparsity. Here we provide
+two versions of sparsity: a stronger version and a weaker version.
+These are stated in
+assumption 1 and assumption 2 respectively.
+Assumption 1 (Sparsity (weak)) The features are sparse, i.e., only s < n = o(p) of the
+p variables are strongly related with the response. Speciﬁcally, if y depends on x through a
+linear relationship with coeﬃcients β = (β1, ..., βp)T, we have
+min
+j=1,...,s|βj| ≥γn
+and
+p
+X
+j=s+1
+|β|j = τn = o(γn)
+(18)
+where γn is a sequence that may go to zero as n goes to inﬁnity.
+Assumption 2 (Sparsity (strong)) The features are sparse, i.e., only s < n = o(p) of
+the p variables are related with the response. Speciﬁcally, if y depends on x through a linear
+relationship with coeﬃcients β = (β1, ..., βp)T, we have
+min
+j=1,...,s|βj| ≥γn
+and
+p
+X
+j=s+1
+|β|j = 0
+(19)
+where γn is a sequence that may go to zero as n goes to inﬁnity.
+We know that in most cases the predictors are dependent, or at least weak correlation
+exists. However, even a weak correlation brings great complexity in theory. Therefore, we
+assume independent predictors in this section when deriving our theoretical results. However,
+extensive simulation studies are performed to show the eﬃcacy of our methodology when
+the predictors are correlated. Further, though the theoretical results are proved under this
+independent assumption, they can be extended to the assumption that the correlation is up
+to o(1).
+Assumption 3 (Independence) The predictors in the design matrix satisfy
+cor(xj, xk) = 0, 1 ≤j < k ≤p
+(20)
+The behavior of the design matrix should also be controlled. Here we consider a random
+design and assume the following assumption
+27
+Assumption 4 (Design matrix) The covariate vector x has a continuous density and
+there exist constants C1 and C2 such that the density function gj of xj satisﬁes 0 < C1 ≤
+gj(x) ≤C2 < ∞on [a, b] for every 1 ≤j ≤p.
+As a typical assumption for bagging, we require the bagging sample proportion to be not
+too small.
+Assumption 5 (Sample proportion) In each bagging round, every sample has qn proba-
+bility to be included, where qn satisﬁes
+nqn →∞
+as n →∞
+Note that if we choose the bootstrap sample size to be the same as the sample size n, by law
+of large numbers, we have approximately qn = 1 −1/e, where e is the natural number.
+A.2
+Propositions
+The following two propositions considers a scenario that the true underlying relationship
+between the predictors and the response is linear, which demonstrates how the probability
+of choosing one variable over another in the ﬁrst step is decided. The ﬁrst proposition gives
+the probability that we select one variable over another, and the second proposition gives
+the probability that we will select a correct variable in the ﬁrst step.
+Proposition A.1 Consider the case where y depends on x through a linear structure with
+coeﬃcients β1, ..., βp which satisfy assumption 1. Also under assumption 3 and 4, if the sub-
+matrix of x consisting of the columns corresponding to the nonzero coeﬃcients is column-wise
+orthogonal, let cj be the criterion to select predictor j. Recall that we will select predictor
+j if j = arg maxj cj, where cj is the L2 norm of the gradient with respect to the jth input.
+Then we have
+P(cj < ck) =2L
+|βj| −|βk|
+√
+2σ
+, −|βk|
+σ , 1
+√
+2
+
++ 2L
+|βj| + |βk|
+√
+2σ
+, |βk|
+σ , 1
+√
+2
+
++
+Φ
+|βj| −|βk|
+√
+2σ
+
++ Φ
+|βj| + |βk|
+√
+2σ
+
+−2
+(21)
+where
+L(a, b, ρ) = P(X1 > a, X2 > b)
+(22)
+is the bivariate orthant probability with correlation ρ and Φ(·) is the standard normal distri-
+bution CDF.
+Proposition A.2 Under the assumptions 1, 3 and 4, the probability that we select a nonzero
+predictor at the very beginning using the stage-wise neural network selection is
+P(A nonzero predictor enters the model ﬁrst) =
+s
+X
+k=1
+Z ∞
+0
+fk(x)
+p
+Y
+j̸=k
+Fj(x)dx
+(23)
+28
+where
+Fk(x) = 1
+2
+
+erf
+x + |βk|
+√
+2σ2
+
++ erf
+x −|βk|
+√
+2σ2
+
+and
+fk(x) = ∂
+∂xFk(x) =
+r
+2
+πσ2e−
+x2+β2
+k
+2σ2 cosh βkx
+σ2
+(24)
+and erf(·) is the error function. Moreover, if βmax = maxj=1,...,s is bounded, as s →∞, the
+probability is bounded from above
+P ≤1 −δ
+where δ is a nontrivial quantity.
+The proofs of these two propositions are given in Appendix C.
+B
+Extra Numeric Results
+In this section, we present extra simulation results.
+B.1
+Estimation simulation study
+In this subsection, we compare the estimation methods described in section 3.
+To fully
+understand the estimation diﬀerences among the competitive methods, we assume correct
+variable selection and perform the estimation on the correct subset of variables. The data
+are generated according to the same scheme as in the last subsection.
+We compare the
+performance of these diﬀerent estimation methods for s = 2, 5, 10 assuming that we know
+the correct subset of variables. The simulation is run on 101 repetitions of data generation
+using diﬀerent seeds. In the Table 7, we report the RMSE, the MAE and the MAPE for
+regression, and the accuracy, the auc score and the f1 score for classiﬁcation.
+On average, we see l1 norm regularization provides best performance, except for the
+MAPE when s = 10 in regression. Moreover, we observe that both built-in l1 and soft-
+thresholding gives smaller standard errors, which coincides with the shrinkage estimator’s
+properties. However, soft-thresholding provides better performance on average than built-in.
+The reason is that sparsity is not well supported with most libraries, thus a manual operation
+is needed to obtain sparsity.
+B.2
+Variable selection and estimation
+In this subsection, we study the prediction capability of the ENNS algorithm with l1 neural
+network, and compare it with the DNP model, the logistic regression and the HSIC-lasso
+with SVM. We use the same neural network structure to generate data as in the previous
+section. Under 101 repetitions, we report the average RMSE (root mean squared error),
+MAE (mean absolute error) and MAPE (mean absolute percent error) for regression and
+average accuracy, AUC and F1 Score for classiﬁcation, as well as their standard errors. The
+results are summarized in table 8.
+29
+We observe that our proposed algorithm enjoyed a slight performance boost via the
+ensemble method. Moreover, the standard errors of these results are slight greater than the
+standard errors reported in the last subsection, where the estimation was done assuming
+correct selection. The increase of standard errors is mainly due to the selection variations.
+B.3
+Correlated predictors
+In this subsection, we use an example to study the numerical performance of the proposed
+algorithm under correlated predictors situation. We consider two diﬀerent correlations: ρ =
+0.3 and ρ = 0.7. As a comparison, the results for ρ = 0 is also included. Let u1, ..., un be
+i.i.d. standard normal random variables, xij be i.i.d. standard normal random variables,
+which are independent of u1, ..., un. For i = 1, ..., n and j = 1, ..., p, do the transformation
+xij = (xij +tui)/
+√
+1 + t2 for some t, then we obtain the standard normal correlated variables
+by
+cor(xij, xik) =
+t2
+1 + t2, i = 1, ..., n; j = 1, ..., p
+Taking t =
+p
+3/7 gives correlation 0.3 and taking t =
+p
+7/3 gives correlation 0.7. Then
+we truncate the random variables to interval [−1, 1]. The structure to generate response is
+kept the same as in the last subsection. The results of variable selection and estimation are
+provided in table 9.
+From the table, we see that the correlated cases perform almost as good as there’s no
+correlation. All models select less variables when the correlation is higher, and this is a
+well-known symptom of variable selection with correlated predictors. However, this does
+not aﬀect the estimation step, and in some cases even this makes the estimation results
+better. The reason could be that we have less variables thus the model is simpler. Since
+the predictors are correlated, we do not lose too much information by not selecting some of
+them. Moreover, some results, not in the table, includes the false positive rate, where the
+average for ENNS is 0.05 ± 0.03, while that of the DNP is 0.29 ± 0.14. Therefore, ENNS
+includes less redundant variables in the estimation step and achieves better performance.
+B.4
+Variable selection: MRI data
+In this example, we evaluate the proposed variable selection capability and compare it with
+other variable selection models in the context of a biological experiment under known ground
+truth. The data used in this example come from Alzheimer’s Disease Neuroimaging Initia-
+tives (ADNI), see http://adni.loni.usc.edu/. The data includes n = 265 patients’ neu-
+roimaging results, including 164 Alzheimer’s (AD) patients and 101 cognitively normal (CN)
+individuals. 145 regions of interest (ROIs) spanning the entire brain were calculated using
+Multi-Atlas ROI segmentation, and 114 ROIs were derived by combining single ROIs within a
+tree hierarchy to obtain volumetric measurements from larger structures. Therefore, p = 259
+ROIs were used in this example.
+Details of the pre-processing method can be found at
+https://adni.bitbucket.io/reference/docs/UPENN_ROI_MARS/Multi-atlas_ROI_ADNI_Methods_mod
+Among those ROIs, biologically important features are picked, see Table 10, where red in-
+dicated most important, yellow means second important, and green means third important.
+The combinations and all other ROIs are not listed.
+30
+Table 7: Prediction results on the testing set using neural networks with and without l1
+norm regularization for s = 2, 5, 10. RMSE is rooted mean squared error, MAE is mean
+absolute error, and MAPE is mean absolute percent error. Accuracy is the percentage of
+correct prediction, auc is area under the ROC curve, and f1 score is the inverse of inverse
+precision plus the inverse recall.
+Response
+Metric
+Method
+s=2
+s=5
+s=10
+Regression
+RMSE
+Neural Network
+31.24(13.32)
+69.46(37.40)
+136.64(60.54)
+Xavier initialization
+18.64(11.07)
+58.89(27.73)
+136.58(65.57)
+l1 built-in
+20.47(9.62)
+59.37(23.61)
+129.55(50.48)
+l1 soft-thresholding
+5.97(4.18)
+45.83(33.06)
+109.31(47.24)
+Stage-wise
+10.59(11.20)
+47.64(22.69)
+117.65(43.96)
+Bagging
+25.48(10.89)
+59.49(26.53)
+133.45(59.72)
+MAE
+Neural Network
+16.45(10.91)
+52.85(28.47)
+103.76(45.99)
+Xavier initialization
+13.65(8.06)
+45.34(22.18)
+105.17(53.66)
+l1 built-in
+15.56(7.76)
+45.32(18.34)
+98.54(38.36)
+l1 soft-thresholding
+4.37(3.02)
+35.49(26.21)
+83.85(36.45)
+Stage-wise
+7.91(8.23)
+38.86(20.00)
+89.82(33.82)
+Bagging
+14.77(7.92)
+43.16(20.51)
+99.38(41.66)
+MAPE
+Neural Network
+0.012(0.015)
+0.030(0.026)
+0.033(0.026)
+Xavier initialization
+0.009(0.009)
+0.027(0.022)
+0.029(0.017)
+l1 built-in
+0.011(0.012)
+0.029(0.023)
+0.032(0.021)
+l1 soft-thresholding
+0.005(0.007)
+0.017(0.010)
+0.029(0.023)
+Stage-wise
+0.007(0.007)
+0.019(0.015)
+0.027(0.016)
+Bagging
+0.010(0.010)
+0.026(0.024)
+0.030(0.022)
+Classiﬁcation
+Accuracy
+Neural Network
+0.944(0.026)
+0.886(0.037)
+0.841(0.041)
+Xavier initialization
+0.952(0.026)
+0.891(0.034)
+0.831(0.036)
+l1 built-in
+0.927(0.031)
+0.844(0.085)
+0.752(0.110)
+l1 soft-thresholding
+0.964(0.028)
+0.908(0.029)
+0.855(0.031)
+Stage-wise
+0.945(0.030)
+0.886(0.038)
+0.804(0.042)
+Bagging
+0.877(0.069)
+0.806(0.068)
+0.753(0.087)
+AUC
+Neural Network
+0.942(0.027)
+0.882(0.038)
+0.837(0.042)
+Xavier initialization
+0.951(0.027)
+0.891(0.034)
+0.825(0.037)
+l1 built-in
+0.924(0.031)
+0.833(0.100)
+0.734(0.123)
+l1 soft-thresholding
+0.964(0.029)
+0.905(0.029)
+0.851(0.032)
+Stage-wise
+0.943(0.031)
+0.884(0.038)
+0.800(0.041)
+Bagging
+0.877(0.065)
+0.803(0.063)
+0.751(0.084)
+F1 Score
+Neural Network
+0.943(0.027)
+0.887(0.045)
+0.841(0.049)
+Xavier initialization
+0.952(0.026)
+0.892(0.041)
+0.832(0.048)
+l1 built-in
+0.927(0.031)
+0.824(0.192)
+0.732(0.200)
+l1 soft-thresholding
+0.965(0.026)
+0.908(0.036)
+0.857(0.033)
+Stage-wise
+0.944(0.031)
+0.883(0.042)
+0.806(0.049)
+Bagging
+0.870(0.077)
+0.792(0.060)
+0.748(0.088)
+31
+Table 8: Model performance of the combination of ENNS algorithm and l1 thresholding esti-
+mation, compared with DNP, Lasso and HSIC-Lasso for s = 2, 5, 10 cases in both regression
+and classiﬁcation. The average performance of 101 repetitions with their standard errors in
+parenthesis are presented.
+Response
+Metric
+Method
+s=2
+s=5
+s=10
+Regression
+RMSE
+ENNS+l1
+15.67(30.35)
+48.14(21.16)
+174.08(65.38)
+DNP
+25.42(33.16)
+62.63(29.02)
+178.91(60.15)
+Lasso
+79.44(67.31)
+104.19(49.38)
+192.04(77.34)
+HSIC-Lasso
+56.32(59.41)
+86.77(47.51)
+188.35(56.48)
+MAE
+ENNS+l1
+12.03(23.68)
+40.12(19.95)
+132.07(44.99)
+DNP
+20.15(27.15)
+47.85(22.31)
+136.06(45.95)
+Lasso
+64.11(54.63)
+81.97(39.76)
+147.86(60.21)
+HSIC-Lasso
+42.89(34.66)
+70.04(41.23)
+144.37(48.15)
+MAPE
+ENNS+l1
+0.012(0.025)
+0.028(0.036)
+0.041(0.037)
+DNP
+0.017(0.028)
+0.032(0.032)
+0.042(0.041)
+Lasso
+0.042(0.029)
+0.046(0.035)
+0.046(0.025)
+HSIC-Lasso
+0.033(0.021)
+0.036(0.025)
+0.048(0.024)
+Classiﬁcation
+Accuracy
+ENNS+l1
+0.967(0.029)
+0.848(0.025)
+0.756(0.067)
+DNP
+0.933(0.076)
+0.822(0.068)
+0.736(0.064)
+Lasso
+0.732(0.103)
+0.726(0.071)
+0.692(0.075)
+HSIC-Lasso
+0.805(0.094)
+0.798(0.094)
+0.706(0.081)
+AUC
+ENNS+l1
+0.959(0.036)
+0.834(0.024)
+0.709(0.058)
+DNP
+0.898(0.148)
+0.780(0.100)
+0.699(0.052)
+Lasso
+0.652(0.121)
+0.640(0.102)
+0.625(0.068)
+HSIC-Lasso
+0.774(0.125)
+0.748(0.121)
+0.677(0.061)
+F1-Score
+ENNS+l1
+0.962(0.037)
+0.859(0.036)
+0.708(0.089)
+DNP
+0.903(0.208)
+0.761(0.199)
+0.705(0.100)
+Lasso
+0.590(0.299)
+0.604(0.250)
+0.634(0.192)
+HSIC-Lasso
+0.744(0.206)
+0.731(0.242)
+0.666(0.208)
+32
+Table 9: Selection and estimation comparison for predictors with correlation 0, 0.3 and 0.7.
+The number of nonzero predictors is set to 5. For selection, the average number of correct
+selected variables with its standard error is given. For estimation the average RMSE or AUC
+with their standard errors is given. The results are averaged over 101 repetitions.
+Response
+Model
+selection
+ρ = 0.0
+ρ = 0.3
+ρ = 0.7
+Regression
+ENNS+l1
+3.81(0.79)
+3.27(0.75)
+2.29(0.70)
+DNP
+3.48(0.96)
+2.95(0.79)
+2.14(0.56)
+LASSO
+3.38(0.90)
+2.85(0.79)
+2.11(1.12)
+Classiﬁcation
+ENNS+l1
+3.66(1.05)
+3.25(0.76)
+2.38(0.72)
+DNP
+3.62(1.09)
+3.43(0.91)
+2.71(1.03)
+LASSO
+3.55(0.79)
+2.90(1.31)
+1.95(0.72)
+Response
+Model
+estimation
+ρ = 0.0
+ρ = 0.3
+ρ = 0.7
+Regression
+ENNS+l1
+40.82(19.46)
+37.17(27.29)
+43.18(44.47)
+DNP
+81.43(46.00)
+92.91(65.25)
+101.15(90.63)
+LASSO
+131.37(74.22)
+151.16(108.88)
+113.30(97.54)
+Classiﬁcation
+ENNS+l1
+0.856(0.040)
+0.875(0.061)
+0.907(0.030)
+DNP
+0.774(0.100)
+0.766(0.106)
+0.793(0.092)
+LASSO
+0.598(0.083)
+0.634(0.117)
+0.683(0.116)
+The full data set is used for variable selection, and the selection result is based on a
+3-fold cross-validation sets. We run the ENNS algorithm along with the LASSO and the
+DNP. The selection results are presented in Table 10. Note here if a model selects a simple
+combination of some features, these features are also marked as selected. Moreover, Table
+11 shows the number of combined features selected for the models and the number of false
+positive selections. We observe that LASSO misses a lot of important features and selected
+about only one-fourth of the combined features as neural networks. This indicates that the
+features may have a complicated relationship with the response. ENNS performs better than
+the shallow DNP in terms of the metrics in table 11, where IS is a weighted average score
+with the weights for red, yellow and green being 3, 2 and 1, respectively; NI is the number of
+selected important variables; and NU is the number of selected unimportant variables. As a
+property of the ENNS, it selects relatively less number of false positive variables. It’s hard
+to track the combined features, since a lot is involved, however, the combinations represent
+biological intuitions. Neural network selects more combined features and perform better in
+this sense.
+C
+Proof
+In this section, we will provide the proof of the theorems in section 4.
+33
+Table 10: Variable selection result for the AD data.
+The table includes all biologically
+important variables with three levels: red (very important), yellow (secondly important)
+and green (thirdly important). The non-important variables are not included in the model.
+Checkmarks indicate whether the corresponding algorithm selected the variable or not.
+Gene code
+R31
+R32
+R36
+R37
+R38
+R39
+R40
+R41
+R47
+R48
+R49
+Lasso
+✓
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+Gene code
+R50
+R51
+R52
+R55
+R56
+R57
+R58
+R59
+R60
+R81
+R82
+Lasso
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+Gene code
+R85
+R86
+R87
+R88
+R100
+R101
+R102
+R103
+R106
+R107
+R116
+Lasso
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+Gene code
+R117
+R118
+R119
+R120
+R121
+R122
+R123
+R124
+R125
+R132
+R133
+Lasso
+✓
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+Gene code
+R136
+R137
+R138
+R139
+R140
+R141
+R142
+R143
+R146
+R147
+R152
+Lasso
+✓
+✓
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+✓
+✓
+Gene code
+R153
+R154
+R155
+R162
+R163
+R164
+R165
+R166
+R167
+R168
+R169
+Lasso
+✓
+✓
+✓
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+Gene code
+R170
+R171
+R178
+R179
+R186
+R187
+R190
+R191
+R194
+R195
+R198
+Lasso
+✓
+✓
+✓
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+✓
+✓
+Gene code
+R199
+R200
+R201
+R202
+R203
+R204
+R205
+R206
+R207
+Lasso
+✓
+✓
+✓
+DNP
+✓
+✓
+✓
+✓
+ENNS
+✓
+✓
+✓
+✓
+34
+Table 11: Variable selection result for the AD data. The reported numbers include IS, the
+weighted average of selected important variables with the weights being 3, 2 and 1 for red
+(most important), yellow (secondly important) and green (thirdly important), respectively;
+NI, number of important variables selected; and NU, number of unimportant variables se-
+lected.
+Variable selection method
+IS
+NI
+NU
+LASSO
+1.094
+32/86
+25/59
+DNP
+1.428
+40/86
+15/59
+ENNS
+1.624
+49/86
+6/59
+Proof of Proposition A.1
+Proof:
+Consider independent observations {(x1, y1), ..., (xn, yn)}. Assume
+x(j) ∼N (0, I),
+j = 1, ..., p
+In the regression set up where y is centered, we have
+y|x1, ..., xp ∼N (β1x1 + ... + βpxp, σ2).
+Without loss of generality, we assume that
+|β1| ≥|β2| ≥... ≥|βs|
+otherwise, we may re-arrange the order of columns of the design matrix.
+Furthermore,
+without loss of generality, we may assume all coeﬃcients are positive, otherwise, we may
+multiply the corresponding column of the design matrix by −1.
+Since s < n, we may
+without loss of generality consider an orthogonal design on the matrix x(S), which can be
+achieved by re-parametrization. Let ˆS be the set of variables included in the current model.
+The algorithm computes
+G0j =
+∂
+∂W 0j
+l(θ; X, y) := (G0j1, ..., G0jK)
+where K is the size of the ﬁrst hidden layer. Without loss of generality, we may consider
+a shallow network in this part, since there isn’t any predictor x involved in this section, all
+estimates can be treated as constants, which are universal for all j′s. We have
+G0jk = −2
+n
+n
+X
+i=1
+yiˆakσ′(
+p
+X
+j=1
+xij ˆθjk + ˆtk)xij,
+k = 1, ..., K
+where ˆak, ˆtk are estimated parameters for the initial model and ˆθjk is set to zero for all input
+variables at the very beginning. Thus we have
+∥G0j∥2 =
+v
+u
+u
+t
+K
+X
+k=1
+[−2
+n
+n
+X
+i=1
+yiˆakσ′(
+p
+X
+j=1
+xij ˆθjk + ˆtk)xij]2
+= 2
+n
+v
+u
+u
+t
+K
+X
+k=1
+ˆa2
+kσ′(ˆtk)|xT
+(j)y|
+35
+Since the leading constant is independent of j, it’s easier to consider the diﬀerent part,
+denoted
+cj = |xT
+(j)y|
+for j ∈C, where C is the candidate set. The ﬁrst variable selected is
+j+ = arg max
+j∈C
+cj.
+At the very beginning, we have for x ≥0 that
+P(c1 ≤x) = P
+ |xT
+(1)y| ≤x
+
+= P
+ −x ≤xT
+(1)y ≤x
+
+= P
+ −x ≤β1 + xT
+(1)ε ≤x
+
+= Φ
+ x −β1
+σ∥x(1)∥2
+
+−Φ
+−x −β1
+σ∥x(1)∥2
+
+= Φ
+x −β1
+σ
+
+−Φ
+−x −β1
+σ
+
+(25)
+This result implies that greater β leads to higher probability of large c1. Then
+P(c1 > c2) = P
+ |xT
+(1)y| > |xT
+(2)y|
+
+(26)
+Let
+W1 = xT
+(1)y
+and
+W2 = xT
+(2)y
+(27)
+which are both normally distributed. Therefore, c1 and c2 follow folded normal distribution
+c1 ∼FN(β1, σ2)
+and
+c2 ∼FN(β2, σ2)
+(28)
+We can calculate
+Cov(W1, W2) = Cov(β1 + xT
+(1)y, β2 + xT
+(2)y) = σ2xT
+(1)x(2) = 0
+(29)
+Because both W1 and W2 are normally distributed, W1 and W2 are independent. Therefore,
+c1 and c2 are independent. Since both c1 and c2 are positive, the probability is equivalent to
+P(c1 > c2) = P
+c1
+c2
+> 1
+
+(30)
+Let
+c12 = c1
+c2
+Then we have
+c12 ∼RN(β1, β2, σ2, σ2)
+(31)
+36
+where RN stands for the ratio of folded normal distributions. By theorem 3.1 in [38], we
+have the CDF of c12
+F12(x) =2L
+ β1 −β2x
+σ
+√
+1 + x2, −β2
+σ ,
+x
+√
+1 + x2
+
++ 2L
+ β1 + β2x
+σ
+√
+1 + x2, β2
+σ ,
+x
+√
+1 + x2
+
++
+Φ
+ β1 −β2x
+σ
+√
+1 + x2
+
++ Φ
+ β1 + β2x
+σ
+√
+1 + x2
+
+−2
+(32)
+where
+L(a, b, ρ) = P(X1 > a, X2 > b)
+(33)
+with
+X1
+X2
+
+∼N
+
+0,
+1
+ρ
+ρ
+1
+
+Then we have
+P(c1 < c2) = F12(1)
+= 2L
+β1 −β2
+√
+2σ , −β2
+σ , 1
+√
+2
+
++ 2L
+β1 + β2
+√
+2σ , β2
+σ , 1
+√
+2
+
++
+Φ
+β1 −β2
+√
+2σ
+
++ Φ
+β1 + β2
+√
+2σ
+
+−2
+(34)
+Release the general assumption of βj > 0 by multiply −1 to those which are negative, we have
+the absolute values back on |βj|. This is also true for diﬀerent βi and βj, since we did not use
+the diﬀerence between the nonzero predictors and zero predictors. By the exchangeability
+of predictors, the result holds for all i and j. Therefore, we have
+P(cj < ck) =2L
+|βj| −|βk|
+√
+2σ
+, −|βk|
+σ , 1
+√
+2
+
++ 2L
+|βj| + |βk|
+√
+2σ
+, |βk|
+σ , 1
+√
+2
+
++
+Φ
+|βj| −|βk|
+√
+2σ
+
++ Φ
+|βj| + |βk|
+√
+2σ
+
+−2
+□
+Proof of Proposition A.2
+Proof:
+Consider independent observations {(x1, y1), ..., (xn, yn)}. Assume
+x(j) ∼N (0, I),
+j = 1, ..., p
+In the regression set up where y is centered, we have
+y|x1, ..., xp ∼N (β1x1 + ... + βpxp, σ2).
+Without loss of generality, we assume that
+|β1| ≥|β2| ≥... ≥|βs|
+37
+otherwise, we may re-arrange the order of columns of the design matrix.
+Furthermore,
+without loss of generality, we may assume all coeﬃcients are positive, otherwise, we may
+multiply the corresponding column of the design matrix by −1.
+Since s < n, we may
+without loss of generality consider an orthogonal design on the matrix x(S), which can be
+achieved by re-parametrization. Let ˆS be the set of variables included in the current model.
+At the very beginning, we have proved in the proof of proposition A.1 that
+cj ∼FN(βj, σ2)
+j = 1, ..., p
+(35)
+and that ci and cj are independent for i ̸= j. Denote event
+Ek = {ck > max
+i̸=k ci}, k = 1, ..., s
+(36)
+It’s easy to observe that Ek’s are mutually exclusive. Therefore, we have
+Pr(At least one of c1, ..., cs is greater than all of cs+1, ..., cp)
+=Pr
+ s[
+k=1
+Ek
+!
+=
+s
+X
+k=1
+Pr(Ek)
+(37)
+We may calculate
+Pr(Ek) = Pr(ck > c(−k,p−1))
+where c(−k,p−1) is the largest order statistic of c1, ...c(k−1), c(k+1), c(p), which is independent of
+ck. Let F(−k,p−1) and f(−k,p−1) be the CDF and PDF of c(−k,p−1), respectively, we have
+F(−k,p−1)(x) =
+p
+Y
+j̸=k
+Fj(x)
+and
+f(−k,p−1)(x) = ∂
+∂x
+p
+Y
+j̸=k
+Fj(x)
+where from the properties of folded normal distribution we have
+Fk(x) = 1
+2
+
+erf
+x + |βk|
+√
+2σ2
+
++ erf
+x −|βk|
+√
+2σ2
+
+and
+fk(x) = ∂
+∂xFk(x) =
+r
+2
+πσ2e−
+x2+β2
+k
+2σ2 cosh βkx
+σ2
+38
+Then we have
+Pr(Ek)
+=Pr(ck > c(−k,p−1))
+=
+Z ∞
+0
+Pr(ck > x)f(−k,p−1)(x)dx
+=
+Z ∞
+0
+[1 −Fk(x)] ∂
+∂x
+p
+Y
+j̸=k
+Fj(x)dx
+=
+"
+[1 −Fk(x)]
+p
+Y
+j̸=k
+Fj(x)
+#
+∞
+0
++
+Z ∞
+0
+fk(x)
+p
+Y
+j̸=k
+Fj(x)dx
+=
+Z ∞
+0
+fk(x)
+p
+Y
+j̸=k
+Fj(x)dx
+(38)
+where the second equality is by the convolution formula, the fourth equality is by integration
+by parts. Therefore,
+Pr(At least one of c1, ..., cm is greater than all of cs+1, ..., cp)
+=
+s
+X
+k=1
+Z ∞
+0
+fk(x)
+p
+Y
+j̸=k
+Fj(x)dx
+(39)
+Next we will show that this probability is actually a very high probability. Let
+pk =
+Z ∞
+0
+fk(x)
+p
+Y
+j̸=k
+Fj(x)dx = Ek
+" p
+Y
+j̸=k
+Fj(X)
+#
+By the formulas for Fk and fk, we have
+pk =
+Z ∞
+0
+r
+2
+πσ2e−
+x2+β2
+k
+2σ2 cosh βkx
+σ2
+Y
+j̸=k
+1
+2
+
+erf
+x + βj
+√
+2σ2
+
++ erf
+x −βj
+√
+2σ2
+
+dx
+=
+Z ∞
+0
+r
+1
+2πσ2
+
+e−(x+βk)2
+2σ2
++ e−(x−βk)2
+2σ2
+ Y
+j̸=k
+1
+2
+
+erf
+x + βj
+√
+2σ2
+
++ erf
+x −βj
+√
+2σ2
+
+dx
+(40)
+Do change of variable z = x/σ, we have
+pk =
+Z ∞
+0
+1
+√
+2π
+
+e−
+(z+ βk
+σ )2
+2
++ e−
+(z−βk
+σ )2
+2
+ Y
+j̸=k
+1
+2
+"
+erf
+ 
+z + βj
+σ
+√
+2
+!
++ erf
+ 
+z −βj
+σ
+√
+2
+!#
+dz
+(41)
+39
+Let ˜βk = βk/σ, without loss of generality, assume that ∞= β0 ≥β1 ≥... ≥βp ≥βp+1 = 0,
+we have
+pk =
+Z ∞
+0
+1
+√
+2π
+
+e−(z+ ˜βk)2
+2
++ e−(z−˜βk)2
+2
+ Y
+j̸=k
+1
+2
+"
+erf
+ 
+z + ˜βj
+√
+2
+!
++ erf
+ 
+z −˜βj
+√
+2
+!#
+dz
+=
+p
+X
+i=0
+Z βi
+βi+1
+1
+√
+2π
+
+e−(z+ ˜βk)2
+2
++ e−(z−˜βk)2
+2
+
+Y
+j̸=k
+1
+2
+"
+erf
+ 
+z + ˜βj
+√
+2
+!
++
+1{j≥i+1}erf
+ 
+z −˜βj
+√
+2
+!
+−
+1{j≤i}erf
+ ˜βj −z
+√
+2
+!#
+dz
+(42)
+By the exponential approximation of the error function, see for example [66], there exist c1
+and c2 such that
+sup
+x>0 |erf(x) −(1 −exp[−c1x −c2x2])|
+can be arbitrarily small, where approximately c1 ≈1.095 and c2 ≈0.7565. Consider this
+approximation, we have
+pk =
+p
+X
+i=0
+Z βi
+βi+1
+1
+√
+2π
+
+e−(z+ ˜βk)2
+2
++ e−(z−˜βk)2
+2
+
+Y
+j̸=k
+1
+2
+
+1 +
+1{j≥i+1} −
+1{j≤i} −e
+c2
+1
+4c2
+
+e
+−c2
+2
+h
+z+
+
+˜βj+
+c1
+√
+2c2
+i2
++ 1{j≥i+1}e
+−c2
+2
+h
+z+
+
+−˜βj+
+c1
+√
+2c2
+i2
+−
+1{j≤i}e
+−c2
+2
+h
+z−
+
+˜βj+
+c1
+√
+2c2
+i2
+(43)
+Here
+e
+c2
+1
+4c2 ≈1.48 >> 1
+Observe that as when i = s, also observe that τn →0 indicates maxj=s+1,...,p βj →0, we have
+s
+Y
+j=1,j̸=k
+1
+2e
+c2
+1
+4c2
+
+e
+−c2
+2
+h
+z−
+
+βj+
+c1
+√
+2c2
+i2
+−e
+−c2
+2
+h
+z+
+
+βj+
+c1
+√
+2c2
+i2
+→0 as s →∞
+Therefore, the formula of pk can be simpliﬁed to
+pk = o
+ 1
+2se
+sc2
+1
+4c2
+
++
+s
+X
+i=0
+Z βi
+βi+1
+1
+√
+2π
+
+e−(z+ ˜βk)2
+2
++ e−(z−˜βk)2
+2
+
+Y
+j̸=k
+1
+2
+
+1 +
+1{j≥i+1} −
+1{j≤i} −e
+c2
+1
+4c2
+
+e
+−c2
+2
+h
+z+
+
+˜βj+
+c1
+√
+2c2
+i2
++ 1{j≥i+1}e
+−c2
+2
+h
+z+
+
+−˜βj+
+c1
+√
+2c2
+i2
+−
+1{j≤i}e
+−c2
+2
+h
+z−
+
+˜βj+
+c1
+√
+2c2
+i2
+≤o
+ 1
+2se
+sc2
+1
+4c2
+
++
+s
+X
+i=0
+1
+2e
+c2
+1
+4c2
+s−i 1
+2s
+h
+Φ(˜βi −˜βk) −Φ(˜βi+1 −˜βk) + Φ(˜βi + ˜βk) −Φ(˜βi+1 + ˜βk)
+i
+(44)
+40
+where Φ is the normal CDF and the inequality is by observing
+e−x2 ≤1
+and the term in the bracket is less than 2 when j ≥i+1. Then summing up p′
+ks and observing
+the double sum is not converging to zero since it consists of a geometric component, when
+βmax is not big enough and let s →∞, we have
+1 −
+s
+X
+k=1
+pk
+≥1 −o
+
+s 1
+2se
+sc2
+1
+4c2
+
+−
+s
+X
+k=1
+s
+X
+i=0
+1
+2e
+c2
+1
+4c2
+s−i
+1
+2s
+h
+Φ(˜βi −˜βk) −Φ(˜βi+1 −˜βk) + Φ(˜βi + ˜βk) −Φ(˜βi+1 + ˜βk)
+i
+≥
+s
+X
+i=1
+1
+2e
+c2
+1
+4c2
+s−i
+s
+X
+k=1
+1
+2s(1 −Φ(βmax)) −o
+
+s 1
+2se
+sc2
+1
+4c2
+
+≥c −o(1)
+(45)
+□
+Proof of Theorem 4.1
+Proof:
+In this proof, we will show the probability that the same zero predictor appears in
+k bagging rounds tends to zero as k increases. At the ﬁrst step, we have C = {1, ..., p} and
+S = {}. By proposition A.2 we know that the probability that the ﬁrst variable belongs to
+S0 converges to one under the conditions.
+At the mth step, denote the candidate set Cm and the selected set Sm. Assume that
+S ⊂S0. Without loss of generality, consider σ2 = 1. If not, we may divide the response and
+coeﬃcients by σ. Consider the ﬁrst case that
+Cm ∩S0 ̸= ∅
+Let Cm ∩S0 = {j1, ..., js′}. By the proof of proposition A.2, the probability that a zero
+variable is selected is at most
+P(select zero variable) ≤1 −
+P
+j∈Cm∩S0 eβj
+P
+j∈Cm eβj
+= 1 −
+P
+j∈Cm∩S0 eβj
+P
+j∈Cm∩S0 eβj + P
+j∈Cm∩SC
+0 eβj
+=
+P
+j∈Cm∩SC
+0 eβj
+P
+j∈Cm∩S0 eβj + P
+j∈Cm∩SC
+0 eβj
+≤
+(|Cm| −s′)eτn
+s′eγn + (|Cm| −s′)
+41
+where |Cm| = O(p) is the cardinality of Cm by theorem condition, βmin = minj=1,...,s βj,
+βmax = maxj=1,...,s βj and by assumption 1
+τn = o(γn) ≤o(βmin)
+If we have
+|Cm| −s′
+s′
+eτn−γn →0 as n →∞
+(46)
+Then we have
+P(select zero variable) →0 as n →∞
+In this case, the probability of false positive in the ENNS algorithm goes to zero. However,
+it is not always that equation 46 is satisﬁed. It happens that the signal strength of nonzero
+variable is not big enough. This case can be combined with the other case that
+Cm ∩S0 = ∅
+In this case, it is (almost) guaranteed that a zero variable will be selected in the next step.
+However, we will show that though a zero variable is selected, as long as the number of zero
+variable in S is not too big, which is guaranteed by the theorem condition
+s0 ≤Cs = o(p)
+the selected zero variables in diﬀerent rounds of the bagging algorithm together with the neu-
+ral network random initialization make the probability that the same zero variables appears
+more than the threshold number of times converges to zero. Now we have
+Cm = {j1, ..., jp′} ⊂{s + 1, ..., p}
+Consider the scenario that all bagging rounds are independent. The residual
+y −ˆµSm
+is not related to xj1, ..., xj′p by assumption 2, where Sm is the selected set at the mth step
+and ˆµSm is the estimated conditional expectation of y given xSm. Therefore, the variables
+xj, j ∈Cm are exchangeable. We have
+P(j ∈Sm+1 ∩Cm) = P
+ 
+1
+B2
+B2
+X
+b=1
+1{cj≥c(s0−|Sm|)} ≥ps
+!
+=
+B2
+X
+k=[B2ps]
+B2
+k
+(s0 −|Sm|)k (p −s0)B2−k
+(p −|Sm|)B2
+≤exp
+
+−B2
+
+(1 −ps) log
+(1 −ps)(p −|Sm|)
+p −s0
+
++ ps log
+ps(p −|Sm|)
+s0 −|Sm|
+
+(47)
+where the last inequality is by [3]. Since we have
+s0 ≤Cs = o(p)
+42
+then we have
+P
+ j ∈Sm+1 ∩Cm
+→0
+as
+s and B2 →∞
+Consider the last case that there is at least one variable in Cm that is also in {1, ..., s} and
+equation 46 does not hold. Also consider the truth that the bagging rounds are not fully
+independent in practice. Consider variable j and the estimator
+ˆsm
+j =
+1{∥Gmj∥2≤tm}
+Conditioning on the observations, there exist a ﬁxed tm such that ˆsm
+j
+indicates whether
+variable j is not selected (= 1) or selected (= 0). The bagged estimator is deﬁned as
+ˆsm
+j,B = E
+h
+1{∥G∗
+mj∥2≤tm}
+i
+where G∗
+mj is Gmj evaluated on a bootstrap sample. By the uniform law of large numbers,
+see for example [33], we have
+sup
+x,y
+
+1
+B2
+B2
+X
+b=1
+1{∥G∗
+mj,b∥2≤tm} −E
+h
+1{∥G∗
+mj∥2≤tm}
+i →0
+as B2 →∞
+(48)
+Let PB
+n be the empirical measure of the bootstrap sample. It’s easy to verify that ˆsm
+j
+is
+a smooth function evaluated at PB
+n . By assumption 3, we have independent observations.
+Then according to [31], see also [9], there exist an increasing sequence {bn}n∈N such that
+bn(∥Gmj∥2 −c0) →N (0, σ2
+∞)
+for some constant c0 < ∞and σ2
+∞< ∞. By algebra, in the mth step, we have
+∥Gmj∥2 =
+v
+u
+u
+t
+K
+X
+k=1
+[−2
+n
+n
+X
+i=1
+(yi −ˆµi)ˆakσ′(xT
+i ˆθk + ˆtk)xij]2
+= 2
+n
+v
+u
+u
+t
+K
+X
+k=1
+ˆa2
+k
+h
+ˆεTΣ′(xT
+i ˆθk + ˆtk)x(j)
+i2
+(49)
+where in ˆθk, ˆθjk is estimated from data for j ∈Sm and ˆθjk equals zero for j ∈Cm, ˆµi is
+the neural network estimate of yi based on xSm, ˆε is the prediction error based on xSm,
+Σ′(xT
+i ˆθk + ˆtk) is a diagonal matrix consists of σ′(·) evaluated at xT
+i ˆθk + ˆtk and x(j) is the
+jth column of x. We have
+ˆε = y −ˆf(ˆθ,ˆt, ˆa,ˆb, xSm)
+=
+X
+j∈Cm∩{1,...,s}
+βjx(j) +
+
+
+X
+j∈Sm∩{1,...,s}
+βjx(j) −ˆf(ˆθ,ˆt, ˆa,ˆb, xSm)
+
++ ε
+=
+X
+j∈Cm∩{1,...,s}
+βjx(j) + ε + O
+ 
+K2
+n
+r
+log(nKn)
+n
+!
+(50)
+43
+Therefore, for j ∈Cm ∩{1, ..., s}, since x(j) is normalized and σ′(·) ≤1, by norm inequality,
+we have
+E∥Gmj∥2 ≈E
+
+
+2
+n
+v
+u
+u
+u
+t
+K
+X
+k=1
+ˆa2
+k
+
+
+X
+j′∈Cm∩{1,...,s}
+βj′xT
+(j′)Σ′(xT
+i ˆθk + ˆtk)x(j) + εTΣ′(xT
+i ˆθk + ˆtk)x(j)
+
+
+2
+
+
+≥E
+
+2
+nK
+K
+X
+k=1
+|ˆak|
+
+X
+j′∈Cm∩{1,...,s}
+βj′xT
+(j′)Σ′(xT
+i ˆθk + ˆtk)x(j) + εTΣ′(xT
+i ˆθk + ˆtk)x(j)
+
+
+
+≥c · |Cm ∩{1, ..., s}|
+nK
+γn
+(51)
+For j ∈Cm ∩{s + 1, ..., p}, by Jensen’s inequality, we have
+E∥Gmj∥2 ≈E
+
+
+2
+n
+v
+u
+u
+u
+t
+K
+X
+k=1
+ˆa2
+k
+
+
+X
+j′∈Cm∩{1,...,s}
+βj′xT
+(j′)Σ′(xT
+i ˆθk + ˆtk)x(j) + εTΣ′(xT
+i ˆθk + ˆtk)x(j)
+
+
+2
+
+
+≤2
+n
+v
+u
+u
+u
+tE
+
+
+
+K
+X
+k=1
+ˆa2
+k
+
+
+X
+j′∈Cm∩{1,...,s}
+βj′xT
+(j′)Σ′(xT
+i ˆθk + ˆtk)x(j) + εTΣ′(xT
+i ˆθk + ˆtk)x(j)
+
+
+2
+
+
+≤
+c′
+n
+√
+K
+(52)
+If γn ≥c′√
+K
+c
+, we have
+P
+
+min
+j∈Cm∩{1,...,s}E∥Gmj∥2 ≥
+max
+j∈Cm∩{s+1,...,p}E∥Gmj∥2
+
+→1
+Since we have s0 ≤Cs = o(p), taking tm to be the (|Cm| −|Sm|)th smallest value of
+∥Gmj∥2, j ∈Cm, combine this with equation 48, for j ∈Cm ∩{s + 1, ..., p}, we have
+1
+B2
+B2
+X
+b=1
+1{∥G∗
+mj,b∥2≤tm} ≤E
+h
+1{∥G∗
+mj∥2≤tm}
+i
++ ǫ →Φ
+bn(tm −c0)
+σ∞
+−Z
+
+as n and B2 →∞
+(53)
+where the result is by [9], Z is standard normal random variable and Φ(·) is the standard
+normal CDF. Observe that bn is a diverging sequence and s0 ≤Cs = o(p), then we have the
+44
+probability that a zero variable is selected
+P
+ j ∈Cm ∩Sm+1c ∩{s + 1, ..., p}
+
+=P
+ j ∈Cm ∩Sm+1c ∩{s + 1, ..., p}
+ E∥Gmj∥2 ≤tm
+
+P (E∥Gmj∥2 ≤tm)
++ P
+ j ∈Cm ∩Sm+1c ∩{s + 1, ..., p}
+ E∥Gmj∥2 ≥tm
+
+P (E∥Gmj∥2 ≥tm)
+≤P
+ j ∈Cm ∩Sm+1c ∩{s + 1, ..., p}
+ E∥Gmj∥2 ≤tm
+
++ P (E∥Gmj∥2 ≥tm)
+≈1 −Φ
+bn(tm −E∥Gmj∥2)
+σ∞
+−Z
+
++ s0 −|Sm| −|Cm ∩{1, ..., s}|
+p −|Sm|
+→0
+as n →∞and B2 →∞
+(54)
+Therefore, the false positive rate of the ENNS algorithm goes to zero.
+In the classiﬁcation set up, we have similarly for equation 49 that
+∥Gmj∥2 =
+v
+u
+u
+t
+K
+X
+k=1
+[−1
+n
+n
+X
+i=1
+(yi −ˆµi)ˆakσ′(xT
+i ˆθk + ˆtk)xij]2
+= 1
+n
+v
+u
+u
+t
+K
+X
+k=1
+ˆa2
+k
+h
+ˆεTΣ′(xT
+i ˆθk + ˆtk)x(j)
+i2
+(55)
+where in ˆθk, ˆθjk is estimated from data for j ∈Sm and ˆθjk equals zero for j ∈Cm, ˆµi is the
+neural network estimate of the mean of yi based on xSm, i.e.
+ˆµi = σ
+ K
+X
+k=1
+ˆαkσ(θT
+k xi + tk) + b
+!
+,
+ˆε is the prediction error based on xSm, Σ′(xT
+i ˆθk + ˆtk) is a diagonal matrix consists of σ′(·)
+evaluated at xT
+i ˆθk + ˆtk and x(j) is the jth column of x. The only diﬀerence between the
+regression set up and the classiﬁcation set up is the formula for the mean.
+Use Taylor
+expansion with Lagrange remainder, we have
+σ
+ 
+s
+X
+j=1
+βjxj
+!
+=σ
+
+
+X
+j∈Cm∩{1,...,s}
+βjxj
+
++ σ′
+
+
+X
+j∈Sm∩{1,...,s}
+βjxj + ξ
+X
+j∈{1,...,s}/Sm
+βjxj
+
+
+X
+j∈{1,...,s}/Sm
+βjxj
+for some ξ ∈(0, 1) and
+0 < σ′
+
+
+X
+j∈Sm∩{1,...,s}
+βjxj + ξ
+X
+j∈{1,...,s}/Sm
+βjxj
+
+< σ
+
+
+X
+j∈Sm∩{1,...,s}
+βjxj + ξ
+X
+j∈{1,...,s}/Sm
+βjxj
+
+< 1
+Then
+ˆε = ε + σ′
+
+
+X
+j∈Sm∩{1,...,s}
+βjxj + ξ
+X
+j∈{1,...,s}/Sm
+βjxj
+
+
+X
+j∈{1,...,s}/Sm
+βjxj + O
+ 
+K2
+n
+r
+log(nKn)
+n
+!
+45
+where ε is the theoretical error of Bernoulli distribution with their means. We don’t have a
+direct control on ε, but by Cauchy-Schwarz inequality we have for any δ > 0 that
+P
+1
+n
+εTΣ′(xT
+i ˆθk + ˆtk)x(j)
+ > δ
+
+≤P
+1
+n max
+i
+Σ′(xT
+i ˆθk + ˆtk)
+ε∥2∥x(j)∥2
+ > δ
+
+≤P
+1
+n ∥ε∥2 > δ
+
+≤e−nδ2/8
+(56)
+Therefore, the only diﬀerence between classiﬁcation and regression is the ﬁrst order approx-
+imation term
+σ′
+
+
+X
+j∈Sm∩{1,...,s}
+βjxj + ξ
+X
+j∈{1,...,s}/Sm
+βjxj
+
+
+Observe that this term only depends on the true relationship and is independent of any
+j ∈Cm, therefore can be treated as a constant when comparing ∥Gmj∥2. This ﬁnishes the
+proof for the classiﬁcation case.
+□
+Proof of Theorem 4.2
+Proof:
+In the proof of theorem 4.1, we have proved that with probability tending to 1, the
+algorithm won’t select any zero variables. Therefore, here it suﬃces to show that the model
+will be able to include all nonzero variables in the model. Though it looks complicated, we
+only need to consider the worst case:
+Sm = {1, ..., s −1}
+and
+Cm = {s, s + 1, ..., p}
+and prove that variable s will be selected in the next step, since variable s has the smallest
+true coeﬃcient βs among {1, ..., s} and thus all other cases have greater probability to selected
+a nonzero variable. Note variable s will be selected
+s ∈Sm+1
+⇐⇒
+∥Gms∥2 = max
+j∈Cm ∥Gmj∥2
+Now we have
+∥Gmj∥2 = 2
+n
+v
+u
+u
+t
+K
+X
+k=1
+ˆa2
+k
+h
+ˆεTΣ′(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)x(j)
+i2
+where xs−1i is the ﬁrst s −1th elements in xi, ˆθ
+s−1
+k
+is estimated from data as the coeﬃcient
+of xs−1
+i
+, ˆµi is the neural network estimate of yi based on xs−1, ˆε is the prediction error based
+on xs−1, Σ′(xs−1
+i
+T ˆθ
+s−1
+k
++ˆtk) is a diagonal matrix consists of σ′(·) evaluated at xs−1
+i
+T ˆθ
+s−1
+k
++ˆtk
+and x(j) is the jth column of x.
+46
+Here we need the probability that ∥Gms∥2 being the greatest among all candidates to be
+very big, so that it will not be missed in the ensemble ﬁltering. For j ∈{s + 1, ..., p}, we
+have
+P (∥Gms∥2 > ∥Gmj∥2)
+=P
+ K
+X
+k=1
+ˆα2
+k
+h
+ˆεTΣ′(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)x(s)
+i2
+>
+K
+X
+k=1
+ˆα2
+k
+h
+ˆεTΣ′(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)x(j)
+i2
+!
+=P
+ K
+X
+k=1
+
+ˆεT ˆαkΣ′(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)x(s)
+2
+−
+
+ˆεT ˆαkΣ′(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)x(s)
+2
+> 0
+!
+(57)
+In the regression set up, observe that
+max
+i
+Σ′
+ii(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk) = max
+i
+σ(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)
+1 + exp(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk)
+≤max
+i
+σ(xs−1
+i
+T ˆθ
+s−1
+k
++ ˆtk) ≤1
+and
+ˆε = βsx(s) + ε + O
+ 
+K2
+n
+r
+log(nKn)
+n
+!
+Also by the fact that
+A =⇒B
+=⇒
+P(A) ≤P(B)
+we have for regression that
+P (∥Gms∥2 > ∥Gmj∥2)
+=P
+ K
+X
+k=1
+ βsx(s) + ε
+T Σkx(s)
+2
+−
+ βsx(s) + ε
+T Σkx(j)
+2
+≥O
+ 
+KK2
+n
+r
+log(nKn)
+n
+!!
+=P
+ K
+X
+k=1
+h
+β2
+s
+h xT
+(s)Σkx(s)
+2 −
+ xT
+(s)Σkx(j)
+2i
++ 2βs
+
+xT
+(s)Σx(s)εT Σ(x(s) −x(j))
+
++
+h εTΣx(s)
+2 −
+ εTΣx(j)
+2ii
+≥O
+ 
+KK2
+n
+r
+log(nKn)
+n
+!!
+≥P
+ K
+X
+k=1
+h
+c′βs
+
+εTΣ(x(s) −x(j))
+
++
+h εTΣx(s)
+2 −
+ εTΣx(j)
+2ii
+≥
+−cKβ2
+s + O
+ 
+KK2
+n
+r
+log(nKn)
+n
+!!
+(58)
+Observe by assumption 3 that x(s) and x(j) are independent and identically distributed, we
+have
+P
+ εTΣx(s)
+2 >
+ εTΣx(j)
+2
+= 1
+2
+47
+Therefore, we have
+P (∥Gms∥2 > ∥Gmj∥2)
+≥P
+ 
+c′βs
+
+εTΣ(x(s) −x(j))
+
++
+h εTΣx(s)
+2 −
+ εTΣx(j)
+2i
+≥−cβ2
+s + O
+ 
+K2
+n
+r
+log(nKn)
+n
+!!K
+→Φ
+
+cβs
+∥Σ(x(s) −x(j))∥2
+K
+≥(1 −δn)1/(p−s)
+as n →∞
+(59)
+under the theorem conditions for some asymptotically negligible sequence δn > 0. Then
+consider the bagging process, similar to 54, according to theorem 6 in [6], we have
+P
+ s /∈Cm ∩Sm+1 ∩Cm+1c
+=P
+ 
+1
+B2
+B2
+X
+b=1
+1{∥Gms∥2̸=maxj∈Cm ∥Gmj∥2} ≥1 −pr
+!
+≤
+1
+1 −pr
+E
+"
+1
+B2
+B2
+X
+b=1
+1{∥Gms∥2̸=maxj∈Cm ∥Gmj∥2}
+#
+≤
+δn
+1 −pr
+→0
+as n →∞and B2 →∞
+(60)
+where the ﬁrst inequality is by Markov’s inequality, and the second inequality is by 59.
+Therefore, the probability that variable s will not enter the model in the next step tends to
+zero, thus with probability tending to 1, all nonzero variables are selected in the regression
+set up.
+Consider the classiﬁcation case, we have the same as in regression but
+ˆε = ε + σ′
+
+
+X
+j∈Sm∩{1,...,s}
+βjxj + ξ
+X
+j∈{1,...,s}/Sm
+βjxj
+
+
+X
+j∈{1,...,s}/Sm
+βjxj + O
+ 
+K2
+n
+r
+log(nKn)
+n
+!
+by the proof of theorem 4.1, where ε is the theoretical error of Bernoulli distribution with
+their means. Here we no longer have the normality and have an extra term σ′ which can be
+treated as constant in this step, but by the central limit theorem we have
+√n(x(s) −x(j))TΣεT ⇒N(0, V )
+where V is bounded by assumption 4 and the fact that Σ is diagonal with the largest element
+less than 1. Feeding this back into 59, we have
+P(∥Gms∥2 > ∥Gmj∥2) ≥(1 −δ′n)1/(p−s)
+where δ′
+n is greater than δn up to a factor of constant but still converges to zero as n →∞,
+under theorem conditions. Then similar to 60, we have
+P
+ s /∈Cm ∩Sm+1 ∩Cm+1c
+≤
+δ′
+n
+1 −pr
+→0
+as n →∞and B2 →∞
+This ﬁnishes the proof for the classiﬁcation case.
+□
+48
+Proof of Theorem 4.3
+Proof:
+In this subsection, we prove the estimation and prediction of regression and classi-
+ﬁcation, respectively. In the regression set up, under assumption 2, we have
+y = f(x) + ǫ = f(xS) + ǫ
+We have
+P
+
+E
+Z
+|fn(x ˆS) −f(xS)|2µ(dx) →0
+
+=P
+
+E
+Z
+|fn(x ˆS) −f(xS)|2µ(dx) →0
+ ˆS = S
+
+P
+
+ˆS = S
+
++ P
+
+E
+Z
+|fn(x ˆS) −f(xS)|2µ(dx) →0
+ ˆS ̸= S
+
+P
+
+ˆS ̸= S
+
+≥P
+
+E
+Z
+|fn(x ˆS) −f(xS)|2µ(dx) →0
+ ˆS = S
+
+P
+
+ˆS = S
+
+=P
+
+E
+Z
+|fn(xS) −f(xS)|2µ(dx) →0
+
+P
+
+ˆS = S
+
+(61)
+Observe that
+ˆβ
+ ≤|θ|1 ≤Kn
+According to [33], when we perform a neural network estimation on the true subset of
+variables, we have that the total error is bounded by the approximation error, which is
+bounded according to [25], plus the estimation error, which is bounded by the covering
+number, then by the packing number, then by the Vapnik-Chervonenkis dimension, and
+ﬁnally by the space dimension, i.e.
+E
+Z
+|fn(xS) −f(xS)|2µ(dx)
+=O
+ 
+L
+r
+kn
+n −1
+!
++ δn
+(62)
+where L is the Lipshitz continuity coeﬃcient, kn is the ﬁrst hidden layer size, and by [33] δn
+satisﬁes
+P {sup δn > ǫ} ≤8
+384K2
+n(kn + 1)
+ǫ
+(2s+5)kn+1
+e−nǫ2/128·24K4
+n
+Under theorem assumptions, the probability above is summable, thus we have the ﬁrst
+probability in 61 converges to 1. On the other hand, by theorem 4.2, we have the second
+probability in 61 converges to 1. Therefore, the result for regression set up is proved.
+49
+In the classiﬁcation set up, similarly, we have
+P
+
+R(fn, ˆS) −R(f ∗
+S) →0
+
+=P
+
+R(fn, ˆS) −R(f ∗
+S) →0
+ ˆS = S
+
+P
+
+ˆS = S
+
++ P
+
+R(fn, ˆS) −R(f ∗
+S) →0
+ ˆS ̸= S
+
+P
+
+ˆS ̸= S
+
+≥P
+
+R(fn, ˆS) −R(f ∗
+S) →0
+ ˆS = S
+
+P
+
+ˆS = S
+
+=P (R(fn,S) −R(f ∗
+S) →0) P
+
+ˆS = S
+
+(63)
+By [21], we have
+R(fn) −R(f ∗) →0
+as n →∞
+and from theorem 4.2, we have the second probability in equation 63 tends to 1. Combine
+these two results, the consistency of classiﬁcation case is proved.
+□
+50
