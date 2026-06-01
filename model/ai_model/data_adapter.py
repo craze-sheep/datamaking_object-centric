@@ -6,9 +6,9 @@ import sys
 import os
 import importlib.util
 
-# Load the parent model/dataset.py directly by path to avoid name collision
-_parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_dataset_path = os.path.join(_parent_dir, 'dataset.py')
+# Load dataset.py from the same directory
+_this_dir = os.path.dirname(os.path.abspath(__file__))
+_dataset_path = os.path.join(_this_dir, 'dataset.py')
 
 _spec = importlib.util.spec_from_file_location('_baseline_dataset', _dataset_path)
 _baseline = importlib.util.module_from_spec(_spec)
@@ -31,8 +31,14 @@ def create_dataloader(
     stride: int = 6,
     normalize: bool = True,
     pin_memory: bool = True,
+    shuffle: bool = None,
+    drop_last: bool = None,
 ) -> DataLoader:
     """Create a DataLoader for the given split."""
+    if shuffle is None:
+        shuffle = split in ('train', 'all')
+    if drop_last is None:
+        drop_last = split in ('train', 'all')
     dataset = PhysicsVideoDataset(
         root_dir=root_dir,
         history_length=history_length,
@@ -46,11 +52,11 @@ def create_dataloader(
     return DataLoader(
         dataset,
         batch_size=batch_size,
-        shuffle=(split == 'train'),
+        shuffle=shuffle,
         num_workers=num_workers,
         collate_fn=collate_fn,
         pin_memory=pin_memory,
-        drop_last=(split == 'train'),
+        drop_last=drop_last,
     )
 
 

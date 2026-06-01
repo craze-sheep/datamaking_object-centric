@@ -48,6 +48,8 @@ class PhysicsObjectGraphPredictor(nn.Module):
             hidden_dim=config.gnn_hidden_dim,
             num_layers=config.gnn_layers,
             dropout=config.gnn_dropout,
+            use_attention=config.gnn_use_attention,
+            use_residual=config.gnn_use_residual,
         )
 
         # 3. Temporal GRU
@@ -55,6 +57,9 @@ class PhysicsObjectGraphPredictor(nn.Module):
             input_dim=config.fused_dim,
             hidden_dim=config.gru_hidden_dim,
             num_layers=config.gru_num_layers,
+            use_attention=config.use_temporal_attention,
+            attention_heads=config.temporal_attention_heads,
+            attention_dropout=config.temporal_attention_dropout,
         )
 
         # 4. Multi-head decoder
@@ -79,9 +84,19 @@ class PhysicsObjectGraphPredictor(nn.Module):
             mask_weight=config.mask_weight,
             collision_threshold=config.collision_threshold,
             force_std=config.force_matrix_scale,
+            vel_scale=config.vel_scale,
+            use_uncertainty_weighting=config.use_uncertainty_weighting,
+            ssim_weight=config.ssim_weight,
+            lpips_weight=config.lpips_weight,
+            energy_weight=config.energy_weight,
+            collision_effect_weight=config.collision_effect_weight,
         )
 
-    def forward(self, batch: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    def forward(
+        self,
+        batch: Dict[str, torch.Tensor],
+        teacher_ratio: float = 0.0,
+    ) -> Dict[str, torch.Tensor]:
         """
         Forward pass: encode → interact → temporal predict → decode.
 
@@ -110,6 +125,8 @@ class PhysicsObjectGraphPredictor(nn.Module):
             batch['valid_mask'],
             self.config.history_length,
             self.config.predict_length,
+            teacher_tokens=None,
+            teacher_ratio=0.0,
         )
         future_tokens = temporal_out['future_tokens']  # [B, Tp, N, hidden_dim]
 
@@ -126,9 +143,13 @@ class PhysicsObjectGraphPredictor(nn.Module):
         """Compute multi-task loss."""
         return self.loss_fn(pred, batch)
 
-    def forward_with_loss(self, batch: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    def forward_with_loss(
+        self,
+        batch: Dict[str, torch.Tensor],
+        teacher_ratio: float = 0.0,
+    ) -> Dict[str, torch.Tensor]:
         """Forward + loss in one call (convenient for training)."""
-        pred = self.forward(batch)
+        pred = self.forward(batch, teacher_ratio=teacher_ratio)
         loss_dict = self.compute_loss(pred, batch)
         loss_dict['pred'] = pred
         return loss_dict

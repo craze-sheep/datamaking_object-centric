@@ -36,14 +36,24 @@ class AIModelConfig:
     fused_dim: int = 128  # final per-object token dim (= visual_out + physics_out projected)
 
     # --- Interaction (GNN) ---
-    gnn_layers: int = 2
+    gnn_layers: int = 3
     gnn_hidden_dim: int = 128
     gnn_edge_dim: int = 64
     gnn_dropout: float = 0.0
+    gnn_use_attention: bool = True
+    gnn_use_residual: bool = True
 
     # --- Temporal (GRU) ---
     gru_hidden_dim: int = 128
     gru_num_layers: int = 2
+    use_temporal_attention: bool = True
+    temporal_attention_heads: int = 4
+    temporal_attention_dropout: float = 0.0
+    # Disabled until a decoder-feedback teacher path exists. Feeding future
+    # encoder tokens leaks RGB/mask/force targets into training.
+    use_scheduled_sampling: bool = False
+    scheduled_sampling_start: float = 1.0
+    scheduled_sampling_end: float = 0.0
 
     # --- State decoder ---
     state_decoder_hidden: int = 256
@@ -62,12 +72,18 @@ class AIModelConfig:
     num_epochs: int = 10
     gradient_clip: float = 1.0
     use_amp: bool = True
+    gradient_accumulation_steps: int = 1
 
     # --- Loss weights ---
     rgb_weight: float = 1.0
     state_weight: float = 0.5
     collision_weight: float = 0.5
     mask_weight: float = 0.3
+    use_uncertainty_weighting: bool = True
+    ssim_weight: float = 0.1
+    lpips_weight: float = 0.0
+    energy_weight: float = 0.01
+    collision_effect_weight: float = 0.05
 
     # --- Normalization ---
     # State normalization scales (rough estimates from data)
@@ -116,7 +132,7 @@ class AIModelConfig:
             state_embed_dim=48,
             physics_out_dim=96,
             fused_dim=96,
-            gnn_layers=2,
+            gnn_layers=3,
             gnn_hidden_dim=96,
             gnn_edge_dim=48,
             gru_hidden_dim=96,

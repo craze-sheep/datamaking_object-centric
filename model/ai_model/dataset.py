@@ -173,6 +173,8 @@ class PhysicsVideoDataset(Dataset):
             for i in indices[val_end:]:
                 test_samples.append(group[i])
         
+        if self.split == 'all':
+            return self.all_samples
         if self.split == 'train':
             return train_samples
         elif self.split == 'val':

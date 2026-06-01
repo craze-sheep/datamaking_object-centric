@@ -72,7 +72,7 @@ class ForceAwareEdgeNetwork(nn.Module):
         # Concatenate edge features
         edge_input = torch.cat([
             force_matrix,      # [B, T, N, N, 3] - force from j on i
-            force_matrix.transpose(-2, -3),  # [B, T, N, N, 3] - force from i on j
+            force_matrix.transpose(2, 3),  # [B, T, N, N, 3] - force from i on j
             rel_pos,           # [B, T, N, N, 3]
             rel_vel,           # [B, T, N, N, 3]
             dist,              # [B, T, N, N, 1]
@@ -99,8 +99,16 @@ class GNNSingleLayer(nn.Module):
     Update: GRU-style gate on (old_state, aggregated_messages)
     """
 
-    def __init__(self, node_dim: int, edge_dim: int, hidden_dim: int, dropout: float = 0.0):
+    def __init__(
+        self,
+        node_dim: int,
+        edge_dim: int,
+        hidden_dim: int,
+        dropout: float = 0.0,
+        use_attention: bool = True,
+    ):
         super().__init__()
+        self.use_attention = use_attention
         # Message function: combines sender, receiver, and edge features
         self.message_fn = nn.Sequential(
             nn.Linear(node_dim * 2 + edge_dim, hidden_dim),
@@ -109,6 +117,12 @@ class GNNSingleLayer(nn.Module):
             nn.Dropout(dropout),
             nn.Linear(hidden_dim, node_dim),
         )
+        self.attn_fn = nn.Sequential(
+            nn.Linear(node_dim * 2 + edge_dim, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 1),
+        ) if use_attention else None
         # Update function: gated update
         self.update_fn = nn.GRUCell(node_dim, node_dim)
 
@@ -133,15 +147,26 @@ class GNNSingleLayer(nn.Module):
         msg_input = torch.cat([node_i, node_j, edge_feat], dim=-1)
         messages = self.message_fn(msg_input)  # [B, T, N, N, D]
 
-        # Mask: only aggregate from valid neighbors
+        # Mask: only aggregate from valid neighbors, excluding self loops.
         pair_mask = valid_mask.unsqueeze(2) * valid_mask.unsqueeze(1)  # [B, N, N]
+        eye = torch.eye(N, device=node_feat.device, dtype=torch.bool).unsqueeze(0)
+        pair_mask = pair_mask.bool() & ~eye
         pair_mask = pair_mask.unsqueeze(1).unsqueeze(-1).float()  # [B, 1, N, N, 1]
         messages = messages * pair_mask
 
-        # Aggregate: mean over neighbors (dim=3 is the sender dimension)
-        # Count valid neighbors for proper averaging
-        n_valid = pair_mask.sum(dim=3).clamp(min=1)  # [B, 1, N, 1]
-        aggregated = messages.sum(dim=3) / n_valid  # [B, T, N, D]
+        if self.use_attention:
+            # GAT-style masked attention over senders. This keeps dense N<=7
+            # computation but lets collisions/near contacts dominate messages.
+            attn_logits = self.attn_fn(msg_input)
+            attn_logits = F.leaky_relu(attn_logits, negative_slope=0.2)
+            attn_logits = attn_logits.masked_fill(pair_mask <= 0, -1e4)
+            attn = F.softmax(attn_logits, dim=3)
+            attn = attn * pair_mask
+            aggregated = (messages * attn).sum(dim=3)
+        else:
+            # Aggregate: mean over neighbors (dim=3 is the sender dimension)
+            n_valid = pair_mask.sum(dim=3).clamp(min=1)  # [B, 1, N, 1]
+            aggregated = messages.sum(dim=3) / n_valid  # [B, T, N, D]
 
         # Update: GRU-style gated update
         # Reshape for GRUCell: [B*T*N, D]
@@ -166,13 +191,29 @@ class ForceAwareGNN(nn.Module):
         hidden_dim: int = 128,
         num_layers: int = 2,
         dropout: float = 0.0,
+        use_attention: bool = True,
+        use_residual: bool = True,
     ):
         super().__init__()
+        self.use_residual = use_residual
         self.edge_network = ForceAwareEdgeNetwork(state_dim=16, edge_dim=edge_dim)
         self.layers = nn.ModuleList([
-            GNNSingleLayer(node_dim, edge_dim, hidden_dim, dropout)
+            GNNSingleLayer(node_dim, edge_dim, hidden_dim, dropout, use_attention)
             for _ in range(num_layers)
         ])
+        self.norms = nn.ModuleList([
+            nn.LayerNorm(node_dim)
+            for _ in range(num_layers)
+        ])
+
+    @staticmethod
+    def _has_valid_neighbor(valid_mask: torch.Tensor) -> torch.Tensor:
+        """Return [B, N] mask for nodes with at least one non-self valid neighbor."""
+        B, N = valid_mask.shape
+        pair_mask = valid_mask.unsqueeze(2) & valid_mask.unsqueeze(1)
+        eye = torch.eye(N, device=valid_mask.device, dtype=torch.bool).unsqueeze(0)
+        pair_mask = pair_mask & ~eye
+        return pair_mask.any(dim=-1)
 
     def forward(
         self,
@@ -188,7 +229,14 @@ class ForceAwareGNN(nn.Module):
         edge_feat = self.edge_network(dyn_state, force_matrix, valid_mask)
 
         h = tokens
-        for layer in self.layers:
-            h = layer(h, edge_feat, valid_mask)
+        valid = valid_mask.unsqueeze(1).unsqueeze(-1).float()
+        has_neighbor = self._has_valid_neighbor(valid_mask).unsqueeze(1).unsqueeze(-1)
+        for layer, norm in zip(self.layers, self.norms):
+            h_new = layer(h, edge_feat, valid_mask)
+            if self.use_residual:
+                candidate = norm(h + h_new) * valid
+            else:
+                candidate = h_new
+            h = torch.where(has_neighbor, candidate, h * valid)
 
         return h

@@ -126,9 +126,12 @@ class PhysicsEncoder(nn.Module):
             nn.GELU(),
         )
 
-        # Dynamic state encoder
+        # Dynamic state encoder. The four derived features give the MLP
+        # direct access to common mechanics quantities instead of forcing it
+        # to rediscover them from mass, position, and velocity.
+        self.derived_dim = 4
         self.state_net = nn.Sequential(
-            nn.Linear(state_dim, state_embed_dim),
+            nn.Linear(state_dim + self.derived_dim, state_embed_dim),
             nn.LayerNorm(state_embed_dim),
             nn.GELU(),
             nn.Linear(state_embed_dim, state_embed_dim),
@@ -141,6 +144,27 @@ class PhysicsEncoder(nn.Module):
             nn.Linear(attr_embed_dim + state_embed_dim, out_dim),
             nn.LayerNorm(out_dim),
             nn.GELU(),
+        )
+
+    @staticmethod
+    def _derived_physics_features(
+        obj_attrs: torch.Tensor,
+        dyn_state: torch.Tensor,
+    ) -> torch.Tensor:
+        """Return KE, PE, momentum magnitude, and angular momentum proxy."""
+        B, T, N, _ = dyn_state.shape
+        vel = dyn_state[..., 7:10]
+        angvel = dyn_state[..., 10:13]
+        height = dyn_state[..., 1:2]
+        mass = obj_attrs[..., 7:8].unsqueeze(1).expand(B, T, N, 1)
+
+        kinetic_energy = 0.5 * mass * vel.pow(2).sum(dim=-1, keepdim=True)
+        potential_energy = mass * 9.8 * height
+        momentum = mass * vel.norm(dim=-1, keepdim=True)
+        angular_momentum = mass * angvel.norm(dim=-1, keepdim=True)
+        return torch.cat(
+            [kinetic_energy, potential_energy, momentum, angular_momentum],
+            dim=-1,
         )
 
     def forward(
@@ -158,8 +182,9 @@ class PhysicsEncoder(nn.Module):
         attr_feat = self.attr_net(obj_attrs)  # [B, N, attr_embed_dim]
         attr_feat = attr_feat.unsqueeze(1).expand(-1, T, -1, -1)  # [B, T, N, attr_embed_dim]
 
-        # Dynamic state: per-timestep
-        state_feat = self.state_net(dyn_state)  # [B, T, N, state_embed_dim]
+        derived = self._derived_physics_features(obj_attrs, dyn_state)
+        state_input = torch.cat([dyn_state, derived], dim=-1)
+        state_feat = self.state_net(state_input)  # [B, T, N, state_embed_dim]
 
         # Fuse
         physics_tokens = self.fusion(torch.cat([attr_feat, state_feat], dim=-1))

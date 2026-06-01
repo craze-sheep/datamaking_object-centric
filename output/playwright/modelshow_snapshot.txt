@@ -1,0 +1,327 @@
+### Page
+- Page URL: http://127.0.0.1:8765/model/modelshow.html
+- Page Title: ai_model 最新主线展示
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - paragraph [ref=e5]: slot-datamaking / model / ai_model
+        - heading "最新物体图预测模型" [level=1] [ref=e6]
+        - paragraph [ref=e7]: 当前主线是一个面向物理视频预测的 object-centric 模型：用视觉和物理状态共同编码物体，用 force-aware GNN 建模交互，再用轻量 GRU 预测未来，并同时输出状态、碰撞、mask 和 RGB。
+        - generic [ref=e8]:
+          - link "打开 TensorBoard" [ref=e9] [cursor=pointer]:
+            - /url: http://localhost:6006
+          - link "查看 ROADMAP" [ref=e10] [cursor=pointer]:
+            - /url: ./ROADMAP.md
+          - link "打开 ai_model 目录" [ref=e11] [cursor=pointer]:
+            - /url: ./ai_model/
+      - complementary [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - paragraph [ref=e15]: 当前训练
+            - paragraph [ref=e16]:
+              - text: "run:"
+              - code [ref=e17]: main_train_test_20260531_231954
+          - generic [ref=e18]: 运行中
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - generic [ref=e22]: 1,058,910
+            - generic [ref=e23]: 可训练参数，真实训练日志记录值
+          - generic [ref=e24]:
+            - generic [ref=e25]: "16"
+            - generic [ref=e26]: RTX 4060 Laptop 8GB 稳定 batch size
+          - generic [ref=e27]:
+            - generic [ref=e28]: 12 → 12
+            - generic [ref=e29]: 历史帧输入 → 未来帧预测
+          - generic [ref=e30]:
+            - generic [ref=e31]: "7"
+            - generic [ref=e32]: 单场景最大物体数
+  - main [ref=e33]:
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - heading "整体框架图" [level=2] [ref=e37]
+        - paragraph [ref=e38]: 从数据 batch 到未来视频预测，再到多任务 loss 和 TensorBoard，可按箭头从左到右读。
+      - generic "ai_model整体框架图" [ref=e39]:
+        - img [ref=e40]:
+          - generic [ref=e42]: 输入 batch
+          - generic [ref=e43]: 来自 train / test 目录
+          - generic [ref=e45]: RGB
+          - generic [ref=e46]: "[B,T,3,128,128]"
+          - generic [ref=e48]: Mask
+          - generic [ref=e49]: "[B,T,N,H,W]"
+          - generic [ref=e51]: Obj Attrs
+          - generic [ref=e52]: "[B,N,14]"
+          - generic [ref=e54]: Dyn State
+          - generic [ref=e55]: "[B,T,N,16]"
+          - generic [ref=e57]: Force Matrix
+          - generic [ref=e58]: "[B,T,N,N,3]"
+          - generic [ref=e60]: Valid Mask
+          - generic [ref=e61]: "[B,N]"
+          - generic [ref=e64]: Encoder
+          - generic [ref=e65]: PhysicsObjectEncoder
+          - generic [ref=e67]: Visual Stream
+          - generic [ref=e68]: CNN feature map
+          - generic [ref=e69]: Masked ROI pooling
+          - generic [ref=e70]: RGB + mask → visual token
+          - generic [ref=e72]: Physics Stream
+          - generic [ref=e73]: attrs + dyn_state
+          - generic [ref=e74]: + KE / PE / momentum
+          - generic [ref=e75]: + angular momentum proxy
+          - generic [ref=e76]: 物理先验直接进入 MLP
+          - generic [ref=e78]: Fusion Projection
+          - generic [ref=e79]: tokens [B,T,N,96]
+          - generic [ref=e82]: GNN
+          - generic [ref=e83]: ForceAwareGNN
+          - generic [ref=e85]: Edge Network
+          - generic [ref=e86]: force + rel pos/vel
+          - generic [ref=e87]: distance + force magnitude
+          - generic [ref=e89]: 3× GNN Layer
+          - generic [ref=e90]: message MLP
+          - generic [ref=e91]: masked attention
+          - generic [ref=e92]: GRUCell update
+          - generic [ref=e94]: residual + LayerNorm
+          - generic [ref=e97]: Temporal
+          - generic [ref=e98]: TemporalGRU
+          - generic [ref=e100]: Encode
+          - generic [ref=e101]: history 12 frames
+          - generic [ref=e102]: per-object GRU
+          - generic [ref=e104]: Attention
+          - generic [ref=e105]: history self-attn
+          - generic [ref=e107]: Decode
+          - generic [ref=e108]: future [B,12,N,96]
+          - generic [ref=e111]: Decoder
+          - generic [ref=e112]: MultiHead
+          - generic [ref=e114]: State
+          - generic [ref=e115]: "[B,12,N,16]"
+          - generic [ref=e117]: Collision
+          - generic [ref=e118]: logits + effect
+          - generic [ref=e120]: Mask
+          - generic [ref=e121]: per-object
+          - generic [ref=e123]: RGB
+          - generic [ref=e124]: composited scene
+          - generic [ref=e127]: Loss
+          - generic [ref=e128]: PhysicsLoss → total_loss
+          - generic [ref=e129]: RGB(L1+MSE+SSIM) / State / Focal Collision / Mask / Energy / Effect
+          - generic [ref=e131]: 训练输出
+          - generic [ref=e132]: "TensorBoard: 训练/01 总损失 ... 训练/09 能量守恒损失"
+          - generic [ref=e133]: "checkpoint: epoch_N.pt / best.pt"
+      - generic [ref=e145]:
+        - generic [ref=e146]:
+          - generic [ref=e147]: 数据维度
+          - text: 当前训练配置为
+          - code [ref=e148]: Th=12
+          - text: 、
+          - code [ref=e149]: Tp=12
+          - text: 、
+          - code [ref=e150]: N≤7
+          - text: 、
+          - code [ref=e151]: image=128
+          - text: 。
+        - generic [ref=e152]:
+          - generic [ref=e153]: 优化重点
+          - text: GAT 注意力、3 层 GNN、派生物理特征、SSIM、能量守恒和碰撞效果已进主线。
+        - generic [ref=e154]:
+          - generic [ref=e155]: 训练状态
+          - text: 当前 run 使用
+          - code [ref=e156]: batch=16
+          - text: 、AMP、独立 checkpoint 目录。
+        - generic [ref=e157]:
+          - generic [ref=e158]: 暂缓分支
+          - text: DINO、Mamba、Slot、Scheduled Sampling 先放 experiments / ROADMAP。
+    - generic [ref=e160]:
+      - generic [ref=e161]:
+        - heading "框架速读" [level=2] [ref=e162]
+        - paragraph [ref=e163]: 如果只想快速理解主线代码，可以按这 5 个阶段看。
+      - generic [ref=e164]:
+        - article [ref=e165]:
+          - generic [ref=e166]: Encoder
+          - heading "视觉 + 物理双流" [level=3] [ref=e167]
+          - paragraph [ref=e168]: 轻量 CNN 提取图像特征，按 GT mask 做 per-object pooling；物理分支编码属性、状态和派生物理量。
+        - article [ref=e169]:
+          - generic [ref=e170]: GNN
+          - heading "显式交互推理" [level=3] [ref=e171]
+          - paragraph [ref=e172]: 每个物体是节点，边特征来自力、相对位置、相对速度、距离和力大小，使用 masked attention 聚合邻居。
+        - article [ref=e173]:
+          - generic [ref=e174]: Temporal
+          - heading "GRU + 时序注意力" [level=3] [ref=e175]
+          - paragraph [ref=e176]: 对每个物体独立编码历史，再自回归生成未来 token；history self-attention 增强对关键历史帧的访问。
+        - article [ref=e177]:
+          - generic [ref=e178]: Decoder
+          - heading "多头输出" [level=3] [ref=e179]
+          - paragraph [ref=e180]: 同一组 future tokens 同时解码 state、collision logits、collision effect、mask 和 RGB。
+        - article [ref=e181]:
+          - generic [ref=e182]: Loss
+          - heading "物理约束训练" [level=3] [ref=e183]
+          - paragraph [ref=e184]: 总损失融合 RGB、SSIM、state、collision、mask、能量守恒和碰撞效果监督。
+    - generic [ref=e186]:
+      - generic [ref=e187]:
+        - heading "模块设计" [level=2] [ref=e188]
+        - paragraph [ref=e189]: "这些是当前 `ai_model/` 主线中已经合入的设计，不包含暂缓的大分支。"
+      - generic [ref=e190]:
+        - article [ref=e191]:
+          - heading "PhysicsObjectEncoder" [level=3] [ref=e192]
+          - paragraph [ref=e193]:
+            - text: 输出
+            - code [ref=e194]: "[B, T, N, fused_dim]"
+            - text: object tokens。
+          - list [ref=e195]:
+            - listitem [ref=e196]: 视觉分支：CNN + mask 平均池化。
+            - listitem [ref=e197]: 物理分支：属性 MLP + 状态 MLP。
+            - listitem [ref=e198]: 派生特征：动能、势能、动量大小、角动量 proxy。
+        - article [ref=e199]:
+          - heading "ForceAwareGNN" [level=3] [ref=e200]
+          - paragraph [ref=e201]: 默认 3 层 message passing，带 residual 和 LayerNorm。
+          - list [ref=e202]:
+            - listitem [ref=e203]: 边输入 14 维：双向力、相对位置/速度、距离、力大小。
+            - listitem [ref=e204]: GAT-style attention 让接触/强相互作用 pair 权重更高。
+            - listitem [ref=e205]:
+              - text: FP16 mask 使用
+              - code [ref=e206]: "-1e4"
+              - text: ，降低 AMP 溢出风险。
+        - article [ref=e207]:
+          - heading "TemporalGRU" [level=3] [ref=e208]
+          - paragraph [ref=e209]: 替代重 Transformer，显存更友好。
+          - list [ref=e210]:
+            - listitem [ref=e211]: 每个物体共享 GRU 权重。
+            - listitem [ref=e212]: top recurrent state 接 history attention。
+            - listitem [ref=e213]: Scheduled Sampling 已保留接口但默认禁用。
+        - article [ref=e214]:
+          - heading "MultiHeadDecoder" [level=3] [ref=e215]
+          - paragraph [ref=e216]: 一个 token 流对应多种监督目标。
+          - list [ref=e217]:
+            - listitem [ref=e218]: StateHead 输出 16 维物理状态。
+            - listitem [ref=e219]: CollisionHead 输出 pair logits 和 3 维 effect。
+            - listitem [ref=e220]: MaskHead 解码 per-object mask，RGBDecoder 合成场景。
+        - article [ref=e221]:
+          - heading "PhysicsLoss" [level=3] [ref=e222]
+          - paragraph [ref=e223]: 主损失使用 Kendall 多任务不确定性加权。
+          - list [ref=e224]:
+            - listitem [ref=e225]: RGB = L1 + 0.5 MSE + SSIM，可选 LPIPS。
+            - listitem [ref=e226]: Collision = Focal BCE + pos_weight。
+            - listitem [ref=e227]: 额外加入 energy 和 collision effect。
+        - article [ref=e228]:
+          - heading "Train Pipeline" [level=3] [ref=e229]
+          - paragraph [ref=e230]: 训练脚本支持外部 train/test 根目录。
+          - list [ref=e231]:
+            - listitem [ref=e232]: TensorBoard 只写 loss，中文标签。
+            - listitem [ref=e233]: 支持 AMP、resume、独立 checkpoint 目录。
+            - listitem [ref=e234]:
+              - text: 当前用
+              - code [ref=e235]: /train
+              - text: 和
+              - code [ref=e236]: /test
+              - text: 全量样本。
+    - generic [ref=e238]:
+      - generic [ref=e239]:
+        - heading "当前 8GB 配置" [level=2] [ref=e240]
+        - paragraph [ref=e241]:
+          - text: 训练使用
+          - code [ref=e242]: AIModelConfig.small_8gb()
+          - text: ，启动时固定 batch 上限为 16。
+      - table [ref=e244]:
+        - rowgroup [ref=e245]:
+          - row "类别 参数 当前值 作用" [ref=e246]:
+            - columnheader "类别" [ref=e247]
+            - columnheader "参数" [ref=e248]
+            - columnheader "当前值" [ref=e249]
+            - columnheader "作用" [ref=e250]
+        - rowgroup [ref=e251]:
+          - row "数据 image_size / history / predict / max_objects 128 / 12 / 12 / 7 每条样本看 12 帧历史，预测 12 帧未来，最多跟踪 7 个物体。" [ref=e252]:
+            - cell "数据" [ref=e253]
+            - cell "image_size / history / predict / max_objects" [ref=e254]:
+              - code [ref=e255]: image_size / history / predict / max_objects
+            - cell "128 / 12 / 12 / 7" [ref=e256]:
+              - code [ref=e257]: 128 / 12 / 12 / 7
+            - cell "每条样本看 12 帧历史，预测 12 帧未来，最多跟踪 7 个物体。" [ref=e258]
+          - row "编码 visual_out / physics_out / fused_dim 96 / 96 / 96 视觉和物理分别压到 96 维，再融合成每物体 token。" [ref=e259]:
+            - cell "编码" [ref=e260]
+            - cell "visual_out / physics_out / fused_dim" [ref=e261]:
+              - code [ref=e262]: visual_out / physics_out / fused_dim
+            - cell "96 / 96 / 96" [ref=e263]:
+              - code [ref=e264]: 96 / 96 / 96
+            - cell "视觉和物理分别压到 96 维，再融合成每物体 token。" [ref=e265]
+          - row "GNN layers / hidden / edge 3 / 96 / 48 提升链式碰撞和多跳相互作用建模能力。" [ref=e266]:
+            - cell "GNN" [ref=e267]
+            - cell "layers / hidden / edge" [ref=e268]:
+              - code [ref=e269]: layers / hidden / edge
+            - cell "3 / 96 / 48" [ref=e270]:
+              - code [ref=e271]: 3 / 96 / 48
+            - cell "提升链式碰撞和多跳相互作用建模能力。" [ref=e272]
+          - row "时序 gru_hidden / layers / attention_heads 96 / 2 / 4 在轻量 GRU 上补 history self-attention。" [ref=e273]:
+            - cell "时序" [ref=e274]
+            - cell "gru_hidden / layers / attention_heads" [ref=e275]:
+              - code [ref=e276]: gru_hidden / layers / attention_heads
+            - cell "96 / 2 / 4" [ref=e277]:
+              - code [ref=e278]: 96 / 2 / 4
+            - cell "在轻量 GRU 上补 history self-attention。" [ref=e279]
+          - row "训练 batch / epochs / AMP 16 / 10 / True batch=32 实测 OOM，因此当前用 16 保持余量。" [ref=e280]:
+            - cell "训练" [ref=e281]
+            - cell "batch / epochs / AMP" [ref=e282]:
+              - code [ref=e283]: batch / epochs / AMP
+            - cell "16 / 10 / True" [ref=e284]:
+              - code [ref=e285]: 16 / 10 / True
+            - cell "batch=32 实测 OOM，因此当前用 16 保持余量。" [ref=e286]:
+              - code [ref=e287]: batch=32
+              - text: 实测 OOM，因此当前用 16 保持余量。
+          - row "Loss 权重 ssim / lpips / energy / effect 0.1 / 0.0 / 0.01 / 0.05 LPIPS 默认关闭；SSIM、能量守恒和碰撞效果已进入总损失。" [ref=e288]:
+            - cell "Loss 权重" [ref=e289]
+            - cell "ssim / lpips / energy / effect" [ref=e290]:
+              - code [ref=e291]: ssim / lpips / energy / effect
+            - cell "0.1 / 0.0 / 0.01 / 0.05" [ref=e292]:
+              - code [ref=e293]: 0.1 / 0.0 / 0.01 / 0.05
+            - cell "LPIPS 默认关闭；SSIM、能量守恒和碰撞效果已进入总损失。" [ref=e294]
+    - generic [ref=e296]:
+      - generic [ref=e297]:
+        - heading "TensorBoard 曲线" [level=2] [ref=e298]
+        - paragraph [ref=e299]: 页面里只保留 loss，训练曲线第 1 step 立即出现，之后每 20 step 更新一次。
+      - generic [ref=e300]:
+        - generic [ref=e301]:
+          - heading "训练曲线" [level=3] [ref=e302]
+          - paragraph [ref=e303]:
+            - code [ref=e304]: 训练/01 总损失
+            - text: 到
+            - code [ref=e305]: 训练/09 能量守恒损失
+            - text: 已在当前 run 中写入。总损失排第一，先看它判断整体趋势。
+        - generic [ref=e306]:
+          - heading "验证曲线" [level=3] [ref=e307]
+          - paragraph [ref=e308]:
+            - code [ref=e309]: 验证/*
+            - text: 会在每个 epoch 结束并完成验证后出现。训练集有 25504 个样本，当前每个 epoch 约 1594 step。
+    - generic [ref=e311]:
+      - generic [ref=e312]:
+        - heading "暂不进主线" [level=2] [ref=e313]
+        - paragraph [ref=e314]: 这些方向保留计划，等独立实验验证后再决定是否合入。
+      - table [ref=e316]:
+        - rowgroup [ref=e317]:
+          - row "方向 当前处理 暂缓原因" [ref=e318]:
+            - columnheader "方向" [ref=e319]
+            - columnheader "当前处理" [ref=e320]
+            - columnheader "暂缓原因" [ref=e321]
+        - rowgroup [ref=e322]:
+          - row "Scheduled Sampling 接口保留，默认禁用 需要 decoder-feedback teacher path，不能泄漏未来 RGB/mask/force。" [ref=e323]:
+            - cell "Scheduled Sampling" [ref=e324]
+            - cell "接口保留，默认禁用" [ref=e325]
+            - cell "需要 decoder-feedback teacher path，不能泄漏未来 RGB/mask/force。" [ref=e326]
+          - row "DINOv2 Encoder 保留在 experiments 原型 patch token 与当前 GT mask ROI pooling 接口还要重构。" [ref=e327]:
+            - cell "DINOv2 Encoder" [ref=e328]
+            - cell "保留在 experiments 原型" [ref=e329]
+            - cell "patch token 与当前 GT mask ROI pooling 接口还要重构。" [ref=e330]
+          - row "Mamba Temporal 保留在 experiments 原型 依赖 CUDA 编译，短序列收益不确定。" [ref=e331]:
+            - cell "Mamba Temporal" [ref=e332]
+            - cell "保留在 experiments 原型" [ref=e333]
+            - cell "依赖 CUDA 编译，短序列收益不确定。" [ref=e334]
+          - row "Slot Attention / SAVi 保留在 experiments 原型 slot 无序，需要 matching 或改成 slot-centric 数据流。" [ref=e335]:
+            - cell "Slot Attention / SAVi" [ref=e336]
+            - cell "保留在 experiments 原型" [ref=e337]
+            - cell "slot 无序，需要 matching 或改成 slot-centric 数据流。" [ref=e338]
+  - contentinfo [ref=e339]:
+    - generic [ref=e340]:
+      - text: 更新来源：
+      - code [ref=e341]: model/ai_model
+      - text: 、
+      - code [ref=e342]: model/ROADMAP.md
+      - text: 、当前训练日志。页面为静态文件，可直接在浏览器打开。
+```

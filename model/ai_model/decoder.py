@@ -56,7 +56,7 @@ class CollisionHead(nn.Module):
     """Predict pairwise collision logits.
 
     Input: concatenated pair features [node_i, node_j, |node_i - node_j|]
-    Output: collision logit per pair
+    Output: collision logit and collision-effect force proxy per pair
     """
 
     def __init__(self, node_dim: int, hidden_dim: int):
@@ -68,13 +68,21 @@ class CollisionHead(nn.Module):
             nn.GELU(),
             nn.Linear(hidden_dim, 1),
         )
+        self.effect_net = nn.Sequential(
+            nn.Linear(node_dim * 3, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 3),
+        )
 
-    def forward(self, tokens: torch.Tensor) -> torch.Tensor:
+    def forward(self, tokens: torch.Tensor) -> Dict[str, torch.Tensor]:
         """
         Args:
             tokens: [B, Tp, N, D]
         Returns:
-            logits: [B, Tp, N, N]
+            dict with:
+              logits: [B, Tp, N, N]
+              effect: [B, Tp, N, N, 3]
         """
         B, Tp, N, D = tokens.shape
         node_i = tokens.unsqueeze(3).expand(-1, -1, -1, N, -1)  # [B, Tp, N, N, D]
@@ -82,7 +90,8 @@ class CollisionHead(nn.Module):
         diff = (node_i - node_j).abs()  # [B, Tp, N, N, D]
         pair_input = torch.cat([node_i, node_j, diff], dim=-1)  # [B, Tp, N, N, 3D]
         logits = self.net(pair_input).squeeze(-1)  # [B, Tp, N, N]
-        return logits
+        effect = self.effect_net(pair_input)  # [B, Tp, N, N, 3]
+        return {'logits': logits, 'effect': effect}
 
 
 class MaskHead(nn.Module):
@@ -199,7 +208,7 @@ class RGBDecoder(nn.Module):
         bg = bg.reshape(B, Tp, 3, H, W)
 
         # Composite: foreground + background * (1 - total_mask)
-        total_mask = mask_prob.sum(dim=2).clamp(0, 1)  # [B, Tp, H, W]
+        total_mask = mask_prob_valid.sum(dim=2).clamp(0, 1)  # [B, Tp, H, W]
         total_mask = total_mask.unsqueeze(2)  # [B, Tp, 1, H, W]
         rgb_pred = composited + bg * (1 - total_mask)
 
@@ -239,7 +248,9 @@ class MultiHeadDecoder(nn.Module):
             rgb_pred: [B, Tp, 3, H, W]
         """
         state_pred = self.state_head(future_tokens)
-        collision_logits = self.collision_head(future_tokens)
+        collision_out = self.collision_head(future_tokens)
+        collision_logits = collision_out['logits']
+        collision_effect = collision_out['effect']
         mask_logits = self.mask_head(future_tokens)
         mask_prob = torch.sigmoid(mask_logits)
 
@@ -253,6 +264,7 @@ class MultiHeadDecoder(nn.Module):
         # Pair mask for collision (exclude self-edges, padding, and static-static pairs)
         B, Tp, N, _ = future_tokens.shape
         pair_mask = valid_mask.unsqueeze(1).unsqueeze(2) * valid_mask.unsqueeze(1).unsqueeze(3)
+        pair_mask = pair_mask.expand(-1, Tp, -1, -1)
         eye = torch.eye(N, device=future_tokens.device).unsqueeze(0).unsqueeze(0)
         pair_mask = pair_mask.float() * (1 - eye)
 
@@ -260,11 +272,13 @@ class MultiHeadDecoder(nn.Module):
         if obj_attrs is not None:
             static_flag = (obj_attrs[..., 8] > 0.5)  # [B, N]
             static_pair = static_flag.unsqueeze(1).unsqueeze(2) & static_flag.unsqueeze(1).unsqueeze(3)
+            static_pair = static_pair.expand(-1, Tp, -1, -1)
             pair_mask = pair_mask * (~static_pair).float()
 
         return {
             'state_pred': state_pred,
             'collision_logits': collision_logits,
+            'collision_effect': collision_effect,
             'pair_mask': pair_mask,
             'mask_logits': mask_logits,
             'mask_prob': mask_prob,
