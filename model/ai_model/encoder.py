@@ -109,7 +109,7 @@ class PhysicsEncoder(nn.Module):
 
     def __init__(
         self,
-        attr_dim: int = 14,
+        attr_dim: int = 15,
         state_dim: int = 16,
         attr_embed_dim: int = 64,
         state_embed_dim: int = 64,
@@ -199,7 +199,7 @@ class PhysicsObjectEncoder(nn.Module):
         image_size: int = 128,
         cnn_channels: Tuple[int, ...] = (32, 64, 128, 128),
         visual_out_dim: int = 128,
-        attr_dim: int = 14,
+        attr_dim: int = 15,
         state_dim: int = 16,
         attr_embed_dim: int = 64,
         state_embed_dim: int = 64,

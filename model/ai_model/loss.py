@@ -40,7 +40,7 @@ class PhysicsLoss(nn.Module):
 
     def __init__(
         self,
-        history_length: int = 12,
+        history_length: int = 24,
         predict_length: int = 12,
         state_dim: int = 16,
         rgb_weight: float = 1.0,

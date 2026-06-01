@@ -42,7 +42,7 @@ def add_pybullet_body(client_id: int, spec: s8.ObjectSpec) -> int:
             radius=spec.radius,
             physicsClientId=client_id,
         )
-    elif spec.object_type in {"cube", "ground", "wall", "obstacle"}:
+    elif spec.object_type in {"cube", "ground", "wall"}:
         collision_id = p.createCollisionShape(
             p.GEOM_BOX,
             halfExtents=[value / 2.0 for value in spec.size],

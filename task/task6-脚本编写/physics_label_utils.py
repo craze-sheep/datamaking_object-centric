@@ -118,7 +118,7 @@ def compute_physics_labels(sample: Any, frame_states: list[dict[int, dict[str, A
     labels["contact_pair_sequence"] = contact_pair_sequence
     labels["wall_contact_sequence"] = [
         event for event in contact_pair_sequence
-        if any(specs_by_id[object_id].object_type in {"wall", "obstacle", "ground"} for object_id in event["pair"])
+        if any(specs_by_id[object_id].object_type in {"wall", "ground"} for object_id in event["pair"])
     ]
     labels["total_dynamic_dynamic_contact_count"] = dynamic_dynamic_contact_count
     labels["total_dynamic_static_contact_count"] = dynamic_static_contact_count

@@ -312,7 +312,6 @@ def ramp_spec(
         size=size,
         position=position,
         quaternion=quat,
-        mass=1.0,
         lateral_friction=lateral_friction,
         rolling_friction=rolling_friction,
         spinning_friction=spinning_friction,

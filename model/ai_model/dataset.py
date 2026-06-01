@@ -16,7 +16,7 @@ class PhysicsVideoDataset(Dataset):
     Dataset for physics video prediction.
     
     Structure:
-        database/{S1-S8}/{L1-L5}/{sample_id}/
+        database/{S1-S8}/{L*}/{sample_id}/
             {id}.mp4 - RGB video
             {id}.npz - depth (unused)
             object_static.json - static attributes
@@ -29,15 +29,15 @@ class PhysicsVideoDataset(Dataset):
     """
     
     # Object type encoding
-    TYPE_MAP = {'ground': 0, 'sphere': 1, 'box': 2, 'cylinder': 3}
-    NUM_TYPES = 4
+    TYPE_MAP = {'ground': 0, 'sphere': 1, 'cube': 2, 'cylinder': 3, 'ramp': 4, 'wall': 5}
+    NUM_TYPES = 6
     
     def __init__(
         self,
         root_dir: str,
-        history_length: int = 12,
+        history_length: int = 24,
         predict_length: int = 12,
-        max_objects: int = 7,
+        max_objects: int = 9,
         split: str = 'train',
         train_ratio: float = 0.7,
         val_ratio: float = 0.15,
@@ -55,8 +55,8 @@ class PhysicsVideoDataset(Dataset):
         self.transform = transform
         self.normalize = normalize
         
-        # Attribute dimension: 3(size) + 4(friction) + 1(mass) + 1(restitution) + 1(static) + 4(type_onehot) = 14
-        self.attr_dim = 3 + 4 + 1 + 1 + 1 + self.NUM_TYPES
+        # Attribute dimension: 3(size) + 4(material) + 1(mass) + 1(static) + 6(type_onehot) = 15
+        self.attr_dim = 3 + 4 + 1 + 1 + self.NUM_TYPES
         
         # Scan all samples
         self.all_samples = self._scan_samples_with_cache()
@@ -227,8 +227,9 @@ class PhysicsVideoDataset(Dataset):
         sample_info = self.samples[idx]
         sample_path = sample_info['path']
         
-        # Load static attributes
-        obj_attrs, num_objects = self._load_static_attrs(sample_path)
+        # Load static attributes and preserve the real object_id order.
+        obj_attrs, object_ids = self._load_static_attrs(sample_path)
+        num_objects = len(object_ids)
         
         # Get available frames
         dynamic_dir = os.path.join(sample_path, 'dynamic')
@@ -272,9 +273,7 @@ class PhysicsVideoDataset(Dataset):
             masks = torch.zeros(self.max_objects, 128, 128)
             dyn_states = torch.zeros(self.max_objects, 16)
             
-            for obj_id in range(1, min(num_objects, self.max_objects) + 1):
-                idx_obj = obj_id - 1
-                
+            for idx_obj, obj_id in enumerate(object_ids):
                 # Mask
                 mask_path = os.path.join(frame_dir, 'object_segment', f'{obj_id}.npz')
                 if os.path.exists(mask_path):
@@ -299,7 +298,7 @@ class PhysicsVideoDataset(Dataset):
             dyn_state_list.append(dyn_states)
             
             # Force matrix
-            force = self._load_force_matrix(frame_dir)
+            force = self._load_force_matrix(frame_dir, object_ids)
             force_list.append(force)
         
         # Stack
@@ -349,18 +348,23 @@ class PhysicsVideoDataset(Dataset):
             # Return zeros if image loading fails
             return torch.zeros(3, 128, 128)
     
-    def _load_static_attrs(self, sample_path: str) -> Tuple[torch.Tensor, int]:
-        """Load and encode static object attributes"""
+    def _load_static_attrs(self, sample_path: str) -> Tuple[torch.Tensor, List[int]]:
+        """Load static object attributes and return the real object_id order."""
         try:
             with open(os.path.join(sample_path, 'object_static.json')) as f:
                 objects = json.load(f)
         except Exception:
-            return torch.zeros(self.max_objects, self.attr_dim), 0
+            return torch.zeros(self.max_objects, self.attr_dim), []
         
-        num_objects = len(objects)
         attrs = torch.zeros(self.max_objects, self.attr_dim)
+        object_ids = []
         
-        for i, obj in enumerate(objects[:self.max_objects]):
+        for obj in objects[:self.max_objects]:
+            if not isinstance(obj, dict) or not isinstance(obj.get('object_id'), int):
+                continue
+            i = len(object_ids)
+            object_ids.append(int(obj['object_id']))
+
             # Size (3D)
             size = obj.get('size', [0, 0, 0])
             attrs[i, 0:3] = torch.tensor(size[:3]) if size and len(size) >= 3 else 0
@@ -371,18 +375,18 @@ class PhysicsVideoDataset(Dataset):
             attrs[i, 5] = obj.get('spinningFriction', 0)
             attrs[i, 6] = obj.get('restitution', 0)
             
-            # Mass (1 value, 0 for static)
+            # Mass (1 value, static/null -> 0)
             attrs[i, 7] = obj.get('mass', 0) or 0
             
             # Static flag
             attrs[i, 8] = 1.0 if obj.get('static', False) else 0.0
             
-            # Object type (one-hot, 4 types)
+            # Object type (one-hot, 6 raw dataset labels)
             obj_type = self.TYPE_MAP.get(obj.get('object_type', ''), -1)
             if 0 <= obj_type < self.NUM_TYPES:
                 attrs[i, 9 + obj_type] = 1.0
         
-        return attrs, num_objects
+        return attrs, object_ids
     
     def _encode_dynamic_state(self, dyn: Dict) -> torch.Tensor:
         """Encode dynamic state dict to tensor [16]"""
@@ -410,8 +414,8 @@ class PhysicsVideoDataset(Dataset):
         
         return state
     
-    def _load_force_matrix(self, frame_dir: str) -> torch.Tensor:
-        """Load force matrix [N, N, 3]"""
+    def _load_force_matrix(self, frame_dir: str, object_ids: List[int]) -> torch.Tensor:
+        """Load force matrix [N, N, 3] aligned to object_static.json order."""
         force_path = os.path.join(frame_dir, 'force_matrix.json')
         force = torch.zeros(self.max_objects, self.max_objects, 3)
         
@@ -423,14 +427,23 @@ class PhysicsVideoDataset(Dataset):
                 data = json.load(f)
             
             if isinstance(data, dict) and 'force_matrix' in data:
-                # Format: {"object_order": [1,2], "force_matrix": [[null, ...], ...]}
+                # Format: {"object_order": [1,2], "force_matrix": fixed 10x10 slots}
+                # Rows/columns are object_id slots, not compressed object_order indices.
                 matrix = data['force_matrix']
-                for i, row in enumerate(matrix[:self.max_objects]):
-                    for j, val in enumerate(row[:self.max_objects]):
+                for out_i, obj_i in enumerate(object_ids[:self.max_objects]):
+                    if obj_i >= len(matrix):
+                        continue
+                    row = matrix[obj_i]
+                    if not isinstance(row, list):
+                        continue
+                    for out_j, obj_j in enumerate(object_ids[:self.max_objects]):
+                        if obj_j >= len(row):
+                            continue
+                        val = row[obj_j]
                         if val is not None and isinstance(val, list) and len(val) >= 3:
-                            force[i, j] = torch.tensor(val[:3])
+                            force[out_i, out_j] = torch.tensor(val[:3])
             elif isinstance(data, list):
-                # Direct matrix format
+                # Direct compressed matrix format
                 for i, row in enumerate(data[:self.max_objects]):
                     for j, val in enumerate(row[:self.max_objects]):
                         if val is not None and isinstance(val, list) and len(val) >= 3:

@@ -317,7 +317,6 @@ def wall_spec(
         static=True,
         size=size,
         position=position,
-        mass=1.0,
         lateral_friction=lateral_friction,
         restitution=restitution,
         color_name=color_name,

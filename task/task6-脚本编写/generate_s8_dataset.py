@@ -337,14 +337,13 @@ def wall_spec(
         static=True,
         size=size,
         position=position,
-        mass=1.0,
         lateral_friction=lateral_friction,
         restitution=restitution,
         color_name=color_name,
     )
 
 
-def obstacle_spec(
+def blocking_wall_spec(
     object_id: int,
     size: tuple[float, float, float],
     position: tuple[float, float, float],
@@ -354,12 +353,11 @@ def obstacle_spec(
 ) -> ObjectSpec:
     return ObjectSpec(
         object_id=object_id,
-        object_type="obstacle",
-        name=f"obstacle_{object_id}",
+        object_type="wall",
+        name=f"wall_{object_id}",
         static=True,
         size=size,
         position=position,
-        mass=1.0,
         lateral_friction=lateral_friction,
         restitution=restitution,
         color_name=color_name,
@@ -576,22 +574,22 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
                                    (ground_spec(friction=ground_friction), *objects)))
 
     elif level_id == 5:
-        # Level 5: 物体被静态障碍物阻隔导致未碰撞
+        # Level 5: 物体被静态墙阻隔导致未碰撞
         object_counts = cycle_values([2, 3, 4, 5], count, rng)
-        obstacle_sizes = cycle_values([(0.30, 3.20, 0.80), (0.40, 3.00, 0.80)], count, rng)
-        obstacle_restitutions = cycle_values([0.5, 0.8], count, rng)
-        obstacle_y_values = cycle_values([-0.30, 0.0, 0.30], count, rng)
+        wall_sizes = cycle_values([(0.30, 3.20, 0.80), (0.40, 3.00, 0.80)], count, rng)
+        wall_restitutions = cycle_values([0.5, 0.8], count, rng)
+        wall_y_values = cycle_values([-0.30, 0.0, 0.30], count, rng)
         speed_values = cycle_values([0.8, 1.2, 1.6], count, rng)
         color_values = cycle_values(colors, count, rng)
-        for obj_count, obs_size, obs_restitution, obs_y, speed, color in zip(object_counts, obstacle_sizes, obstacle_restitutions, obstacle_y_values, speed_values, color_values):
+        for obj_count, wall_size, wall_restitution, wall_y, speed, color in zip(object_counts, wall_sizes, wall_restitutions, wall_y_values, speed_values, color_values):
             objects = []
-            obs = obstacle_spec(9, obs_size, (0.0, obs_y, obs_size[2] / 2), restitution=obs_restitution, color_name="gray")
-            objects.append(obs)
+            blocking_wall = blocking_wall_spec(9, wall_size, (0.0, wall_y, wall_size[2] / 2), restitution=wall_restitution, color_name="gray")
+            objects.append(blocking_wall)
             for i in range(obj_count):
                 shape = pick(["sphere", "cube"], rng)
                 side = 1 if i % 2 == 0 else -1
                 x = side * rng.uniform(1.0, 2.0)
-                y = obs_y + [-1.20, -0.60, 0.0, 0.60, 1.20][i]
+                y = wall_y + [-1.20, -0.60, 0.0, 0.60, 1.20][i]
                 vx = -side * speed
                 if shape == "sphere":
                     radius = float(pick([0.18, 0.22, 0.28], rng))
@@ -604,7 +602,7 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
                                    (vx, 0.0, 0.0),
                                    mass=1.0, restitution=0.8, lateral_friction=0.0, color_name=color)
                 objects.append(obj)
-            configs.append(make_cfg("blocked_by_obstacle", "obstacle_blocks_path", "obstacle_size",
+            configs.append(make_cfg("blocked_by_wall", "wall_blocks_path", "wall_size",
                                    (ground_spec(), *objects)))
 
     elif level_id == 6:
@@ -674,7 +672,7 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
         speed_values = cycle_values([1.0, 1.4, 1.8], count, rng)
         angle_values = cycle_values([20, 35, 55, 125, 145, 200, 235, 305], count, rng)
         wall_restitutions = cycle_values([0.9, 1.0], count, rng)
-        wall_sets = cycle_values(["box_boundary", "half_box_boundary"], count, rng)
+        wall_sets = cycle_values(["full_boundary", "half_boundary"], count, rng)
         color_values = cycle_values(colors, count, rng)
         wall_size_v = VERTICAL_WALL_SIZE
         wall_size_h = HORIZONTAL_WALL_SIZE
@@ -683,7 +681,7 @@ def build_s8_stratified_level_configs(level_id: int, start_id: int, seed: int, c
             # Add boundary walls
             objects.append(wall_spec(6, wall_size_v, (-2.2, 0.0, 0.60), restitution=wall_restitution, color_name="gray"))
             objects.append(wall_spec(7, wall_size_v, (2.2, 0.0, 0.60), restitution=wall_restitution, color_name="blue"))
-            if wall_set == "box_boundary":
+            if wall_set == "full_boundary":
                 objects.append(wall_spec(8, wall_size_h, (0.0, 1.6, 0.60), restitution=wall_restitution, color_name="gray"))
             objects.append(wall_spec(9, wall_size_h, (0.0, -1.6, 0.60), restitution=wall_restitution, color_name="blue"))
             for i in range(obj_count):
@@ -904,7 +902,7 @@ def build_asset(spec: ObjectSpec):
     if spec.object_type == "sphere":
         assert spec.radius is not None
         return kb.Sphere(scale=spec.radius, **kwargs)
-    if spec.object_type in {"cube", "ground", "wall", "obstacle"}:
+    if spec.object_type in {"cube", "ground", "wall"}:
         assert spec.size is not None
         scale = tuple(v / 2.0 for v in spec.size)
         return kb.Cube(scale=scale, **kwargs)

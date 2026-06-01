@@ -282,8 +282,8 @@ def make_cases() -> dict[str, list[ProbeCase]]:
                   [ground((9, 6, 0.08), friction=0), sphere("A", -1.8, -0.8, velocity=(1.2, 0, 0), color="red", friction=0), sphere("B", -1.6, 0.0, velocity=(1.6, 0, 0), color="blue", friction=0), sphere("C", -1.4, 0.8, velocity=(1.0, 0, 0), color="green", friction=0)]),
         ProbeCase("S8_泛化样本", "time_gap", "same region time gap", "paths cross at different times", "top",
                   [ground((9, 6, 0.08), friction=0), sphere("A", -1.8, 0, velocity=(2.0, 0, 0), color="red", friction=0), sphere("B", 0, -1.4, velocity=(0, 0.8, 0), color="blue", friction=0)]),
-        ProbeCase("S8_泛化样本", "blocked_by_wall", "static obstacle blocks", "dynamic-static contact allowed", "top",
-                  [ground((9, 6, 0.08), friction=0), BodySpec("obstacle", "cube", (0, 0, 0.45), size=(0.18, 2.6, 0.9), static=True, color="dark_gray", restitution=0.8, friction=0.5), sphere("A", -1.6, -0.25, velocity=(1.2, 0, 0), color="red", friction=0), sphere("B", 1.6, 0.25, velocity=(-1.2, 0, 0), color="blue", friction=0)]),
+        ProbeCase("S8_泛化样本", "blocked_by_wall", "static wall blocks", "dynamic-static contact allowed", "top",
+                  [ground((9, 6, 0.08), friction=0), BodySpec("wall", "cube", (0, 0, 0.45), size=(0.18, 2.6, 0.9), static=True, color="dark_gray", restitution=0.8, friction=0.5), sphere("A", -1.6, -0.25, velocity=(1.2, 0, 0), color="red", friction=0), sphere("B", 1.6, 0.25, velocity=(-1.2, 0, 0), color="blue", friction=0)]),
         ProbeCase("S8_泛化样本", "static_many", "static multi-object", "all velocities zero", "oblique",
                   [ground((9, 6, 0.08), friction=0.5), sphere("A", -0.9, -0.5, color="red"), cube("B", 0.0, 0.35, color="blue"), cylinder("C", 0.9, -0.25, color="green")]),
     ]

@@ -16,10 +16,10 @@ class AIModelConfig:
 
     # --- Data ---
     image_size: int = 128
-    history_length: int = 12
+    history_length: int = 24
     predict_length: int = 12
-    max_objects: int = 7
-    attr_dim: int = 14       # 3(size)+4(friction)+1(mass)+1(restitution)+1(static)+4(type)
+    max_objects: int = 9
+    attr_dim: int = 15       # 3(size)+4(material)+1(mass)+1(static)+6(type)
     state_dim: int = 16      # 3(pos)+4(quat)+3(vel)+3(angvel)+3(force)
     force_dim: int = 3
 
